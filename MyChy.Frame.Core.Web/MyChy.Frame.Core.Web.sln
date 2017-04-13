@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyChy.Frame.Core.Web", "MyChy.Frame.Core.Web\MyChy.Frame.Core.Web.csproj", "{01F3298E-7681-4CF5-83FF-92E2C5FD6056}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyChy.Frame.Core.Common", "MyChy.Frame.Core.Common\MyChy.Frame.Core.Common.csproj", "{01A5D33A-E36B-41BD-8479-34266859F04C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyChy.Frame.Core.Redis", "MyChy.Frame.Core.Redis\MyChy.Frame.Core.Redis.csproj", "{2BCD647B-321E-400B-84D5-DB5F9890A8FB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyChy.Frame.Core.EFCore", "MyChy.Frame.Core.EFCore\MyChy.Frame.Core.EFCore.csproj", "{57479971-B81F-4C66-ACD3-FA59E09239C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyChy.Frame.Core.Test", "MyChy.Frame.Core.Test\MyChy.Frame.Core.Test.csproj", "{5E48723F-0304-4CD1-8A71-A2E9CF60C34A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{01F3298E-7681-4CF5-83FF-92E2C5FD6056}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01F3298E-7681-4CF5-83FF-92E2C5FD6056}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01F3298E-7681-4CF5-83FF-92E2C5FD6056}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01F3298E-7681-4CF5-83FF-92E2C5FD6056}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01A5D33A-E36B-41BD-8479-34266859F04C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01A5D33A-E36B-41BD-8479-34266859F04C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01A5D33A-E36B-41BD-8479-34266859F04C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01A5D33A-E36B-41BD-8479-34266859F04C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BCD647B-321E-400B-84D5-DB5F9890A8FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BCD647B-321E-400B-84D5-DB5F9890A8FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BCD647B-321E-400B-84D5-DB5F9890A8FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BCD647B-321E-400B-84D5-DB5F9890A8FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57479971-B81F-4C66-ACD3-FA59E09239C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57479971-B81F-4C66-ACD3-FA59E09239C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57479971-B81F-4C66-ACD3-FA59E09239C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57479971-B81F-4C66-ACD3-FA59E09239C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E48723F-0304-4CD1-8A71-A2E9CF60C34A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E48723F-0304-4CD1-8A71-A2E9CF60C34A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E48723F-0304-4CD1-8A71-A2E9CF60C34A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E48723F-0304-4CD1-8A71-A2E9CF60C34A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

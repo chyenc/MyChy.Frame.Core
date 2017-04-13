@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NUnit" Version="3.6.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MyChy.Frame.Core.Common\MyChy.Frame.Core.Common.csproj" />
+    <ProjectReference Include="..\MyChy.Frame.Core.EFCore\MyChy.Frame.Core.EFCore.csproj" />
+    <ProjectReference Include="..\MyChy.Frame.Core.Redis\MyChy.Frame.Core.Redis.csproj" />
+  </ItemGroup>
+
+</Project>
