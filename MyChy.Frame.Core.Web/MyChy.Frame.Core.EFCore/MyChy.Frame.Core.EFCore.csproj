@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MyChy.Frame.Core.Common\MyChy.Frame.Core.Common.csproj" />
+    <ProjectReference Include="..\MyChy.Frame.Core\MyChy.Frame.Core.csproj" />
   </ItemGroup>
 
 </Project>

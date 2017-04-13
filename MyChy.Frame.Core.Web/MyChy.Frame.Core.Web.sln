@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyChy.Frame.Core.EFCore", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyChy.Frame.Core.Test", "MyChy.Frame.Core.Test\MyChy.Frame.Core.Test.csproj", "{5E48723F-0304-4CD1-8A71-A2E9CF60C34A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyChy.Frame.Core", "MyChy.Frame.Core\MyChy.Frame.Core.csproj", "{E3E5F0D3-C4C2-4FF1-A189-4373DDB25B82}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{5E48723F-0304-4CD1-8A71-A2E9CF60C34A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E48723F-0304-4CD1-8A71-A2E9CF60C34A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E48723F-0304-4CD1-8A71-A2E9CF60C34A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3E5F0D3-C4C2-4FF1-A189-4373DDB25B82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3E5F0D3-C4C2-4FF1-A189-4373DDB25B82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3E5F0D3-C4C2-4FF1-A189-4373DDB25B82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3E5F0D3-C4C2-4FF1-A189-4373DDB25B82}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
