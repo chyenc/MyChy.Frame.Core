@@ -1,4 +1,5 @@
 del nupkgs\*.nupkg
+dotnet pack MyChy.Frame.Core\MyChy.Frame.Core.csproj -c Release -o ..\nupkgs\
 dotnet pack MyChy.Frame.Core.Common\MyChy.Frame.Core.Common.csproj -c Release -o ..\nupkgs\
 dotnet pack MyChy.Frame.Core.Redis\MyChy.Frame.Core.Redis.csproj  -c Release -o ..\nupkgs\
 dotnet pack MyChy.Frame.Core.EFCore\MyChy.Frame.Core.EFCore.csproj  -c Release -o ..\nupkgs\

@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
+    <Version>1.0.1</Version>
+    <Description>更新引用增加框架DLL</Description>
   </PropertyGroup>
 
   <ItemGroup>
