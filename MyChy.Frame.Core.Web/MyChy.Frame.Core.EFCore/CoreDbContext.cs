@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MyChy.Frame.Core.Common.Core;
 using MyChy.Frame.Core.EFCore.Abstraction;
 using MyChy.Frame.Core.EFCore.AutoHistorys;
 using MyChy.Frame.Core.EFCore.Entitys.Abstraction;
