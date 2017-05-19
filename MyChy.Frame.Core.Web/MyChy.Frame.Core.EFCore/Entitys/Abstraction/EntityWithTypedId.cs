@@ -4,6 +4,14 @@ using System.Text;
 
 namespace MyChy.Frame.Core.EFCore.Entitys.Abstraction
 {
+
+    public abstract class EntityWithTypedId : EntityWithTypedId<int>
+    {
+
+
+
+    }
+
     public abstract class EntityWithTypedId<TId> :  IEntityWithTypedId<TId>
     {
         public TId Id { get; set; }

@@ -127,6 +127,9 @@ namespace MyChy.Frame.Core.EFCore.Entitys.Abstraction
         /// </summary>
         protected EntityWithAllMeta()
         {
+            base.CreatedBy = "";
+            base.DeletedBy = "";
+            base.UpdatedBy = "";
 
         }
 

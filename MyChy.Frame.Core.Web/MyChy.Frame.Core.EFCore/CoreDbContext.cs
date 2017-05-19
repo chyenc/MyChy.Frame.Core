@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyChy.Frame.Core.EFCore.Abstraction;
 using MyChy.Frame.Core.EFCore.AutoHistorys;
+using MyChy.Frame.Core.EFCore.Config;
 using MyChy.Frame.Core.EFCore.Entitys.Abstraction;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,7 @@ namespace MyChy.Frame.Core.EFCore
             //  Database.EnsureCreated();
             //  _cacheServiceProvider = cacheServiceProvider;
         }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             List<Type> typeToRegisterCustomModelBuilders = new List<Type>();
@@ -54,6 +56,11 @@ namespace MyChy.Frame.Core.EFCore
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            //var efconfig = EntityFrameworkHelper.ReadConfiguration("config/EntityFramework.json");
+            //if (efconfig.SqlType == EntityFrameworkType.MsSql)
+            //{
+            //    optionsBuilder.UseSqlServer(efconfig.Connect);
+            //}
             //optionsBuilder.UseSqlServer("Server=192.168.1.101;Database=SF_Team_2017;uid=sa;pwd=123.com.cn;Pooling=True;Min Pool Size=1;Max Pool Size=100;Trusted_Connection=True;MultipleActiveResultSets=true;Integrated Security=false;",
             //   b => b.MigrationsAssembly("SF.WebHost"));
             base.OnConfiguring(optionsBuilder);

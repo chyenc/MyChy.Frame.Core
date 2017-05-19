@@ -9,6 +9,9 @@ namespace MyChy.Frame.Core.Test
         [Test]
         public void CreatLogin()
         {
+
+
+
             string openid = "o8KB3uEwEIye3ceovZRej1uG1rMM";
 
             //UserLoginServer.SentRegByOpenId(openid);

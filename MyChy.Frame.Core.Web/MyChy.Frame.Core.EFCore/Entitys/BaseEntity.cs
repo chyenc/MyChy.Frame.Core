@@ -6,6 +6,18 @@ using System.Text;
 
 namespace MyChy.Frame.Core.EFCore.Entitys
 {
+
+    public abstract class BaseEntity : EntityWithTypedId
+    {
+
+    }
+
+    public abstract class BaseEntity<TKey> : EntityWithTypedId<TKey>
+    {
+
+
+    }
+
     public abstract class BaseWithAllEntity : BaseWithAllEntity<int>
     {
 
@@ -23,16 +35,6 @@ namespace MyChy.Frame.Core.EFCore.Entitys
 
     }
 
-    public abstract class BaseEntity : BaseEntity<int>
-    {
-
-    }
-
-    public abstract class BaseEntity<TKey>: EntityWithTypedId<TKey>
-    {
-
-
-    }
 
 
 }
