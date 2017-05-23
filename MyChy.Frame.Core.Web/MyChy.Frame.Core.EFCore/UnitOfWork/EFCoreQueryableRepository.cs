@@ -458,6 +458,15 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
         }
 
         /// <summary>
+        /// Gets an <see cref="T:System.Linq.IQueryable`1" />
+        /// </summary>
+        /// <returns>The <see cref="T:System.Linq.IQueryable`1" /> object</returns>
+        public IQueryable<TEntity> QueryNoTracking()
+        {
+            return Set.AsNoTracking();
+        }
+
+        /// <summary>
         /// Gets an <see cref="T:System.Linq.IQueryable`1" /> filtered by
         /// the entity id
         /// </summary>
@@ -490,9 +499,10 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             List<Expression<Func<TEntity, object>>> includes = null,
             int page = 0,
-            int pageSize = 15)
+            int pageSize = 15,
+            bool IsNoTracking = false)
         {
-            var query = QueryFilter(predicate, orderBy, includes, page, pageSize);
+            var query = QueryFilter(predicate, orderBy, includes, page, pageSize, IsNoTracking);
             return new PagedList<TEntity>(query, page, pageSize, query.Count());
         }
 
@@ -508,9 +518,10 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             List<Expression<Func<TEntity, object>>> includes = null,
             int page = 0,
-            int pageSize = 15)
+            int pageSize = 15,
+            bool IsNoTracking = false)
         {
-            var query = QueryFilter(predicate, orderBy, includes, page, pageSize);
+            var query = QueryFilter(predicate, orderBy, includes, page, pageSize, IsNoTracking);
             var list = await query.ToListAsync();
             return new PagedList<TEntity>(list, page, pageSize, query.Count());
         }
@@ -529,9 +540,15 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             List<Expression<Func<TEntity, object>>> includes = null,
             int? page = null,
-            int? pageSize = null)
+            int? pageSize = null,
+            bool IsNoTracking = false)
         {
             IQueryable<TEntity> query = Set;
+
+            if (IsNoTracking)
+            {
+                query = Set.AsNoTracking();
+            }
 
             if (includes != null)
             {

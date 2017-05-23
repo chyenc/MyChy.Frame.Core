@@ -45,6 +45,8 @@ namespace MyChy.Frame.Core.EFCore
         {
             return Query().Where(e => e.Id == id);
         }
+
+
     }
 
 

@@ -30,6 +30,12 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
         IQueryable<TEntity> Query();
 
         /// <summary>
+        ///  Gets an <see cref="IQueryable{TEntity}"/>
+        /// </summary>
+        /// <returns></returns>
+        IQueryable<TEntity> QueryNoTracking();
+
+        /// <summary>
         /// Gets an <see cref="IQueryable{TEntity}"/> filtered by
         /// the entity id
         /// </summary>
@@ -51,7 +57,8 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
            List<Expression<Func<TEntity, object>>> includes = null,
            int page = 0,
-           int pageSize = 15);
+           int pageSize = 15,
+           bool IsNoTracking = false);
 
         /// <summary>
         ///  Gets an <see cref="IQueryable{TEntity}"/> 
@@ -67,7 +74,8 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
              Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
              List<Expression<Func<TEntity, object>>> includes = null,
              int? page = null,
-             int? pageSize = null);
+             int? pageSize = null,
+             bool IsNoTracking = false);
     }
 
     /// <summary>
@@ -122,7 +130,9 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
            List<Expression<Func<TEntity, object>>> includes = null,
            int page = 0,
-           int pageSize = 15);
+           int pageSize = 15,
+           bool IsNoTracking = false);
+
         /// <summary>
         ///  Gets an <see cref="IQueryable{TEntity}"/> 
         /// </summary>
@@ -137,7 +147,9 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
           Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
           List<Expression<Func<TEntity, object>>> includes = null,
           int page = 0,
-          int pageSize = 15);
+          int pageSize = 15,
+          bool IsNoTracking = false);
+
 
         /// <summary>
         ///  Gets an <see cref="IQueryable{TEntity}"/> 
@@ -153,6 +165,7 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
              Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
              List<Expression<Func<TEntity, object>>> includes = null,
              int? page = null,
-             int? pageSize = null);
+             int? pageSize = null,
+             bool IsNoTracking = false);
     }
 }
