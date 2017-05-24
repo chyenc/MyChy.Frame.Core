@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MyChy.Frame.Core.EFCore.Entitys.Abstraction
+namespace MyChy.Frame.Core.Entitys.Abstraction
 {
     public interface IEntityWithTypedId<TId> : IEntity
     {

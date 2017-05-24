@@ -3,6 +3,7 @@ using MyChy.Frame.Core.EFCore.Abstraction;
 using MyChy.Frame.Core.EFCore.AutoHistorys;
 using MyChy.Frame.Core.EFCore.Config;
 using MyChy.Frame.Core.EFCore.Entitys.Abstraction;
+using MyChy.Frame.Core.Entitys.Abstraction;
 using System;
 using System.Collections.Generic;
 using System.Linq;

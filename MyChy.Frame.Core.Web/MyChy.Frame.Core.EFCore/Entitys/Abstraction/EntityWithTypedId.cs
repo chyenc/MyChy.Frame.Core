@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MyChy.Frame.Core.Entitys.Abstraction;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
