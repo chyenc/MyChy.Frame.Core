@@ -100,6 +100,13 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
         /// <returns>The <see cref="IQueryable{TEntity}"/> object</returns>
         IQueryable<TEntity> Query();
 
+
+        /// <summary>
+        ///  Gets an <see cref="IQueryable{TEntity}"/>
+        /// </summary>
+        /// <returns></returns>
+        IQueryable<TEntity> QueryNoTracking();
+
         /// <summary>
         /// Gets an <see cref="IQueryable{TEntity}"/> filtered by
         /// the entity id
