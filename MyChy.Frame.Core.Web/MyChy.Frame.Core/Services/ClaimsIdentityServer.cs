@@ -3,9 +3,7 @@ using System.Security.Claims;
 using System.Linq;
 using MyChy.Frame.Core.Common.Extensions;
 using System;
-using Microsoft.AspNetCore.Http.Authentication;
-using MyChy.Frame.Core.Common.Helper;
-using Microsoft.AspNetCore.Session;
+using Microsoft.AspNetCore.Authentication;
 
 
 namespace MyChy.Frame.Core.Services
@@ -24,7 +22,7 @@ namespace MyChy.Frame.Core.Services
         {
             var claimsIdentity = new ClaimsIdentity(Claims, Name);
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-            await HttpContext.Current.Authentication.SignInAsync(Name, claimsPrincipal);
+            await HttpContext.Current.SignInAsync(Name, claimsPrincipal);
 
         }
 
@@ -56,14 +54,14 @@ namespace MyChy.Frame.Core.Services
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 
 
-            var Authentication = new AuthenticationProperties
+            var Authentication = new Microsoft.AspNetCore.Authentication.AuthenticationProperties
             {
                 ExpiresUtc = DateTime.UtcNow.AddMinutes(Minutes),
                 IsPersistent = false,
                 AllowRefresh = false
             };
 
-            await HttpContext.Current.Authentication.SignInAsync(Name, claimsPrincipal, Authentication);
+            await HttpContext.Current.SignInAsync(Name, claimsPrincipal, Authentication);
         }
 
 
@@ -75,7 +73,7 @@ namespace MyChy.Frame.Core.Services
         public static async void UserOut(string Name = _Name)
         {
             SessionServer.Remove(Name);
-            await HttpContext.Current.Authentication.SignOutAsync(Name);
+            await HttpContext.Current.SignOutAsync(Name);
         }
 
 
