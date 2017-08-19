@@ -50,6 +50,8 @@ namespace MyChy.Frame.Core.Common.Helper
         {
             return StringToObj<T>(value, default(T));
         }
+        
+
 
         /// <summary>
         /// 字符转化成类

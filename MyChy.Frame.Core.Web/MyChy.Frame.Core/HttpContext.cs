@@ -16,5 +16,17 @@ namespace MyChy.Frame.Core
             _accessor = accessor;
         }
 
+        //public static IServiceProvider ServiceProvider;
+
+        //public static Microsoft.AspNetCore.Http.HttpContext Current
+        //{
+        //    get
+        //    {
+        //        object factory = ServiceProvider.GetService(typeof(IHttpContextAccessor));
+        //        Microsoft.AspNetCore.Http.HttpContext context = ((HttpContextAccessor)factory).HttpContext;
+        //        return context;
+        //    }
+        //}
+
     }
 }
