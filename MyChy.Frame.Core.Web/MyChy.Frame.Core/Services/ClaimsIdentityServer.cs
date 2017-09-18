@@ -41,7 +41,9 @@ namespace MyChy.Frame.Core.Services
             {
                 new Claim(ClaimTypes.NameIdentifier,Front.UserId.ToString()),
                 new Claim(ClaimTypes.Name,Front.UserIds),
+                  new Claim(ClaimTypes.Gender,Front.UserNick),
                 new Claim(ClaimTypes.MobilePhone,Front.Mobile),
+                 new Claim(ClaimTypes.PrimarySid,Front.OrganizationId),
              //   new Claim(ClaimTypes.PrimarySid,Front.UserId.ToString()),
                 new Claim(ClaimTypes.Actor,Front.OpenId),
                 new Claim(ClaimTypes.Role,Front.RoleId.ToString()),
@@ -96,11 +98,14 @@ namespace MyChy.Frame.Core.Services
                 var ss = HttpContext.Current.User.Claims;
                 result.UserId = ShowClaimValue<int>(ss, ClaimTypes.NameIdentifier);
                 result.UserIds = ShowClaimValue<string>(ss, ClaimTypes.Name);
+                result.UserNick = ShowClaimValue<string>(ss, ClaimTypes.Gender);
                 result.Mobile = ShowClaimValue<string>(ss, ClaimTypes.MobilePhone);
                 result.OpenId = ShowClaimValue<string>(ss, ClaimTypes.Actor);
                 result.RoleId = ShowClaimValue<int>(ss, ClaimTypes.Role);
                 result.Authority = ShowClaimValue<string>(ss, ClaimTypes.Authentication);
                 result.EndTime = ShowClaimValue<DateTime>(ss, ClaimTypes.Expired);
+                result.OrganizationId= ShowClaimValue<string>(ss, ClaimTypes.PrimarySid); 
+
                 CheckEndTime(result);
                 // SessionServer.Set(result, _Name, _Minutes - 10);
             }
@@ -148,13 +153,17 @@ namespace MyChy.Frame.Core.Services
 
         public int UserId { get; set; }
 
+        public int RoleId { get; set; }
+
+        public string OrganizationId { get; set; }
+
         public string UserIds { get; set; }
+
+        public string UserNick { get; set; }
 
         public string OpenId { get; set; }
 
         public string Mobile { get; set; }
-
-        public int RoleId { get; set; }
 
         public string Authority { get; set; }
 

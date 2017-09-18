@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MyChy.Frame.Core.Modules;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -8,8 +9,8 @@ namespace MyChy.Frame.Core
     public static class ExtensionManager
     {
         private static List<Assembly> assemblies;
-        // private static List<IModuleInitializer> modules;
-        // public static List<ModuleInfo> Modules { get; set; }
+        private static List<IModuleInitializer> modules;
+        public static List<ModuleInfo> Modules { get; set; }
 
         public static List<Assembly> Assemblies
         {
@@ -21,31 +22,31 @@ namespace MyChy.Frame.Core
             }
         }
 
-        //public static List<IModuleInitializer> Extensions
-        //{
-        //    get
-        //    {
-        //        if (ExtensionManager.modules == null)
-        //            ExtensionManager.modules = ExtensionManager.GetInstances<IModuleInitializer>();
+        public static List<IModuleInitializer> Extensions
+        {
+            get
+            {
+                if (ExtensionManager.modules == null)
+                    ExtensionManager.modules = ExtensionManager.GetInstances<IModuleInitializer>();
 
-        //        return ExtensionManager.modules;
-        //    }
-        //}
+                return ExtensionManager.modules;
+            }
+        }
 
         public static void SetAssemblies(List<Assembly> assemblies)
         {
             ExtensionManager.assemblies = assemblies;
         }
 
-        //public static void SetExtension(IModuleInitializer moduleInitializer)
-        //{
-        //    ExtensionManager.Extensions.Add(moduleInitializer);
-        //}
+        public static void SetExtension(IModuleInitializer moduleInitializer)
+        {
+            ExtensionManager.Extensions.Add(moduleInitializer);
+        }
 
-        //public static void SetModules(List<ModuleInfo> modules)
-        //{
-        //    ExtensionManager.Modules = modules;
-        //}
+        public static void SetModules(List<ModuleInfo> modules)
+        {
+            ExtensionManager.Modules = modules;
+        }
 
         public static Type GetImplementation<T>()
         {
