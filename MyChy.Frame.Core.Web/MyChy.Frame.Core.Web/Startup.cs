@@ -13,6 +13,7 @@ using MyChy.Frame.Core.EFCore;
 using MyChy.Frame.Core.EFCore.Config;
 using Microsoft.EntityFrameworkCore;
 using MyChy.Frame.Core.Web.Work;
+using MyChy.Frame.Core.Extensions;
 
 namespace MyChy.Frame.Core.Web
 {
@@ -84,8 +85,13 @@ namespace MyChy.Frame.Core.Web
                       .UseInternalServiceProvider(serviceProviders));
 
             }
-            services.AddSingleton<CoreDbContext>();
+           // services.AddSingleton<CoreDbContext>();
             services.AddSingleton<DbContext, CoreDbContext>();
+
+
+            services.AddHttpContextAccessor();
+
+            services.AddSession();
 
             // Add framework services.
             services.AddMvc();
@@ -115,12 +121,17 @@ namespace MyChy.Frame.Core.Web
 
             app.UseStaticFiles();
 
+            app.UseStaticHttpContext();
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+
+
         }
 
         /// <summary>

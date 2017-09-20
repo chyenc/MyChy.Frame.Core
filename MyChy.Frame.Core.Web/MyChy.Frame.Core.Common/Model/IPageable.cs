@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MyChy.Frame.Core.EFCore.Entitys.Pages
+namespace MyChy.Frame.Core.Common.Model
 {
     /// <summary>
     /// A collection of objects that has been split into pages.

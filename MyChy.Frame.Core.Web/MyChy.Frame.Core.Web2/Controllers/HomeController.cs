@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MyChy.Frame.Core.Web2.Models;
+using MyChy.Frame.Core.Services;
 
 namespace MyChy.Frame.Core.Web2.Controllers
 {
@@ -12,12 +13,17 @@ namespace MyChy.Frame.Core.Web2.Controllers
     {
         public IActionResult Index()
         {
+
             return View();
         }
 
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
+
+
+
+
 
             return View();
         }

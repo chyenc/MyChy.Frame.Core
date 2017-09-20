@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MyChy.Frame.Core.Common.Model;
 using MyChy.Frame.Core.EFCore.Entitys.Pages;
 using System;
 using System.Collections.Generic;

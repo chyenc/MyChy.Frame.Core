@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MyChy.Frame.Core.Extensions;
 
 namespace MyChy.Frame.Core.Web2
 {
@@ -21,6 +22,8 @@ namespace MyChy.Frame.Core.Web2
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
+
             services.AddMvc();
         }
 
@@ -36,6 +39,8 @@ namespace MyChy.Frame.Core.Web2
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            app.UseSession();
 
             app.UseStaticFiles();
 

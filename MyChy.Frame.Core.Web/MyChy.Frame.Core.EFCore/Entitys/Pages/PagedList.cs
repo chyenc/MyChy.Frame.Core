@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MyChy.Frame.Core.Common.Model;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
