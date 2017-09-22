@@ -26,6 +26,11 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
         /// The <see cref="DbSet{TEntity}"/> of this repository entity
         /// </summary>
         DbSet<TEntity> Set { get; }
+
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        //CoreDbContext CoreContext { get; }
     }
 
     /// <summary>
@@ -47,6 +52,11 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
         /// The <see cref="DbSet{TEntity}"/> of this repository entity
         /// </summary>
         DbSet<TEntity> Set { get; }
+
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        //CoreDbContext CoreContext { get; }
     }
 
 }

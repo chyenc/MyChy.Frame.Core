@@ -81,17 +81,22 @@ namespace MyChy.Frame.Core.Web
                 services.AddEntityFrameworkSqlServer()
                .AddDbContext<CoreDbContext>((serviceProviders, options) =>
                options.UseSqlServer(efconfig.Connect,
-                    b => b.MigrationsAssembly("MyChy.Frame.Core.Web"))
-                      .UseInternalServiceProvider(serviceProviders));
+                    b => b.MigrationsAssembly("MyChy.Frame.Core.Web").UseRowNumberForPaging()
+                    ).UseInternalServiceProvider(serviceProviders));
+
+
+                // .UseRowNumberForPaging() ＳＱＬ２００８　增加　１２等版本不需要
 
             }
-           // services.AddSingleton<CoreDbContext>();
+            // services.AddSingleton<CoreDbContext>();
             services.AddSingleton<DbContext, CoreDbContext>();
 
 
             services.AddHttpContextAccessor();
 
             services.AddSession();
+
+            services.AddTransient<ICompetencesWorkArea, CompetencesWorkArea>();
 
             // Add framework services.
             services.AddMvc();

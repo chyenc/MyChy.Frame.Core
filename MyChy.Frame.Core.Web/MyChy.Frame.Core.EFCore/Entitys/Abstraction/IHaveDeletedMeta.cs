@@ -19,6 +19,11 @@ namespace MyChy.Frame.Core.EFCore.Entitys.Abstraction
         /// The identifier (or entity) which soft deleted this entity
         /// </summary>
         TDeletedBy DeletedBy { get; set; }
+
+        /// <summary>
+        /// 是否删除
+        /// </summary>
+        bool IsDeleted{ get; set; }
     }
 
     /// <summary>

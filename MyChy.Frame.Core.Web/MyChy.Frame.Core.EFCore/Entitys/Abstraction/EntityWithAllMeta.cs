@@ -65,6 +65,11 @@ namespace MyChy.Frame.Core.EFCore.Entitys.Abstraction
         /// </summary>
         public virtual TDeletedBy DeletedBy { get; set; }
 
+        /// <summary>
+        /// 是否删除
+        /// </summary>
+        public virtual bool IsDeleted { get; set; }
+
         #endregion
 
         /// <summary>
@@ -130,7 +135,7 @@ namespace MyChy.Frame.Core.EFCore.Entitys.Abstraction
             base.CreatedBy = "";
             base.DeletedBy = "";
             base.UpdatedBy = "";
-
+            base.IsDeleted=false;
         }
 
         /// <summary>
