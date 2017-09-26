@@ -14,15 +14,14 @@ namespace MyChy.Frame.Core.Services
         /// <param name="Front"></param>
         public static void Set(string Name, object Front)
         {
-            var val = SerializeHelper.ObjToString(Front);
-            HttpContext.Current.Response.Cookies.Append(Name, val);
+            Set(Name, Front, 120, "");
         }
 
         /// <summary>
         /// Cookie 保存
         /// </summary>
         /// <param name="Front"></param>
-        public static void Set(string Name, object Front, int Minutes=0,string Domain="",bool HttpOnly=false)
+        public static void Set(string Name, object Front, int Minutes = 120, string Domain = "", bool HttpOnly = false)
         {
             var val = SerializeHelper.ObjToString(Front);
             //  byte[] serializedResult = Encoding.UTF8.GetBytes(val);

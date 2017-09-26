@@ -14,6 +14,12 @@ using MyChy.Frame.Core.EFCore.Config;
 using Microsoft.EntityFrameworkCore;
 using MyChy.Frame.Core.Web.Work;
 using MyChy.Frame.Core.Extensions;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
+using MyChy.Frame.Core.Common.Helper;
+using System.IO;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace MyChy.Frame.Core.Web
 {
@@ -98,6 +104,27 @@ namespace MyChy.Frame.Core.Web
 
             services.AddTransient<ICompetencesWorkArea, CompetencesWorkArea>();
 
+            var machinekeyPath = FileHelper.GetFileMapPath("config");
+            var protectionProvider = DataProtectionProvider.Create(new DirectoryInfo(machinekeyPath));
+            var dataProtector = protectionProvider.CreateProtector("MyCookieAuthentication");
+            var ticketFormat = new TicketDataFormat(dataProtector);
+
+            
+
+            services.AddAuthentication(o => {
+                o.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                o.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                o.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            })
+            .AddCookie(options =>
+            {
+                options.LoginPath = new PathString("/Account/Login");
+                options.LogoutPath = new PathString("/Account/Logout");
+                options.TicketDataFormat = ticketFormat;
+            });
+
+
+
             // Add framework services.
             services.AddMvc();
 
@@ -127,6 +154,10 @@ namespace MyChy.Frame.Core.Web
             app.UseStaticFiles();
 
             app.UseStaticHttpContext();
+
+            app.UseAuthentication();
+
+            app.UseSession();
 
             app.UseMvc(routes =>
             {

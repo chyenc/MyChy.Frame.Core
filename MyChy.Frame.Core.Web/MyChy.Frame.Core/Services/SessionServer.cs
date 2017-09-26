@@ -11,12 +11,23 @@ namespace MyChy.Frame.Core.Services
         /// Session 保存
         /// </summary>
         /// <param name="Front"></param>
-        public static void Set(object Front, string Name, int Minutes)
+        public static void Set(string Name,object Front)
         {
             var val = SerializeHelper.ObjToString(Front);
             byte[] serializedResult = Encoding.UTF8.GetBytes(val);
             HttpContext.Current.Session.Set(Name, serializedResult);
         }
+
+        ///// <summary>
+        ///// Session 保存
+        ///// </summary>
+        ///// <param name="Front"></param>
+        //public static void Set(object Front, string Name, int Minutes)
+        //{
+        //    var val = SerializeHelper.ObjToString(Front);
+        //    byte[] serializedResult = Encoding.UTF8.GetBytes(val);
+        //    HttpContext.Current.Session.Set(Name, serializedResult);
+        //}
 
 
         public static T Get<T>(string Name)

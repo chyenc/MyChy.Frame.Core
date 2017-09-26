@@ -70,7 +70,7 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
         /// <param name="page"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        IQueryable<TEntity> QueryFilter(
+        IQueryable<TEntity> QueryFilter(out int count,
              Expression<Func<TEntity, bool>> predicate = null,
              Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
              List<Expression<Func<TEntity, object>>> includes = null,
@@ -139,7 +139,7 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
            List<Expression<Func<TEntity, object>>> includes = null,
            int page = 0,
            int pageSize = 15,
-           bool IsNoTracking = false);
+           bool IsNoTracking = true);
 
         /// <summary>
         ///  Gets an <see cref="IQueryable{TEntity}"/> 
@@ -156,7 +156,7 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
           List<Expression<Func<TEntity, object>>> includes = null,
           int page = 0,
           int pageSize = 15,
-          bool IsNoTracking = false);
+          bool IsNoTracking = true);
 
 
         /// <summary>
@@ -168,7 +168,7 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
         /// <param name="page"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        IQueryable<TEntity> QueryFilter(
+        IQueryable<TEntity> QueryFilter(out int count,
              Expression<Func<TEntity, bool>> predicate = null,
              Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
              List<Expression<Func<TEntity, object>>> includes = null,

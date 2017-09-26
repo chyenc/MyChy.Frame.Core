@@ -4,7 +4,7 @@ using System.Linq;
 using MyChy.Frame.Core.Common.Extensions;
 using System;
 using Microsoft.AspNetCore.Authentication;
-
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace MyChy.Frame.Core.Services
 {
@@ -20,9 +20,9 @@ namespace MyChy.Frame.Core.Services
         /// <param name="Name"></param>
         public static async void UserLogin(IList<Claim> Claims, string Name = _Name)
         {
-            var claimsIdentity = new ClaimsIdentity(Claims, Name);
+            var claimsIdentity = new ClaimsIdentity(Claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-            await HttpContext.Current.SignInAsync(Name, claimsPrincipal);
+            await HttpContext.Current.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
 
         }
 
@@ -35,35 +35,34 @@ namespace MyChy.Frame.Core.Services
         public static async void UserLogin(FrontIdentity Front, string Name = _Name, int Minutes= _Minutes)
         {
            // UserOut(_Name);
-            SessionServer.Set(Front, Name, Minutes - 10);
+            SessionServer.Set(Name, Front);
 
-            IList<Claim> Claims = new Claim[]
+            IList<Claim> claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier,Front.UserId.ToString()),
-                new Claim(ClaimTypes.Name,Front.UserIds),
-                  new Claim(ClaimTypes.Gender,Front.UserNick),
-                new Claim(ClaimTypes.MobilePhone,Front.Mobile),
-                 new Claim(ClaimTypes.PrimarySid,Front.OrganizationId),
-             //   new Claim(ClaimTypes.PrimarySid,Front.UserId.ToString()),
-                new Claim(ClaimTypes.Actor,Front.OpenId),
-                new Claim(ClaimTypes.Role,Front.RoleId.ToString()),
-                new Claim(ClaimTypes.Authentication,Front.Authority),
-                new Claim(ClaimTypes.Expired,Front.EndTime.ToString()),
-
+                new Claim(ClaimTypes.NameIdentifier, Front.UserId.To("")),
+                new Claim(ClaimTypes.Name, Front.UserIds.To("")),
+                new Claim(ClaimTypes.Gender, Front.Mobile.To("")),
+                new Claim(ClaimTypes.MobilePhone, Front.Mobile.To("")),
+                new Claim(ClaimTypes.PrimarySid, Front.OrganizationId.To("")),
+                new Claim(ClaimTypes.Actor, Front.OpenId.To("")),
+                new Claim(ClaimTypes.Role, Front.RoleId.To("")),
+                new Claim(ClaimTypes.Authentication, Front.Authority.To("")),
+                new Claim(ClaimTypes.Expired, Front.EndTime.To(""))
             };
-            var claimsIdentity = new ClaimsIdentity(Claims, Name);
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
         
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 
 
-            var Authentication = new Microsoft.AspNetCore.Authentication.AuthenticationProperties
+            var Authentication = new AuthenticationProperties
             {
                 ExpiresUtc = DateTime.UtcNow.AddMinutes(Minutes),
                 IsPersistent = false,
                 AllowRefresh = false
             };
 
-            await HttpContext.Current.SignInAsync(Name, claimsPrincipal, Authentication);
+            await HttpContext.Current.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, Authentication);
         }
 
 
@@ -75,7 +74,7 @@ namespace MyChy.Frame.Core.Services
         public static async void UserOut(string Name = _Name)
         {
             SessionServer.Remove(Name);
-            await HttpContext.Current.SignOutAsync(Name);
+            await HttpContext.Current.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         }
 
 
@@ -104,32 +103,43 @@ namespace MyChy.Frame.Core.Services
                 result.RoleId = ShowClaimValue<int>(ss, ClaimTypes.Role);
                 result.Authority = ShowClaimValue<string>(ss, ClaimTypes.Authentication);
                 result.EndTime = ShowClaimValue<DateTime>(ss, ClaimTypes.Expired);
-                result.OrganizationId= ShowClaimValue<string>(ss, ClaimTypes.PrimarySid); 
+                result.OrganizationId= ShowClaimValue<string>(ss, ClaimTypes.PrimarySid);
 
-                CheckEndTime(result);
-                // SessionServer.Set(result, _Name, _Minutes - 10);
+                if (!CheckEndTime(result))
+                {
+                    result = new FrontIdentity();
+                }
+                else {
+                    SessionServer.Set( _Name, result);
+                }
             }
+            if (result.UserId == 0) { result.UserNick = "";}
             return result;
         }
 
-        private static void CheckEndTime(FrontIdentity Front)
+        private static bool CheckEndTime(FrontIdentity Front)
         {
+            var result = true;
             if (Front.Success)
             {
                 if (Front.EndTime < DateTime.Now)
                 {
+                    result = false;
                     UserOut(_Name);
                 }
                 else if (DateTime.Now.AddMinutes(20) > Front.EndTime )
                 {
                     Front.EndTime = DateTime.Now.AddMinutes(_Minutes);
                     UserLogin(Front);
+                    result = false;
                 }
             }
             else
             {
+                result = false;
                 UserOut(_Name);
             }
+            return result;
         }
 
 
@@ -144,6 +154,8 @@ namespace MyChy.Frame.Core.Services
             }
             return result.To<T>();
         }
+
+
 
     }
 

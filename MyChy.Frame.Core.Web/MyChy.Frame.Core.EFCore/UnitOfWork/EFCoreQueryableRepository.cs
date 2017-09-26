@@ -501,10 +501,13 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
             List<Expression<Func<TEntity, object>>> includes = null,
             int page = 0,
             int pageSize = 15,
-            bool IsNoTracking = false)
+            bool IsNoTracking = true)
         {
-            var query = QueryFilter(predicate, orderBy, includes, page, pageSize, IsNoTracking);
-            return new PagedList<TEntity>(query, page, pageSize, query.Count());
+            var count = 0;
+            if (page <= 0) page = 1;
+            if (pageSize <= 0) pageSize = 1;
+            var query = QueryFilter(out count, predicate, orderBy, includes, page, pageSize, IsNoTracking);
+            return new PagedList<TEntity>(query, page, pageSize, count);
         }
 
         /// <summary>
@@ -520,11 +523,15 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
             List<Expression<Func<TEntity, object>>> includes = null,
             int page = 0,
             int pageSize = 15,
-            bool IsNoTracking = false)
+            bool IsNoTracking = true)
         {
-            var query = QueryFilter(predicate, orderBy, includes, page, pageSize, IsNoTracking);
+            var count = 0;
+            if (page <= 0) page = 1;
+            if (pageSize <= 0) pageSize = 1;
+            var query = QueryFilter(out count,predicate, orderBy, includes, page, pageSize, IsNoTracking);
             var list = await query.ToListAsync();
-            return new PagedList<TEntity>(list, page, pageSize, query.Count());
+
+            return new PagedList<TEntity>(list, page, pageSize, count);
         }
 
         /// <summary>
@@ -536,7 +543,7 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
         /// <param name="page"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        public virtual IQueryable<TEntity> QueryFilter(
+        public virtual IQueryable<TEntity> QueryFilter(out int Count,
             Expression<Func<TEntity, bool>> predicate = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             List<Expression<Func<TEntity, object>>> includes = null,
@@ -559,16 +566,48 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
             {
                 query = orderBy(query);
             }
-            if (predicate != null)
+            if (predicate != null && predicate.Body.ToString() != "False")
             {
                 query = query.Where(predicate);
             }
-            if (page != null && pageSize != null)
+            Count = query.Count();
+            if (Count > 0)
             {
-                query = query.Skip(page.Value * pageSize.Value).Take(pageSize.Value);
+                if (page != null && pageSize != null)
+                {
+                    if (page.Value <= 0) page = 1;
+                    if (pageSize.Value <= 0) pageSize = 1;
+                    query = query.Skip((page.Value - 1) * pageSize.Value).Take(pageSize.Value);
+                }
             }
             return query;
         }
+
+
+        //public int QueryCount(
+        //Expression<Func<TEntity, bool>> predicate = null,
+        //List<Expression<Func<TEntity, object>>> includes = null,
+        //bool IsNoTracking = true)
+        //{
+        //    IQueryable<TEntity> query = Set;
+
+        //    if (IsNoTracking)
+        //    {
+        //        query = Set.AsNoTracking();
+        //    }
+
+        //    if (includes != null)
+        //    {
+        //        query = includes.Aggregate(query, (current, include) => current.Include(include));
+        //    }
+        //    if (predicate != null && predicate.Body.ToString() != "False")
+        //    {
+        //        query = query.Where(predicate);
+        //    }
+        //    var count = query.Count();
+        //    return count;
+        //}
+
 
 
         #endregion
