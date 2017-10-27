@@ -9,6 +9,7 @@ namespace MyChy.Frame.Core.Common.Extensions
     public static class DictionaryExtensions
     {
         #region 转换成URL参数
+
         /// <summary>
         /// 转换成URL参数
         /// </summary>
@@ -17,13 +18,9 @@ namespace MyChy.Frame.Core.Common.Extensions
         public static string ToQueryString(this IDictionary<object, object> dictionary)
         {
             var sb = new StringBuilder();
-            foreach (var key in dictionary.Keys)
+            foreach (var key in dictionary.Where(key => key.Key != null))
             {
-                var value = dictionary[key];
-                if (value != null)
-                {
-                    sb.Append(key + "=" + Uri.EscapeDataString(value.ToString()) + "&");
-                }
+                sb.Append(key.Key.ToString() + "=" + key.Value.ToString() + "&");
             }
             return sb.ToString().TrimEnd('&');
         }
@@ -36,13 +33,9 @@ namespace MyChy.Frame.Core.Common.Extensions
         public static string ToQueryString(this IDictionary<string, string> dictionary)
         {
             var sb = new StringBuilder();
-            foreach (var key in dictionary.Keys)
+            foreach (var key in dictionary.Where(key => key.Key != null))
             {
-                var value = dictionary[key];
-                if (value != null)
-                {
-                    sb.Append(key + "=" + Uri.EscapeDataString(value) + "&");
-                }
+                sb.Append(key.Key + "=" + key.Value + "&");
             }
             return sb.ToString().TrimEnd('&');
         }
@@ -56,12 +49,13 @@ namespace MyChy.Frame.Core.Common.Extensions
         public static string ToOrderString(this IDictionary<object, object> dictionary)
         {
             var sb = new StringBuilder();
-            var dictionarys = dictionary.OrderBy(x => x.Key).ToList();
-            foreach (var key in dictionarys.Where(key => key.Key != null))
-            {
-                sb.Append(key.Key + "=" + key.Value + "&");
-            }
-            return sb.ToString().TrimEnd('&');
+            var dictionarys = dictionary.OrderBy(x => x.Key).ToDictionary(key => key.Key, Studentobj => Studentobj.Value);
+            return ToQueryString(dictionarys);
+            //foreach (var key in dictionarys.Where(key => key.Key != null))
+            //{
+            //    sb.Append(key.Key + "=" + key.Value + "&");
+            //}
+            //return sb.ToString().TrimEnd('&');
         }
 
         /// <summary>
@@ -72,12 +66,13 @@ namespace MyChy.Frame.Core.Common.Extensions
         public static string ToOrderString(this IDictionary<string, string> dictionary)
         {
             var sb = new StringBuilder();
-            var dictionarys = dictionary.OrderBy(x => x.Key).ToList();
-            foreach (var key in dictionarys.Where(key => key.Key != null))
-            {
-                sb.Append(key.Key + "=" + key.Value + "&");
-            }
-            return sb.ToString().TrimEnd('&');
+            var dictionarys = dictionary.OrderBy(x => x.Key).ToDictionary(key => key.Key, Studentobj => Studentobj.Value);
+            return ToQueryString(dictionarys);
+            //foreach (var key in dictionarys.Where(key => key.Key != null))
+            //{
+            //    sb.Append(key.Key + "=" + key.Value + "&");
+            //}
+            //return sb.ToString().TrimEnd('&');
         }
 
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyChy.Frame.Core.EFCore.Abstraction;
+using MyChy.Frame.Core.EFCore.AutoHistorys;
 using MyChy.Frame.Core.EFCore.Maps.Fluent;
 using MyChy.Frame.Core.Web.Domains;
 using System;
@@ -30,6 +31,9 @@ namespace MyChy.Frame.Core.Web.ModelBuilders
                 b.MapCreatedMeta().MapUpdatedMeta().MapDeletedMeta();
                 b.ToTable("CompUser");
             });
+
+
+            modelBuilder.EnableAutoHistory();
 
             //modelBuilder.Entity<CompUserRole>(b =>
             //{

@@ -10,7 +10,7 @@ namespace MyChy.Frame.Core.EFCore
 {
     public class EntityFrameworkHelper
     {
-         public static EntityFrameworkConfig ReadConfiguration(string file= "config/EntityFramework.config")
+         public static EntityFrameworkConfig ReadConfiguration(string file= "config/EntityFramework.json")
         {
             var config = new ConfigHelper();
             var entityconfig = new EntityFrameworkConfig();
@@ -45,7 +45,10 @@ namespace MyChy.Frame.Core.EFCore
             }
             catch (Exception exception)
             {
-                entityconfig.SqlType = EntityFrameworkType.Null;
+                entityconfig = new EntityFrameworkConfig
+                {
+                    SqlType = EntityFrameworkType.Null
+                };
                 LogHelper.Log(exception);
             }
              return entityconfig;

@@ -20,12 +20,14 @@ namespace MyChy.Frame.Core.EFCore.AutoHistorys
         // Entities Include/Ignore attributes cache
         private static readonly Dictionary<Type, bool?> EntitiesIncludeIgnoreAttrCache = new Dictionary<Type, bool?>();
 
+        private static readonly bool IsAutoHistory = EntityFrameworkHelper.ReadConfiguration().AutoHistory;
+
         #endregion
         /// <summary>
         /// Ensures the automatic history.
         /// </summary>
         /// <param name="context">The context.</param>
-        public static void EnsureAutoHistory(this DbContext context)
+        public static void EnsureAutoHistory(this DbContext context, string Operator = "SyStem")
         {
             // TODO: only record the changed properties.
             var jsonSetting = new JsonSerializerSettings
@@ -33,20 +35,22 @@ namespace MyChy.Frame.Core.EFCore.AutoHistorys
                 ContractResolver = new EntityContractResolver(context),
             };
 
-            var entries = context.ChangeTracker.Entries().Where(e => e.State != EntityState.Unchanged
-                         && e.State != EntityState.Detached
+            var entries = context.ChangeTracker.Entries().Where(e =>
+                        (e.State == EntityState.Deleted || e.State == EntityState.Modified)
                          && IncludeEntity(e)).ToList();
+
             if (entries.Count == 0)
             {
                 return;
             }
+
             foreach (var entry in entries)
             {
                 var history = new AutoHistory
                 {
                     TypeName = entry.Entity.GetType().FullName,
+                    Operator = Operator,
                 };
-
                 switch (entry.State)
                 {
                     case EntityState.Added:
@@ -69,8 +73,7 @@ namespace MyChy.Frame.Core.EFCore.AutoHistorys
                     default:
                         continue;
                 }
-
-                context.Add(history);
+                context.AddAsync(history);
             }
         }
 
@@ -145,7 +148,7 @@ namespace MyChy.Frame.Core.EFCore.AutoHistorys
                 }
                 else
                 {
-                    EntitiesIncludeIgnoreAttrCache[type] = null; // No attribute
+                    EntitiesIncludeIgnoreAttrCache[type] = IsAutoHistory; // No attribute
                 }
             }
             return EntitiesIncludeIgnoreAttrCache[type];

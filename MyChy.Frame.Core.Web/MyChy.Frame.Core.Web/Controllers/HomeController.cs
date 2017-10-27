@@ -11,20 +11,26 @@ using LinqKit;
 using MyChy.Frame.Core.Web.Domains;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
+using MyChy.Frame.Core.EFCore;
+using System.Data.SqlClient;
+using MyChy.Frame.Core.EFCore.AutoHistorys;
 
 namespace MyChy.Frame.Core.Web.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ICompetencesWorkArea _competencesService;
+        private readonly IBaseUnitOfWork baseUnitOfWork;
         private readonly ILogger _logger;
 
         public HomeController(
             ICompetencesWorkArea competencesService,
-            ILoggerFactory loggerFactory)
+            ILoggerFactory loggerFactory,
+            IBaseUnitOfWork _baseUnitOfWork)
         {
             _competencesService = competencesService;
             _logger = loggerFactory.CreateLogger<HomeController>();
+            baseUnitOfWork = _baseUnitOfWork;
 
         }
 
@@ -37,7 +43,101 @@ namespace MyChy.Frame.Core.Web.Controllers
 
         public IActionResult About()
         {
+            LogHelper.LogError("asdfasdf");
+
+            var model = _competencesService.CompUserR.GetById(1);
+            if (model?.Id > 0)
+            {
+                var m = _competencesService.CompUserRoleR.GetById(1);
+                if (m?.Id > 0)
+                {
+                    m.UserId = 1;
+                    m.RoleId = m.RoleId + 2;
+                    _competencesService.CompUserRoleR.Update(m);
+                }
+                else
+                {
+                    m = new  CompUserRole
+                    {
+                        UserId=1,
+                        RoleId=1,
+                    };
+
+                    _competencesService.CompUserRoleR.Add(m);
+                    //_competencesService.CompUserRoleR.Context.SaveChanges();
+                }
+
+                //  _competencesService.CompUserR.Context.SaveChanges();
+                var models1 = _competencesService.CompUserR.GetById(3);
+
+                var models = _competencesService.CompUserR.GetById(2);
+                models.NickName = DateTime.Now.Ticks.ToString();
+                models.UpdatedBy = "234";
+                models.UpdatedOn = DateTime.Now;
+                _competencesService.CompUserR.Update(model);
+
+
+                model.NickName = DateTime.Now.Ticks.ToString();
+                model.UpdatedBy = "123";
+                model.UpdatedOn = DateTime.Now;
+                _competencesService.CompUserR.Update(model);
+
+                _competencesService.CompUserR.Context.EnsureAutoHistory("MyChy");
+
+                _competencesService.CompUserR.Context.SaveChanges();
+
+                //_competencesService.CompUserRoleR.Context.SaveChanges();
+
+            }
+            else
+            {
+                model = new CompUser
+                {
+                    NickName = DateTime.Now.Ticks.ToString(),
+                    PassWord = "123",
+                    UserName = "123",
+                    CreatedBy = "123",
+                    CreatedOn = DateTime.Now
+                };
+
+                _competencesService.CompUserR.Add(model);
+            }
+
+
             var predicate = PredicateBuilder.New<CompUser>();
+
+            //var x1 = baseUnitOfWork.Context.Database.ExecuteSqlCommand("update [CompUser] set [NickName]=@name where id=@id",
+            //new SqlParameter[] {
+            //      new SqlParameter("@name","1234"),
+            //      new SqlParameter("@id",1),
+            //});
+
+            var xlist = baseUnitOfWork.Context.Set<CompUser>().AsTracking().FromSql("select * from [CompUser] where id<@id", new SqlParameter[] {
+                  new SqlParameter("@id",10),
+            }).ToList();
+
+
+
+
+
+            var id = 5;
+            xlist = baseUnitOfWork.Context.Set<CompUser>().AsTracking().FromSql($"select * from [CompUser] where id<{id}").ToList();
+
+            // var city = "Redmond";
+            //  context.Customers.FromSql($"SELECT * FROM Customers WHERE City = {city}");
+
+
+            var xlist2 = baseUnitOfWork.Context.Set<CompUser>().Select(x => new CompUserOther()
+            {
+                NickName = x.NickName,
+                UserName = x.UserName,
+
+            }).FromSql("select NickName,UserName from [CompUser] where id<@id", new SqlParameter[] {
+                  new SqlParameter("@id",10),
+            }).ToList();
+
+
+            //  baseUnitOfWork.Context.Set<CompUser>
 
             var ss = predicate.Body.ToString();
 
@@ -49,11 +149,13 @@ namespace MyChy.Frame.Core.Web.Controllers
 
             list = _competencesService.CompUserR.QueryPage(predicate, page: 2, pageSize: 10);
 
-            var comp = new CompUser();
-            comp.NickName = "123";
-            comp.PassWord = "123";
-            comp.CreatedOn = DateTime.Now;
-            comp.UpdatedOn = DateTime.Now;
+            var comp = new CompUser
+            {
+                NickName = "123",
+                PassWord = "123",
+                CreatedOn = DateTime.Now,
+                UpdatedOn = DateTime.Now
+            };
             var xx = _competencesService.CompUserR.AddAsync(comp);
             _competencesService.CompUserR.Context.SaveChanges();
 

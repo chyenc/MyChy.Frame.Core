@@ -11,10 +11,13 @@ namespace MyChy.Frame.Core.EFCore
         public BaseUnitOfWork(CoreDbContext context, IEnumerable<IInterceptor> interceptors) 
             : base(context, interceptors)
         {
+            DbContext = context;
           //  BaseWorkArea = new BaseWorkArea(context);
         }
 
-       // public IBaseWorkArea BaseWorkArea { get; }
+        public CoreDbContext DbContext { get; }
+
+        // public IBaseWorkArea BaseWorkArea { get; }
 
 
     }

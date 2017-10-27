@@ -17,7 +17,7 @@ namespace MyChy.Frame.Core.Redis
 
         public static bool IsCacheError = false;
 
-        private static readonly Lazy<ConnectionMultiplexer> LazyConnection =
+        private static readonly Lazy<StackExchange.Redis.ConnectionMultiplexer> LazyConnection =
             new Lazy<ConnectionMultiplexer>(() => ConnectionMultiplexer.Connect(Config.Connect));
 
         private static ConnectionMultiplexer Redis => LazyConnection.Value;

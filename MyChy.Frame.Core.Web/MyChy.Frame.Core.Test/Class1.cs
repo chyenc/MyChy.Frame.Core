@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using MyChy.Frame.Core.Common.Helper;
+using NUnit.Framework;
 using System;
 
 namespace MyChy.Frame.Core.Test
@@ -10,7 +11,10 @@ namespace MyChy.Frame.Core.Test
         public void CreatLogin()
         {
 
-
+            var name = "aa.jpge";
+            var ss = FileHelper.CheckFileNmae(name, out string namex, out string exname);
+            name = "aa.jpg.jpge";
+            ss = FileHelper.CheckFileNmae(name, out  namex, out exname);
 
             string openid = "o8KB3uEwEIye3ceovZRej1uG1rMM";
 

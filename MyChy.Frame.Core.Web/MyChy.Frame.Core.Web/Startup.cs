@@ -67,6 +67,12 @@ namespace MyChy.Frame.Core.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            var name = "aa.jpge";
+            var ss = FileHelper.CheckFileNmae(name, out string namex, out string exname);
+            name = "aa.jpg.jpge.";
+            ss = FileHelper.CheckFileNmae(name, out namex, out exname);
+
             DiscoverAssemblies();
 
             var efconfig = EntityFrameworkHelper.ReadConfiguration("config/EntityFramework.json");
@@ -104,6 +110,9 @@ namespace MyChy.Frame.Core.Web
 
             services.AddTransient<ICompetencesWorkArea, CompetencesWorkArea>();
 
+            services.AddTransient<IBaseUnitOfWork, BaseUnitOfWork>();
+
+
             var machinekeyPath = FileHelper.GetFileMapPath("config");
             var protectionProvider = DataProtectionProvider.Create(new DirectoryInfo(machinekeyPath));
             var dataProtector = protectionProvider.CreateProtector("MyCookieAuthentication");
@@ -128,9 +137,9 @@ namespace MyChy.Frame.Core.Web
             // Add framework services.
             services.AddMvc();
 
-            var serviceProvider = services.BuildServiceProvider();
-            CoreEFStartupTask task = new CoreEFStartupTask(serviceProvider);
-            task.RunS();
+            //var serviceProvider = services.BuildServiceProvider();
+            //CoreEFStartupTask task = new CoreEFStartupTask(serviceProvider);
+            //task.RunS();
 
 
         }

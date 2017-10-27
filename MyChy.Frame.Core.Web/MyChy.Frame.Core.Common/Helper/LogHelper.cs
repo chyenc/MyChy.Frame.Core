@@ -14,6 +14,8 @@ namespace MyChy.Frame.Core.Common.Helper
 
         static LogHelper()
         {
+            var loggerFactory = new LoggerFactory();
+            _logger = loggerFactory.CreateLogger("LogHelper");
 
             //Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             //Func<string, LogLevel, bool> filter = (category, level) => true;
@@ -22,7 +24,7 @@ namespace MyChy.Frame.Core.Common.Helper
             //loggerFactory.AddProvider(new DebugLoggerProvider(filter));
             //ILogger logger = loggerFactory.CreateLogger("App");
             //LogManager.
-           // _logger = LogManager.GetCurrentClassLogger();
+            // _logger = LogManager.GetCurrentClassLogger();
         }
 
         /// <summary>

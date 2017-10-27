@@ -106,15 +106,15 @@ namespace MyChy.Frame.Core.EFCore
         }
 
 
-        public int SaveAutoHistoryChanges()
-        {
-            // ensure auto history
-            this.EnsureAutoHistory();
-            //var changedEntityNames = this.GetChangedEntityNames();
-            var result = base.SaveChanges();
-            //  _cacheServiceProvider.InvalidateCacheDependencies(changedEntityNames);
-            return result;
-        }
+        //public int SaveAutoHistoryChanges()
+        //{
+        //    // ensure auto history
+        //    this.EnsureAutoHistory();
+        //    //var changedEntityNames = this.GetChangedEntityNames();
+        //    var result = base.SaveChanges();
+        //    //  _cacheServiceProvider.InvalidateCacheDependencies(changedEntityNames);
+        //    return result;
+        //}
 
         //public override int SaveChanges()
         //{
@@ -135,17 +135,17 @@ namespace MyChy.Frame.Core.EFCore
         }
 
 
-        public Task<int> SaveAutoHistoryChangesAsync(
-            bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            // ensure auto history
-            this.EnsureAutoHistory();
-            //  var changedEntityNames = this.GetChangedEntityNames();
+        //public Task<int> SaveAutoHistoryChangesAsync(
+        //    bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken))
+        //{
+        //    // ensure auto history
+        //    this.EnsureAutoHistory();
+        //    //  var changedEntityNames = this.GetChangedEntityNames();
 
-            var result =base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
-            //  _cacheServiceProvider.InvalidateCacheDependencies(changedEntityNames);
-            return result;
-        }
+        //    var result =base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        //    //  _cacheServiceProvider.InvalidateCacheDependencies(changedEntityNames);
+        //    return result;
+        //}
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken))
         {

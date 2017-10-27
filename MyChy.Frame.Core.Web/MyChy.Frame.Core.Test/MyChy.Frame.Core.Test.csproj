@@ -11,7 +11,6 @@
   <ItemGroup>
     <ProjectReference Include="..\MyChy.Frame.Core.Common\MyChy.Frame.Core.Common.csproj" />
     <ProjectReference Include="..\MyChy.Frame.Core.EFCore\MyChy.Frame.Core.EFCore.csproj" />
-    <ProjectReference Include="..\MyChy.Frame.Core.Redis\MyChy.Frame.Core.Redis.csproj" />
   </ItemGroup>
 
 </Project>

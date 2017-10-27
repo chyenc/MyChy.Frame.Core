@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MyChy.Frame.Core.EFCore.Entitys;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,13 +9,19 @@ namespace MyChy.Frame.Core.EFCore.AutoHistorys.Internal
     /// <summary>
     /// Represents the entity change history.
     /// </summary>
-    internal class AutoHistory
+    internal class AutoHistory: BaseEntity
     {
+        ///// <summary>
+        ///// Gets or sets the primary key.
+        ///// </summary>
+        ///// <value>The id.</value>
+        //public int Id { get; set; }
+
         /// <summary>
-        /// Gets or sets the primary key.
+        /// 操作人
         /// </summary>
-        /// <value>The id.</value>
-        public int Id { get; set; }
+        /// <value>The json after changed.</value>
+        public string Operator { get; set; }
 
         /// <summary>
         /// Gets or sets the source id.
@@ -45,6 +52,8 @@ namespace MyChy.Frame.Core.EFCore.AutoHistorys.Internal
         /// </summary>
         /// <value>The change kind.</value>
         public EntityState Kind { get; set; }
+
+
 
         /// <summary>
         /// Gets or sets the create time.

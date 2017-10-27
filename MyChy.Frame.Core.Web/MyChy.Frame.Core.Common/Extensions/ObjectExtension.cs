@@ -50,6 +50,10 @@ namespace MyChy.Frame.Core.Common.Extensions
 
         #endregion
 
+
+
+
+
         //  private static readonly Type ValueTypeType = typeof(ValueType);
 
         /// <summary>

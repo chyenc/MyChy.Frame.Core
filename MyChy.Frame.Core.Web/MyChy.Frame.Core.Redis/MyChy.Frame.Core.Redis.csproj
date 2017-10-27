@@ -2,15 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <Version>1.1.0</Version>
-    <Description>升级到.net core 2.0</Description>
-    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <Version>1.1.10</Version>
+    <Description>升级DLL到Core 2.0</Description>
+    <AssemblyVersion>1.1.10.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="StackExchange.Redis" Version="1.2.6" />
   </ItemGroup>
-
+  
   <ItemGroup>
     <ProjectReference Include="..\MyChy.Frame.Core.Common\MyChy.Frame.Core.Common.csproj" />
   </ItemGroup>

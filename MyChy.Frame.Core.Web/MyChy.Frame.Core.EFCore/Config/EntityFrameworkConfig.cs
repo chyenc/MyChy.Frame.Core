@@ -37,6 +37,11 @@ namespace MyChy.Frame.Core.EFCore.Config
         /// 加密KEY
         /// </summary>
         public string Encryption { get; set; }
+
+        /// <summary>
+        /// 所有表自动记录日志
+        /// </summary>
+        public bool AutoHistory { get; set; } = false;
     }
 
     public enum EntityFrameworkType

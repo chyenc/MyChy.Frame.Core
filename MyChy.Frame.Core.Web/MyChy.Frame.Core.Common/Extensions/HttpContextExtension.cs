@@ -27,5 +27,44 @@ namespace MyChy.Frame.Core.Common.Extensions
             }
             return ip;
         }
+
+        /// <summary>
+        /// 获取请求的完整URL
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public static string GetAbsoluteUri(this HttpRequest request)
+        {
+            return new StringBuilder()
+                .Append(request.Scheme)
+                .Append("://")
+                .Append(request.Host)
+                .Append(request.PathBase)
+                .Append(request.Path)
+                .Append(request.QueryString)
+                .ToString();
+        }
+
+
+        /// <summary>
+        /// <para>将 URL 中的参数名称/值编码为合法的格式。</para>
+        /// <para>可以解决类似这样的问题：假设参数名为 tvshow, 参数值为 Tom&Jerry，如果不编码，
+        /// 可能得到的网址： http://a.com/?tvshow=Tom&Jerry&year=1965 编码后则为：http://a.com/?tvshow=Tom%26Jerry&year=1965 </para>
+        /// <para>实践中经常导致问题的字符有：'&', '?', '=' 等</para>
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static string AsUrlData(this string data)
+        {
+            if (data == null)
+            {
+                return null;
+            }
+            return Uri.EscapeDataString(data);
+        }
+
+
+
+
     }
 }

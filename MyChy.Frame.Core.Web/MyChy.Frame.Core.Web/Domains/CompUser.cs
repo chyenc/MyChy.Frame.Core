@@ -1,4 +1,5 @@
-﻿using MyChy.Frame.Core.EFCore.Entitys;
+﻿using MyChy.Frame.Core.EFCore.Attributes;
+using MyChy.Frame.Core.EFCore.Entitys;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace MyChy.Frame.Core.Web.Domains
 {
+   // [AuditInclude]
     public class CompUser : BaseWithAllEntity
     {
         ///<summary>
@@ -46,5 +48,22 @@ namespace MyChy.Frame.Core.Web.Domains
 
         //public virtual CompRole CompRole { get; set; }
 
+    }
+
+    public class CompUserOther
+    {
+        ///<summary>
+        ///昵称
+        ///</summary>
+        [StringLength(50)]
+        [Description("昵称")]
+        public string NickName { get; set; }
+
+        ///<summary>
+        ///用户名
+        ///</summary>
+        [StringLength(50)]
+        [Description("用户名")]
+        public string UserName { get; set; }
     }
 }

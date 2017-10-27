@@ -8,27 +8,14 @@ using System.Text;
 
 namespace MyChy.Frame.Core.Common.MemoryCache
 {
-    public  class MemoryCacheService : ICacheService
+    public class MemoryCacheStaticService
     {
-        protected IMemoryCache Cache;
-        private readonly MemoryCacheConfig _config = null;
-        public readonly bool IsCache;
+        protected static IMemoryCache Cache;
+        private static MemoryCacheConfig _config = null;
+        public static bool IsCache=false;
 
-        //public MemoryCacheService()
-        //{
-        //    if (_config != null) return;
-        //    var config = new ConfigHelper();
-        //    _config = config.Reader<MemoryCacheConfig>("config/MemoryCache.json");
-        //    if (_config == null || _config.Second == 0)
-        //    {
-        //        _config = new MemoryCacheConfig { IsCache = false };
-        //    }
-        //    IsCache = _config.IsCache;
-        //    var cache= new Microsoft.Extensions.Caching.Memory.MemoryCache(new MemoryCacheOptions());
-        //    Cache = cache;
-        //}
 
-        public MemoryCacheService(IMemoryCache cache)
+        static MemoryCacheStaticService()
         {
             if (_config != null) return;
             var config = new ConfigHelper();
@@ -38,15 +25,17 @@ namespace MyChy.Frame.Core.Common.MemoryCache
                 _config = new MemoryCacheConfig { IsCache = false };
             }
             IsCache = _config.IsCache;
+            var cache = new Microsoft.Extensions.Caching.Memory.MemoryCache(new MemoryCacheOptions());
             Cache = cache;
         }
+
 
         /// <summary>
         /// 验证缓存项是否存在
         /// </summary>
         /// <param name="key">缓存Key</param>
         /// <returns></returns>
-        public bool Exists(string key)
+        public static bool Exists(string key)
         {
             if (!IsCache) return false;
             if (key == null)
@@ -65,7 +54,7 @@ namespace MyChy.Frame.Core.Common.MemoryCache
         /// <param name="key">缓存Key</param>
         /// <param name="value">缓存Value</param>
         /// <returns></returns>
-        public void Set(string key, object value)
+        public static void Set(string key, object value)
         {
             Set(key, value, _config.Second);
         }
@@ -76,7 +65,7 @@ namespace MyChy.Frame.Core.Common.MemoryCache
         /// <param name="key">缓存Key</param>
         /// <param name="value">缓存Value</param>
         /// <param name="second">滑动过期时长（如果在过期时间内有操作，则以当前时间点延长过期时间）</param>
-        public void Set(string key, object value, int second)
+        public static void Set(string key, object value, int second)
         {
             Set(key, value, second, DateTime.Now.AddDays(1).Date);
         }
@@ -88,7 +77,7 @@ namespace MyChy.Frame.Core.Common.MemoryCache
         /// <param name="value">缓存Value</param>
         /// <param name="second">滑动过期时长（如果在过期时间内有操作，则以当前时间点延长过期时间）</param>
         /// <param name="expiressTime">绝对过期时长</param>
-        public void Set(string key, object value, int second, DateTime expiressTime)
+        public static void Set(string key, object value, int second, DateTime expiressTime)
         {
             var expiresSliding = DateTime.Now.AddSeconds(second) - DateTime.Now;
             var expiressAbsoulte = expiressTime - DateTime.Now;
@@ -103,7 +92,7 @@ namespace MyChy.Frame.Core.Common.MemoryCache
         /// <param name="expiresSliding">滑动过期时长（如果在过期时间内有操作，则以当前时间点延长过期时间）</param>
         /// <param name="expiressAbsoulte">绝对过期时长</param>
         /// <returns></returns>
-        private void Set(string key, object value, TimeSpan expiresSliding, TimeSpan expiressAbsoulte)
+        private static void Set(string key, object value, TimeSpan expiresSliding, TimeSpan expiressAbsoulte)
         {
             if (!IsCache) return;
             if (key == null || value == null)
@@ -126,7 +115,7 @@ namespace MyChy.Frame.Core.Common.MemoryCache
         /// </summary>
         /// <param name="key">缓存Key</param>
         /// <returns></returns>
-        public void Remove(string key)
+        public static void Remove(string key)
         {
             if (!IsCache) return;
             if (string.IsNullOrEmpty(key))
@@ -141,7 +130,7 @@ namespace MyChy.Frame.Core.Common.MemoryCache
         /// </summary>
         /// <param name="keys">缓存Key集合</param>
         /// <returns></returns>
-        public void RemoveAll(IEnumerable<string> keys)
+        public static void RemoveAll(IEnumerable<string> keys)
         {
             if (!IsCache) return;
             if (keys == null || !keys.Any())
@@ -161,7 +150,7 @@ namespace MyChy.Frame.Core.Common.MemoryCache
         /// <param name="key">缓存Key</param>
         /// <param name="def">默认值</param>
         /// <returns></returns>
-        public T Get<T>(string key, T def)
+        public static T Get<T>(string key, T def)
         {
             return Get(key).To<T>(def);
         }
@@ -171,7 +160,7 @@ namespace MyChy.Frame.Core.Common.MemoryCache
         /// </summary>
         /// <param name="key">缓存Key</param>
         /// <returns></returns>
-        public T Get<T>(string key)
+        public static T Get<T>(string key)
         {
             return Get(key).To<T>();
         }
@@ -182,7 +171,7 @@ namespace MyChy.Frame.Core.Common.MemoryCache
         /// </summary>
         /// <param name="key">缓存Key</param>
         /// <returns></returns>
-        public object Get(string key)
+        public static object Get(string key)
         {
             return string.IsNullOrEmpty(key) ? null : Cache.Get(key);
         }
@@ -193,7 +182,7 @@ namespace MyChy.Frame.Core.Common.MemoryCache
         /// </summary>
         /// <param name="keys">缓存Key集合</param>
         /// <returns></returns>
-        public IDictionary<string, object> GetAll(IEnumerable<string> keys)
+        public static IDictionary<string, object> GetAll(IEnumerable<string> keys)
         {
             if (keys == null)
             {
@@ -215,14 +204,13 @@ namespace MyChy.Frame.Core.Common.MemoryCache
         /// 释放
         /// </summary>
         /// <returns></returns>
-        public void Dispose()
+        public static void Dispose()
         {
             if (Cache != null)
                 Cache.Dispose();
-            GC.SuppressFinalize(this);
+            //GC.SuppressFinalize(this);
         }
 
         #endregion
-
     }
 }
