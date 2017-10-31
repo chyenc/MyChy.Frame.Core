@@ -2,10 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <Version>1.1.17</Version>
-    <AssemblyVersion>1.1.17.0</AssemblyVersion>
-    <FileVersion>1.1.17.0</FileVersion>
-    <Description>增加 GetAbsoluteUri</Description>
+    <Version>1.1.18</Version>
+    <AssemblyVersion>1.1.18.0</AssemblyVersion>
+    <FileVersion>1.1.18.0</FileVersion>
+    <Description>修复Loger Bug</Description>
   </PropertyGroup>
 
   <ItemGroup>

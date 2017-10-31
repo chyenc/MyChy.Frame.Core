@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyChy.Frame.Core.Common.Model;
+using MyChy.Frame.Core.EFCore.AutoHistorys;
 using MyChy.Frame.Core.EFCore.Entitys.Pages;
 using System;
 using System.Collections.Generic;
@@ -37,8 +38,9 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
         /// </summary>
         /// <param name="id">The entity unique identifier</param>
         /// <returns>A <see cref="T:System.Threading.Tasks.Task" /> that will fetch the entity</returns>
-        public async Task<TEntity> GetByIdAsync(TKey id)
+        public async Task<TEntity> GetByIdAsync(TKey id, bool IsNoTracking = false)
         {
+            if (IsNoTracking) return await QueryByIdNoTracking(id).SingleOrDefaultAsync();
             return await QueryById(id).SingleOrDefaultAsync();
         }
 
@@ -48,8 +50,9 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
         /// <param name="id">The entity unique identifier</param>
         /// <param name="ct">The <see cref="T:System.Threading.CancellationToken" /> for the returned task</param>
         /// <returns>A <see cref="T:System.Threading.Tasks.Task`1" /> that will fetch the entity</returns>
-        public async Task<TEntity> GetByIdAsync(TKey id, CancellationToken ct)
+        public async Task<TEntity> GetByIdAsync(TKey id, CancellationToken ct, bool IsNoTracking = false)
         {
+            if (IsNoTracking) return await QueryByIdNoTracking(id).SingleOrDefaultAsync(ct);
             return await QueryById(id).SingleOrDefaultAsync(ct);
         }
 
@@ -59,7 +62,7 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
         /// <returns>True if entity exists</returns>
         public async Task<bool> ExistsAsync(TKey id, CancellationToken ct = new CancellationToken())
         {
-            return await QueryById(id).AnyAsync(ct);
+            return await QueryByIdNoTracking(id).AnyAsync(ct);
         }
 
         #endregion
@@ -71,8 +74,9 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
         /// </summary>
         /// <param name="id">The entity unique identifier</param>
         /// <returns>The entity or null if not found</returns>
-        public TEntity GetById(TKey id)
+        public TEntity GetById(TKey id, bool IsNoTracking = false)
         {
+            if (IsNoTracking) return  QueryByIdNoTracking(id).SingleOrDefault();
             return QueryById(id).SingleOrDefault();
         }
 
@@ -81,7 +85,7 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
         /// <returns>True if entity exists</returns>
         public bool Exists(TKey id)
         {
-            return QueryById(id).Any();
+            return QueryByIdNoTracking(id).Any();
         }
 
         #endregion
@@ -96,26 +100,35 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
         /// <returns>The <see cref="T:System.Linq.IQueryable`1" /> object</returns>
         public abstract IQueryable<TEntity> QueryById(TKey id);
 
-        #endregion
-
-        #region Overrides of EFCoreQueryableRepository<TEntity>
 
         /// <summary>
         /// Gets an <see cref="T:System.Linq.IQueryable`1" /> filtered by
         /// the entity id
         /// </summary>
-        /// <param name="ids">The entity unique identifiers</param>
+        /// <param name="id">The entity unique identifier</param>
         /// <returns>The <see cref="T:System.Linq.IQueryable`1" /> object</returns>
-        public override IQueryable<TEntity> QueryById(params object[] ids)
-        {
-            if (ids == null)
-                throw new ArgumentNullException(nameof(ids));
-            if (ids.Length != 1)
-                throw new ArgumentException("Collection must contain one element.", nameof(ids));
-            return QueryById((TKey)ids[0]);
-        }
+        public abstract IQueryable<TEntity> QueryByIdNoTracking(TKey id);
 
         #endregion
+
+        ///#region Overrides of EFCoreQueryableRepository<TEntity>
+
+        ///// <summary>
+        ///// Gets an <see cref="T:System.Linq.IQueryable`1" /> filtered by
+        ///// the entity id
+        ///// </summary>
+        ///// <param name="ids">The entity unique identifiers</param>
+        ///// <returns>The <see cref="T:System.Linq.IQueryable`1" /> object</returns>
+        //public override IQueryable<TEntity> QueryById(params object[] ids)
+        //{
+        //    if (ids == null)
+        //        throw new ArgumentNullException(nameof(ids));
+        //    if (ids.Length != 1)
+        //        throw new ArgumentException("Collection must contain one element.", nameof(ids));
+        //    return QueryById((TKey)ids[0]);
+        //}
+
+        ///#endregion
     }
 
 
@@ -140,27 +153,27 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
 
         #region Implementation of IAsyncRepository<TEntity>
 
-        /// <summary>
-        /// Gets an entity by its unique identifier from this repository asynchronously
-        /// </summary>
-        /// <param name="ids">The entity unique identifiers</param>
-        /// <returns>A <see cref="T:System.Threading.Tasks.Task`1" /> that will fetch the entity</returns>
-        public async Task<TEntity> GetByIdAsync(params object[] ids)
-        {
-            return await GetByIdAsync(CancellationToken.None, ids);
-        }
+        ///// <summary>
+        ///// Gets an entity by its unique identifier from this repository asynchronously
+        ///// </summary>
+        ///// <param name="ids">The entity unique identifiers</param>
+        ///// <returns>A <see cref="T:System.Threading.Tasks.Task`1" /> that will fetch the entity</returns>
+        //public async Task<TEntity> GetByIdAsync(params object[] ids)
+        //{
+        //    return await GetByIdAsync(CancellationToken.None, ids);
+        //}
 
-        /// <summary>
-        /// Gets an entity by its unique identifier from this repository asynchronously
-        /// </summary>
-        /// <param name="ids">The entity unique identifier</param>
-        /// <param name="ct">The <see cref="T:System.Threading.CancellationToken" /> for the returned task</param>
-        /// <returns>A <see cref="T:System.Threading.Tasks.Task`1" /> that will fetch the entity</returns>
-        public async Task<TEntity> GetByIdAsync(CancellationToken ct, params object[] ids)
-        {
-            if (ids == null) throw new ArgumentNullException(nameof(ids));
-            return await QueryById(ids).SingleOrDefaultAsync(ct);
-        }
+        ///// <summary>
+        ///// Gets an entity by its unique identifier from this repository asynchronously
+        ///// </summary>
+        ///// <param name="ids">The entity unique identifier</param>
+        ///// <param name="ct">The <see cref="T:System.Threading.CancellationToken" /> for the returned task</param>
+        ///// <returns>A <see cref="T:System.Threading.Tasks.Task`1" /> that will fetch the entity</returns>
+        //public async Task<TEntity> GetByIdAsync(CancellationToken ct, params object[] ids)
+        //{
+        //    if (ids == null) throw new ArgumentNullException(nameof(ids));
+        //    return await QueryById(ids).SingleOrDefaultAsync(ct);
+        //}
 
         /// <summary>Adds the entity to the repository asynchronously</summary>
         /// <param name="entity">The entity to add</param>
@@ -301,42 +314,42 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
         /// <returns>A <see cref="T:System.Threading.Tasks.Task`1" /> containing the total</returns>
         public async Task<long> TotalAsync(CancellationToken ct = new CancellationToken())
         {
-            return await Query().LongCountAsync(ct);
+            return await QueryNoTracking().LongCountAsync(ct);
         }
 
-        /// <summary>Checks if an entity with the given key exists</summary>
-        /// <param name="ids">The entity unique identifiers</param>
-        /// <returns>True if entity exists</returns>
-        public async Task<bool> ExistsAsync(params object[] ids)
-        {
-            if (ids == null) throw new ArgumentNullException(nameof(ids));
-            return await QueryById(ids).AnyAsync();
-        }
+        ///// <summary>Checks if an entity with the given key exists</summary>
+        ///// <param name="ids">The entity unique identifiers</param>
+        ///// <returns>True if entity exists</returns>
+        //public async Task<bool> ExistsAsync(params object[] ids)
+        //{
+        //    if (ids == null) throw new ArgumentNullException(nameof(ids));
+        //    return await QueryById(ids).AnyAsync();
+        //}
 
-        /// <summary>Checks if an entity with the given key exists</summary>
-        /// <param name="ids">The entity unique identifiers</param>
-        /// <param name="ct">The <see cref="T:System.Threading.CancellationToken" /> for the returned task</param>
-        /// <returns>True if entity exists</returns>
-        public async Task<bool> ExistsAsync(CancellationToken ct, params object[] ids)
-        {
-            if (ids == null) throw new ArgumentNullException(nameof(ids));
-            return await QueryById(ids).AnyAsync(ct);
-        }
+        ///// <summary>Checks if an entity with the given key exists</summary>
+        ///// <param name="ids">The entity unique identifiers</param>
+        ///// <param name="ct">The <see cref="T:System.Threading.CancellationToken" /> for the returned task</param>
+        ///// <returns>True if entity exists</returns>
+        //public async Task<bool> ExistsAsync(CancellationToken ct, params object[] ids)
+        //{
+        //    if (ids == null) throw new ArgumentNullException(nameof(ids));
+        //    return await QueryById(ids).AnyAsync(ct);
+        //}
 
         #endregion
 
         #region Implementation of ISyncRepository<TEntity>
 
-        /// <summary>
-        /// Gets an entity by its unique identifier from this repository
-        /// </summary>
-        /// <param name="ids">The entity unique identifiers</param>
-        /// <returns>The entity or null if not found</returns>
-        public TEntity GetById(params object[] ids)
-        {
-            if (ids == null) throw new ArgumentNullException(nameof(ids));
-            return QueryById(ids).SingleOrDefault();
-        }
+        ///// <summary>
+        ///// Gets an entity by its unique identifier from this repository
+        ///// </summary>
+        ///// <param name="ids">The entity unique identifiers</param>
+        ///// <returns>The entity or null if not found</returns>
+        //public TEntity GetById(params object[] ids)
+        //{
+        //    if (ids == null) throw new ArgumentNullException(nameof(ids));
+        //    return QueryById(ids).SingleOrDefault();
+        //}
 
         /// <summary>Adds the entity to the repository</summary>
         /// <param name="entity">The entity to add</param>
@@ -426,16 +439,16 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
         /// <returns>The total</returns>
         public long Total()
         {
-            return Set.LongCount();
+            return QueryNoTracking().LongCount();
         }
 
-        /// <summary>Checks if an entity with the given key exists</summary>
-        /// <param name="ids">The entity unique identifiers</param>
-        /// <returns>True if entity exists</returns>
-        public bool Exists(params object[] ids)
-        {
-            return QueryById(ids).Any();
-        }
+        ///// <summary>Checks if an entity with the given key exists</summary>
+        ///// <param name="ids">The entity unique identifiers</param>
+        ///// <returns>True if entity exists</returns>
+        //public bool Exists(params object[] ids)
+        //{
+        //    return QueryById(ids).Any();
+        //}
 
         #endregion
 
@@ -473,7 +486,7 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
         /// </summary>
         /// <param name="ids">The entity unique identifiers</param>
         /// <returns>The <see cref="T:System.Linq.IQueryable`1" /> object</returns>
-        public abstract IQueryable<TEntity> QueryById(params object[] ids);
+        //public abstract IQueryable<TEntity> QueryById(params object[] ids);
 
         /// <summary>
         /// Gets an <see cref="T:System.Linq.IQueryable`1" />
@@ -623,6 +636,57 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
         /// The <see cref="DbSet{TEntity}"/> of this repository entity
         /// </summary>
         public DbSet<TEntity> Set { get; }
+
+        #endregion
+
+
+        #region Commit of IAsyncRepository<TEntity>
+
+
+        /// <summary>Checks if an entity with the given key exists</summary>
+        /// <param name="ids">The entity unique identifiers</param>
+        /// <returns>True if entity exists</returns>
+        public async Task<int> CommitAsync()
+        {
+            return await Context.SaveChangesAsync();
+        }
+
+        /// <summary>Checks if an entity with the given key exists</summary>
+        /// <param name="ids">The entity unique identifiers</param>
+        /// <param name="ct">The <see cref="T:System.Threading.CancellationToken" /> for the returned task</param>
+        /// <returns>True if entity exists</returns>
+        public async Task<int> CommitAutoHistoryAsync(string Operator = "SyStem", bool IsThis = true)
+        {
+            
+            if (!IsThis) return await Context.SaveChangesAsync();
+            var FullName = typeof(TEntity).FullName;
+            Context.EnsureAutoHistory(Operator, FullName);
+            return await Context.SaveChangesAsync();
+
+        }
+
+
+        /// <summary>Checks if an entity with the given key exists</summary>
+        /// <param name="ids">The entity unique identifiers</param>
+        /// <returns>True if entity exists</returns>
+        public int Commit()
+        {
+            return Context.SaveChanges();
+        }
+
+
+
+        /// <summary>Checks if an entity with the given key exists</summary>
+        /// <param name="ids">The entity unique identifiers</param>
+        /// <param name="ct">The <see cref="T:System.Threading.CancellationToken" /> for the returned task</param>
+        /// <returns>True if entity exists</returns>
+        public int CommitAutoHistory(string Operator = "SyStem", bool IsThis = true)
+        {
+            if (!IsThis) return Commit();
+            var FullName = typeof(TEntity).FullName;
+            Context.EnsureAutoHistory(Operator, FullName);
+            return Commit();
+        }
 
         #endregion
     }

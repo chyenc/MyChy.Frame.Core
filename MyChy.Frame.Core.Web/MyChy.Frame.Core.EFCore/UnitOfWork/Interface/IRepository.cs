@@ -21,7 +21,7 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
     /// </summary>
     /// <typeparam name="TEntity">The entity type</typeparam>
     /// <typeparam name="TId">The entity id type</typeparam>
-    public interface IRepository<TEntity, in TId> :
+    public interface IRepository<TEntity, in TId> : IRepository<TEntity>,
         IAsyncRepository<TEntity, TId>, ISyncRepository<TEntity, TId>
         where TEntity : class
     {

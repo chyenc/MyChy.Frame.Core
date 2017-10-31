@@ -16,7 +16,7 @@ namespace MyChy.Frame.Core.Test
             name = "aa.jpg.jpge";
             ss = FileHelper.CheckFileNmae(name, out  namex, out exname);
 
-            string openid = "o8KB3uEwEIye3ceovZRej1uG1rMM";
+            //string openid = "o8KB3uEwEIye3ceovZRej1uG1rMM";
 
             //UserLoginServer.SentRegByOpenId(openid);
         }

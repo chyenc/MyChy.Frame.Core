@@ -46,6 +46,10 @@ namespace MyChy.Frame.Core.EFCore
             return Query().Where(e => e.Id == id);
         }
 
+        public override IQueryable<Entity> QueryByIdNoTracking(int id)
+        {
+            return QueryNoTracking().Where(e => e.Id == id);
+        }
 
     }
 
@@ -66,5 +70,11 @@ namespace MyChy.Frame.Core.EFCore
         {
             return Query().Where(e => e.Id.Equals(id));
         }
+
+        public override IQueryable<Entity> QueryByIdNoTracking(TKey id)
+        {
+            return QueryNoTracking().Where(e => e.Id.Equals(id));
+        }
+
     }
 }

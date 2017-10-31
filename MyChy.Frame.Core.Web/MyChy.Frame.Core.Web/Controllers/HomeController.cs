@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using LinqKit;
 using MyChy.Frame.Core.Web.Domains;
 using Microsoft.EntityFrameworkCore;
-using System.Text;
 using MyChy.Frame.Core.EFCore;
 using System.Data.SqlClient;
 using MyChy.Frame.Core.EFCore.AutoHistorys;
@@ -45,63 +43,7 @@ namespace MyChy.Frame.Core.Web.Controllers
         {
             LogHelper.LogError("asdfasdf");
 
-            var model = _competencesService.CompUserR.GetById(1);
-            if (model?.Id > 0)
-            {
-                var m = _competencesService.CompUserRoleR.GetById(1);
-                if (m?.Id > 0)
-                {
-                    m.UserId = 1;
-                    m.RoleId = m.RoleId + 2;
-                    _competencesService.CompUserRoleR.Update(m);
-                }
-                else
-                {
-                    m = new  CompUserRole
-                    {
-                        UserId=1,
-                        RoleId=1,
-                    };
 
-                    _competencesService.CompUserRoleR.Add(m);
-                    //_competencesService.CompUserRoleR.Context.SaveChanges();
-                }
-
-                //  _competencesService.CompUserR.Context.SaveChanges();
-                var models1 = _competencesService.CompUserR.GetById(3);
-
-                var models = _competencesService.CompUserR.GetById(2);
-                models.NickName = DateTime.Now.Ticks.ToString();
-                models.UpdatedBy = "234";
-                models.UpdatedOn = DateTime.Now;
-                _competencesService.CompUserR.Update(model);
-
-
-                model.NickName = DateTime.Now.Ticks.ToString();
-                model.UpdatedBy = "123";
-                model.UpdatedOn = DateTime.Now;
-                _competencesService.CompUserR.Update(model);
-
-                _competencesService.CompUserR.Context.EnsureAutoHistory("MyChy");
-
-                _competencesService.CompUserR.Context.SaveChanges();
-
-                //_competencesService.CompUserRoleR.Context.SaveChanges();
-
-            }
-            else
-            {
-                model = new CompUser
-                {
-                    NickName = DateTime.Now.Ticks.ToString(),
-                    PassWord = "123",
-                    UserName = "123",
-                    CreatedBy = "123",
-                    CreatedOn = DateTime.Now
-                };
-
-                _competencesService.CompUserR.Add(model);
-            }
 
 
             var predicate = PredicateBuilder.New<CompUser>();
@@ -186,6 +128,8 @@ namespace MyChy.Frame.Core.Web.Controllers
 
         public async Task<IActionResult> Contact()
         {
+            await Common();
+
             //string val = "234243";
 
             //; byte[] serializedResult = Encoding.UTF8.GetBytes(val);
@@ -213,6 +157,130 @@ namespace MyChy.Frame.Core.Web.Controllers
         public IActionResult Error()
         {
             return View();
+        }
+
+        /// <summary>
+        /// Common
+        /// </summary>
+        public async Task<int> Common()
+        { 
+            // _competencesService.CompUserR.Set.
+            //  var model = _competencesService.CompUserR.q
+            var model = _competencesService.CompUserR.GetById(20);
+            if (model?.Id > 0)
+            {
+                var m = _competencesService.CompUserRoleR.GetById(1);
+                if (m?.Id > 0)
+                {
+                    m.UserId = 1;
+                    m.RoleId = m.RoleId + 2;
+                    _competencesService.CompUserRoleR.Update(m);
+                }
+                else
+                {
+                    m = new CompUserRole
+                    {
+                        UserId = 1,
+                        RoleId = 1,
+                    };
+
+                    _competencesService.CompUserRoleR.Add(m);
+                    //_competencesService.CompUserRoleR.Context.SaveChanges();
+                }
+
+                var models1 = _competencesService.CompUserR.GetById(3);
+
+                var models = _competencesService.CompUserR.GetById(2);
+                models.NickName = DateTime.Now.Ticks.ToString();
+                models.UpdatedBy = "234";
+                models.UpdatedOn = DateTime.Now;
+                _competencesService.CompUserR.Update(model);
+
+
+                _competencesService.CompUserRoleR.CommitAutoHistory();
+            }
+            else
+            {
+                model = new CompUser
+                {
+                    NickName = DateTime.Now.Ticks.ToString(),
+                    PassWord = "123",
+                    UserName = "123",
+                    CreatedBy = "123",
+                    CreatedOn = DateTime.Now
+                };
+                
+                await _competencesService.CompUserR.AddAsync(model);
+                await  _competencesService.CompUserR.CommitAsync();
+            }
+
+            return 1;
+        }
+
+        /// <summary>
+        /// 日志DEMO
+        /// </summary>
+        public void AutoHistory()
+        {
+            var model = _competencesService.CompUserR.GetById(1);
+            if (model?.Id > 0)
+            {
+                var m = _competencesService.CompUserRoleR.GetById(1);
+                if (m?.Id > 0)
+                {
+                    m.UserId = 1;
+                    m.RoleId = m.RoleId + 2;
+                    _competencesService.CompUserRoleR.Update(m);
+                }
+                else
+                {
+                    m = new CompUserRole
+                    {
+                        UserId = 1,
+                        RoleId = 1,
+                    };
+
+                    _competencesService.CompUserRoleR.Add(m);
+                    //_competencesService.CompUserRoleR.Context.SaveChanges();
+                }
+
+                //  _competencesService.CompUserR.Context.SaveChanges();
+                var models1 = _competencesService.CompUserR.GetById(3);
+
+                var models = _competencesService.CompUserR.GetById(2);
+                models.NickName = DateTime.Now.Ticks.ToString();
+                models.UpdatedBy = "234";
+                models.UpdatedOn = DateTime.Now;
+                _competencesService.CompUserR.Update(model);
+              //  _competencesService.CompUserR.c
+               // _competencesService.CompUserR.c
+
+               model.NickName = DateTime.Now.Ticks.ToString();
+                model.UpdatedBy = "123";
+                model.UpdatedOn = DateTime.Now;
+                _competencesService.CompUserR.Update(model);
+               var fullname=_competencesService.CompUserR.Context.GetType().FullName;
+
+                _competencesService.CompUserR.Context.EnsureAutoHistory("MyChy");
+
+                _competencesService.CompUserR.Context.SaveChanges();
+
+                //_competencesService.CompUserRoleR.Context.SaveChanges();
+
+            }
+            else
+            {
+                model = new CompUser
+                {
+                    NickName = DateTime.Now.Ticks.ToString(),
+                    PassWord = "123",
+                    UserName = "123",
+                    CreatedBy = "123",
+                    CreatedOn = DateTime.Now
+                };
+
+                _competencesService.CompUserR.Add(model);
+            }
         }
 
 

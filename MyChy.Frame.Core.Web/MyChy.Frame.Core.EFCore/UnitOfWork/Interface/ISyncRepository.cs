@@ -12,16 +12,16 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
     public interface ISyncRepository<TEntity> : ISimplePersistenceRepository
         where TEntity : class
     {
-        #region GetById
+        ///#region GetById
 
-        /// <summary>
-        /// Gets an entity by its unique identifier from this repository
-        /// </summary>
-        /// <param name="ids">The entity unique identifiers</param>
-        /// <returns>The entity or null if not found</returns>
-        TEntity GetById(params object[] ids);
+        ///// <summary>
+        ///// Gets an entity by its unique identifier from this repository
+        ///// </summary>
+        ///// <param name="ids">The entity unique identifiers</param>
+        ///// <returns>The entity or null if not found</returns>
+        //TEntity GetById(params object[] ids);
 
-        #endregion
+        ///#endregion
 
         #region Add
 
@@ -110,12 +110,28 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
 
         #region Exists
 
+        ///// <summary>
+        ///// Checks if an entity with the given key exists
+        ///// </summary>
+        ///// <param name="ids">The entity unique identifiers</param>
+        ///// <returns>True if entity exists</returns>
+        //bool Exists(params object[] ids);
+
+        #endregion
+
+        #region Commit
+
         /// <summary>
-        /// Checks if an entity with the given key exists
+        /// CommitAsync entity
         /// </summary>
-        /// <param name="ids">The entity unique identifiers</param>
         /// <returns>True if entity exists</returns>
-        bool Exists(params object[] ids);
+        int Commit();
+
+        /// <summary>
+        /// CommitAsync entity
+        /// </summary>
+        /// <returns>True if entity exists</returns>
+        int CommitAutoHistory(string Operator = "SyStem", bool IsThis = true);
 
         #endregion
     }
@@ -137,94 +153,101 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
         /// </summary>
         /// <param name="id">The entity unique identifier</param>
         /// <returns>The entity or null if not found</returns>
-        TEntity GetById(TId id);
+        TEntity GetById(TId id, bool IsNoTracking = false);
+
+        ///// <summary>
+        ///// Gets an entity by its unique identifier from this repository
+        ///// </summary>
+        ///// <param name="id">The entity unique identifier</param>
+        ///// <returns>The entity or null if not found</returns>
+        //TEntity GetById(TId id);
 
         #endregion
 
-        #region Add
+        //#region Add
 
-        /// <summary>
-        /// Adds the entity to the repository
-        /// </summary>
-        /// <param name="entity">The entity to add</param>
-        /// <returns>The entity</returns>
-        TEntity Add(TEntity entity);
+        ///// <summary>
+        ///// Adds the entity to the repository
+        ///// </summary>
+        ///// <param name="entity">The entity to add</param>
+        ///// <returns>The entity</returns>
+        //TEntity Add(TEntity entity);
 
-        /// <summary>
-        /// Adds a range of entities to the repository
-        /// </summary>
-        /// <param name="entities">The entities to add</param>
-        /// <returns>The range of entities added</returns>
-        IEnumerable<TEntity> Add(IEnumerable<TEntity> entities);
+        ///// <summary>
+        ///// Adds a range of entities to the repository
+        ///// </summary>
+        ///// <param name="entities">The entities to add</param>
+        ///// <returns>The range of entities added</returns>
+        //IEnumerable<TEntity> Add(IEnumerable<TEntity> entities);
 
-        /// <summary>
-        /// Adds a range of entities to the repository
-        /// </summary>
-        /// <param name="entities">The entities to add</param>
-        /// <returns>The range of entities added</returns>
-        IEnumerable<TEntity> Add(params TEntity[] entities);
+        ///// <summary>
+        ///// Adds a range of entities to the repository
+        ///// </summary>
+        ///// <param name="entities">The entities to add</param>
+        ///// <returns>The range of entities added</returns>
+        //IEnumerable<TEntity> Add(params TEntity[] entities);
 
-        #endregion
+        //#endregion
 
-        #region Update
+        //#region Update
 
-        /// <summary>
-        /// Updates the entity in the repository
-        /// </summary>
-        /// <param name="entity">The entity to update</param>
-        /// <returns>The entity</returns>
-        TEntity Update(TEntity entity);
+        ///// <summary>
+        ///// Updates the entity in the repository
+        ///// </summary>
+        ///// <param name="entity">The entity to update</param>
+        ///// <returns>The entity</returns>
+        //TEntity Update(TEntity entity);
 
-        /// <summary>
-        /// Updates a range of entities in the repository
-        /// </summary>
-        /// <param name="entities">The entities to update</param>
-        /// <returns>The entities</returns>
-        IEnumerable<TEntity> Update(IEnumerable<TEntity> entities);
+        ///// <summary>
+        ///// Updates a range of entities in the repository
+        ///// </summary>
+        ///// <param name="entities">The entities to update</param>
+        ///// <returns>The entities</returns>
+        //IEnumerable<TEntity> Update(IEnumerable<TEntity> entities);
 
-        /// <summary>
-        /// Updates a range of entities in the repository
-        /// </summary>
-        /// <param name="entities">The entities to update</param>
-        /// <returns>The entities</returns>
-        IEnumerable<TEntity> Update(params TEntity[] entities);
+        ///// <summary>
+        ///// Updates a range of entities in the repository
+        ///// </summary>
+        ///// <param name="entities">The entities to update</param>
+        ///// <returns>The entities</returns>
+        //IEnumerable<TEntity> Update(params TEntity[] entities);
 
-        #endregion
+        //#endregion
 
-        #region Delete
+        //#region Delete
 
-        /// <summary>
-        /// Deletes the entity in the repository
-        /// </summary>
-        /// <param name="entity">The entity to delete</param>
-        /// <returns>The entity</returns>
-        TEntity Delete(TEntity entity);
+        ///// <summary>
+        ///// Deletes the entity in the repository
+        ///// </summary>
+        ///// <param name="entity">The entity to delete</param>
+        ///// <returns>The entity</returns>
+        //TEntity Delete(TEntity entity);
 
-        /// <summary>
-        /// Deletes a range of entity in the repository
-        /// </summary>
-        /// <param name="entities">The entities to delete</param>
-        /// <returns>The entities</returns>
-        IEnumerable<TEntity> Delete(IEnumerable<TEntity> entities);
+        ///// <summary>
+        ///// Deletes a range of entity in the repository
+        ///// </summary>
+        ///// <param name="entities">The entities to delete</param>
+        ///// <returns>The entities</returns>
+        //IEnumerable<TEntity> Delete(IEnumerable<TEntity> entities);
 
-        /// <summary>
-        /// Deletes a range of entity in the repository
-        /// </summary>
-        /// <param name="entities">The entities to delete</param>
-        /// <returns>The entities</returns>
-        IEnumerable<TEntity> Delete(params TEntity[] entities);
+        ///// <summary>
+        ///// Deletes a range of entity in the repository
+        ///// </summary>
+        ///// <param name="entities">The entities to delete</param>
+        ///// <returns>The entities</returns>
+        //IEnumerable<TEntity> Delete(params TEntity[] entities);
 
-        #endregion
+        //#endregion
 
-        #region Total
+        //#region Total
 
-        /// <summary>
-        /// Gets the total entities in the repository
-        /// </summary>
-        /// <returns>The total</returns>
-        long Total();
+        ///// <summary>
+        ///// Gets the total entities in the repository
+        ///// </summary>
+        ///// <returns>The total</returns>
+        //long Total();
 
-        #endregion
+        //#endregion
 
         #region Exists
 
@@ -236,6 +259,22 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
         bool Exists(TId id);
 
         #endregion
+
+        //#region Commit
+
+        ///// <summary>
+        ///// CommitAsync entity
+        ///// </summary>
+        ///// <returns>True if entity exists</returns>
+        //int Commit();
+
+        ///// <summary>
+        ///// CommitAsync entity
+        ///// </summary>
+        ///// <returns>True if entity exists</returns>
+        //int CommitAutoHistory(string Operator = "SyStem", bool IsThis = true);
+
+        //#endregion
     }
 
 }

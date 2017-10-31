@@ -27,7 +27,7 @@ namespace MyChy.Frame.Core.EFCore.AutoHistorys
         /// Ensures the automatic history.
         /// </summary>
         /// <param name="context">The context.</param>
-        public static void EnsureAutoHistory(this DbContext context, string Operator = "SyStem")
+        public static void EnsureAutoHistory(this DbContext context, string Operator = "SyStem", string FullName = "")
         {
             // TODO: only record the changed properties.
             var jsonSetting = new JsonSerializerSettings
@@ -37,7 +37,7 @@ namespace MyChy.Frame.Core.EFCore.AutoHistorys
 
             var entries = context.ChangeTracker.Entries().Where(e =>
                         (e.State == EntityState.Deleted || e.State == EntityState.Modified)
-                         && IncludeEntity(e)).ToList();
+                         && IncludeEntity(e) && IncludeEntityName(e,FullName)).ToList();
 
             if (entries.Count == 0)
             {
@@ -131,6 +131,16 @@ namespace MyChy.Frame.Core.EFCore.AutoHistorys
             bool? result = EnsureEntitiesIncludeIgnoreAttrCache(type); //true:excluded false=ignored null=unknown
             // Include all, except the explicitly ignored entities
             return result == null || result.Value;
+        }
+
+        private static bool IncludeEntityName(EntityEntry entry, string FullName)
+        {
+            if (string.IsNullOrEmpty(FullName)) return true;
+
+            if (entry.Entity.GetType().FullName == FullName) return true;
+
+            return false;
+
         }
 
         private static bool? EnsureEntitiesIncludeIgnoreAttrCache(Type type)
