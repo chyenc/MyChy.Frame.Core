@@ -19,6 +19,11 @@ namespace MyChy.Frame.Core.EFCore.Config
         public string BaseType { get; set; }
 
         /// <summary>
+        /// 数据库版本
+        /// </summary>
+        public string Version { get; set; }
+
+        /// <summary>
         /// 数据库连接串
         /// </summary>
         public string Connect { get; set; }

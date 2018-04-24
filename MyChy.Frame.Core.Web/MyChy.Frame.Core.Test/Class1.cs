@@ -19,6 +19,9 @@ namespace MyChy.Frame.Core.Test
             //string openid = "o8KB3uEwEIye3ceovZRej1uG1rMM";
 
             //UserLoginServer.SentRegByOpenId(openid);
+
+
+            FileHelper.DeleteFolder(@"F:\MyChy\HuiYuan\MyChy.T4\MyChy.Core.T4\CoreData");
         }
 
     }

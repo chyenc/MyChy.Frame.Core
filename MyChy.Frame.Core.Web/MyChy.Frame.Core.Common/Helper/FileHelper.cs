@@ -50,6 +50,48 @@ namespace MyChy.Frame.Core.Common.Helper
         }
 
         /// <summary>
+        /// 删除文件夹下所有文件
+        /// </summary>
+        /// <param name="folder"></param>
+        /// <param name="IsTraverse"></param>
+        public static void DeleteFolder(string folder, bool IsTraverse = true)
+        {
+            if (Directory.Exists(folder))
+            {
+                //获取指定路径下所有文件夹
+                string[] folderPaths = Directory.GetDirectories(folder);
+
+                //获取指定路径下所有文件
+                string[] filePaths = Directory.GetFiles(folder);
+
+                foreach (string filePath in filePaths)
+                    File.Delete(filePath);
+
+                foreach (string folderPath in folderPaths)
+                    Directory.Delete(folderPath, true);
+  
+            }
+
+        }
+
+
+
+        /// <summary>
+        /// 删除文件
+        /// </summary>
+        /// <param name="folder"></param>
+        /// <param name="IsTraverse"></param>
+        public static void DeleteFile(string files, bool IsTraverse = true)
+        {
+            if (File.Exists(files))
+            {
+                    File.Delete(files);
+            }
+
+        }
+
+
+        /// <summary>
         /// 是否存在不存在建立文件夹
         /// </summary>
         /// <param name="files"></param>
