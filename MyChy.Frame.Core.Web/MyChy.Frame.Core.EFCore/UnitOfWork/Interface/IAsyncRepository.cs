@@ -183,7 +183,7 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
         /// CommitAsync entity
         /// </summary>
         /// <returns>True if entity exists</returns>
-        Task<int> CommitAutoHistoryAsync(string Operator = "SyStem",bool IsThis=true);
+        Task<int> CommitAutoHistoryAsync(string Operator = "SyStem");
 
         #endregion
     }

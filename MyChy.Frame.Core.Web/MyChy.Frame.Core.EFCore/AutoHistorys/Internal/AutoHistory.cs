@@ -2,6 +2,8 @@
 using MyChy.Frame.Core.EFCore.Entitys;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace MyChy.Frame.Core.EFCore.AutoHistorys.Internal
@@ -21,30 +23,38 @@ namespace MyChy.Frame.Core.EFCore.AutoHistorys.Internal
         /// 操作人
         /// </summary>
         /// <value>The json after changed.</value>
+        [StringLength(128)]
+        [Description("操作人")]
         public string Operator { get; set; }
 
         /// <summary>
         /// Gets or sets the source id.
         /// </summary>
         /// <value>The source id.</value>
+        [StringLength(50)]
+        [Description("原始ID")]
         public string SourceId { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the type.
         /// </summary>
         /// <value>The name of the type.</value>
+        [StringLength(128)]
+        [Description("表名称")]
         public string TypeName { get; set; }
 
         /// <summary>
         /// Gets or sets the json before changing.
         /// </summary>
         /// <value>The json before changing.</value>
+        [Description("原始数据")]
         public string BeforeJson { get; set; }
 
         /// <summary>
         /// Gets or sets the json after changed.
         /// </summary>
         /// <value>The json after changed.</value>
+        [Description("修改后数据")]
         public string AfterJson { get; set; }
 
         /// <summary>

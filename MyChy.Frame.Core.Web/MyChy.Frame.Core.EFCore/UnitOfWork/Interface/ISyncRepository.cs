@@ -131,7 +131,7 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
         /// CommitAsync entity
         /// </summary>
         /// <returns>True if entity exists</returns>
-        int CommitAutoHistory(string Operator = "SyStem", bool IsThis = true);
+        int CommitAutoHistory(string Operator = "SyStem");
 
         #endregion
     }

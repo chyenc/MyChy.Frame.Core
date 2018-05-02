@@ -34,10 +34,11 @@ namespace MyChy.Frame.Core.EFCore.AutoHistorys
             {
                 ContractResolver = new EntityContractResolver(context),
             };
+            var entries = new List<EntityEntry>();
 
-            var entries = context.ChangeTracker.Entries().Where(e =>
-                        (e.State == EntityState.Deleted || e.State == EntityState.Modified)
-                         && IncludeEntity(e) && IncludeEntityName(e,FullName)).ToList();
+             entries = context.ChangeTracker.Entries().Where(e =>
+                     (e.State == EntityState.Deleted || e.State == EntityState.Modified) && (IncludeEntity(e)||IncludeEntityName(e, FullName))).ToList();
+
 
             if (entries.Count == 0)
             {
@@ -135,7 +136,7 @@ namespace MyChy.Frame.Core.EFCore.AutoHistorys
 
         private static bool IncludeEntityName(EntityEntry entry, string FullName)
         {
-            if (string.IsNullOrEmpty(FullName)) return true;
+            if (string.IsNullOrEmpty(FullName)) return false;
 
             if (entry.Entity.GetType().FullName == FullName) return true;
 

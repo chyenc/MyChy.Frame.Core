@@ -20,16 +20,16 @@ namespace MyChy.Frame.Core.EFCore.AutoHistorys
         {
             modelBuilder.Entity<AutoHistory>(b => {
                 b.HasKey(x => x.Id);
-                b.Property(c => c.SourceId).IsRequired().HasMaxLength(50);
-                b.Property(c => c.Operator).IsRequired().HasMaxLength(50);
-                b.Property(c => c.TypeName).IsRequired().HasMaxLength(128);
+                b.Property(c => c.SourceId).IsRequired();
+                b.Property(c => c.Operator).IsRequired();
+                b.Property(c => c.TypeName).IsRequired();
                 //b.Property(c => c.BeforeJson).HasMaxLength(2048);
                 //b.Property(c => c.AfterJson).HasMaxLength(2048);
                 // Shadow properties
                 //b.Property<DateTime>("LastUpdated");
                 // This MSSQL only
                 //b.Property(c => c.CreateTime).HasDefaultValueSql("getdate()");
-                b.ToTable("Core_AutoHistory");
+                b.ToTable("SystemsAutoHistory");
             });
 
             return modelBuilder;

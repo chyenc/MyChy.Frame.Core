@@ -579,6 +579,11 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
             {
                 query = orderBy(query);
             }
+            //else
+            //{
+            //    Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> IdItemFunc = source => source.OrderByDescending(x => x.PrimaryKey());
+            //    query = orderBy(query);
+            //}
             if (predicate != null && predicate.Body.ToString() != "False")
             {
                 query = query.Where(predicate);
@@ -655,10 +660,8 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
         /// <param name="ids">The entity unique identifiers</param>
         /// <param name="ct">The <see cref="T:System.Threading.CancellationToken" /> for the returned task</param>
         /// <returns>True if entity exists</returns>
-        public async Task<int> CommitAutoHistoryAsync(string Operator = "SyStem", bool IsThis = true)
+        public async Task<int> CommitAutoHistoryAsync(string Operator = "SyStem")
         {
-            
-            if (!IsThis) return await Context.SaveChangesAsync();
             var FullName = typeof(TEntity).FullName;
             Context.EnsureAutoHistory(Operator, FullName);
             return await Context.SaveChangesAsync();
@@ -680,9 +683,8 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
         /// <param name="ids">The entity unique identifiers</param>
         /// <param name="ct">The <see cref="T:System.Threading.CancellationToken" /> for the returned task</param>
         /// <returns>True if entity exists</returns>
-        public int CommitAutoHistory(string Operator = "SyStem", bool IsThis = true)
+        public int CommitAutoHistory(string Operator = "SyStem")
         {
-            if (!IsThis) return Commit();
             var FullName = typeof(TEntity).FullName;
             Context.EnsureAutoHistory(Operator, FullName);
             return Commit();
