@@ -38,6 +38,20 @@ namespace MyChy.Frame.Core.Web.Controllers
 
         public IActionResult Index()
         {
+            _logger.LogTrace("跟踪日志-----------");
+            _logger.LogDebug("调试日志-----------");
+            _logger.LogInformation("普通信息日志-----------");
+
+
+            _logger.LogWarning("警告日志-----------");
+            _logger.LogError("错误日志-----------");
+            _logger.LogCritical("系统崩溃或灾难性-----------");
+
+     
+
+            LogHelper.LogError("跟踪日志-----------2");
+            LogHelper.LogInfo("跟踪日志-----------3");
+           // LogHelper.LogError("跟踪日志-----------2");
             //var url = Request.GetAbsoluteUri();
 
             //url = "http://material.huiyuanjuice.cn:80/Product/MobileTicket";
@@ -51,11 +65,11 @@ namespace MyChy.Frame.Core.Web.Controllers
         {
             LogHelper.LogError("asdfasdf");
 
-            //SqlData();
+            SqlData();
 
             // CookiesSession();
 
-            Redis();
+            //Redis();
 
 
 
@@ -233,7 +247,7 @@ namespace MyChy.Frame.Core.Web.Controllers
             };
 
 
-            var x1=baseUnitOfWork.Context.Database.ExecuteSqlCommand(sql,parameter);
+            var x1 = baseUnitOfWork.Context.Database.ExecuteSqlCommand(sql, parameter);
 
 
             //var x1 = baseUnitOfWork.Context.Database.ExecuteSqlCommand("update [CompUser] set [NickName]=@name where id=@id",
@@ -320,7 +334,7 @@ namespace MyChy.Frame.Core.Web.Controllers
             var ts = new CompUser
             {
                 Id = 1,
-                NickName="1231",
+                NickName = "1231",
             };
             RedisServer.StringSetCache("31", ts);
             var ts1 = RedisServer.StringGetCache<CompUser>("31");

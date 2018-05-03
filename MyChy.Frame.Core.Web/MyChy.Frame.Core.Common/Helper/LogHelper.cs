@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+using NLog;
 
 namespace MyChy.Frame.Core.Common.Helper
 {
@@ -14,8 +10,8 @@ namespace MyChy.Frame.Core.Common.Helper
 
         static LogHelper()
         {
-            var loggerFactory = new LoggerFactory();
-            _logger = loggerFactory.CreateLogger("LogHelper");
+            //var loggerFactory = new LoggerFactory();
+            _logger = LogManager.GetCurrentClassLogger();
 
             //Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             //Func<string, LogLevel, bool> filter = (category, level) => true;
@@ -31,10 +27,10 @@ namespace MyChy.Frame.Core.Common.Helper
         /// Initializes a new instance of the <see cref="StartupTaskStarter"/> class.
         /// </summary>
         /// <param name="options">The options.</param>
-        public LogHelper(ILogger<LogHelper> logger )
-        {
-          //  _logger = logger;
-        }
+        //public LogHelper(ILogger<LogHelper> logger )
+        //{
+        //  //  _logger = logger;
+        //}
 
         /// <summary>
         /// 写日志，默认级别是 LogLevel.Error
@@ -42,7 +38,7 @@ namespace MyChy.Frame.Core.Common.Helper
         /// <param name="message">写日志的内容</param>
         public static void LogError(string message)
         {
-            _logger.LogError(message);
+            _logger.Error(message);
         }
 
         /// <summary>
@@ -51,8 +47,18 @@ namespace MyChy.Frame.Core.Common.Helper
         /// <param name="message">写日志的内容</param>
         public static void LogInfo(string message)
         {
-            _logger.LogTrace(message);
+            _logger.Info(message);
         }
+
+        /// <summary>
+        /// 写日志，默认日志级别是 LogLevel.Error。会根据异常的类型来判断是否发送通知邮件
+        /// </summary>
+        /// <param name="exception">异常信息</param>
+        public static void LogException(Exception exception)
+        {
+            _logger.Error(exception);
+        }
+
 
         /// <summary>
         /// 写日志，默认日志级别是 LogLevel.Error。会根据异常的类型来判断是否发送通知邮件
@@ -60,8 +66,7 @@ namespace MyChy.Frame.Core.Common.Helper
         /// <param name="exception">异常信息</param>
         public static void Log(Exception exception)
         {
-            _logger.LogError(exception.Message);
+            _logger.Error(exception);
         }
-
     }
 }

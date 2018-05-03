@@ -22,6 +22,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.0.0" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="4.5.3" />
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />
@@ -32,5 +33,14 @@
     <ProjectReference Include="..\MyChy.Frame.Core.Redis\MyChy.Frame.Core.Redis.csproj" />
     <ProjectReference Include="..\MyChy.Frame.Core\MyChy.Frame.Core.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="wwwroot\Logs\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Update="config\nlog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JSONSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

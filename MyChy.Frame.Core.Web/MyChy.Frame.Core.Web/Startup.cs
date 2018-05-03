@@ -21,6 +21,8 @@ using System.IO;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.DataProtection;
 using MyChy.Frame.Core.Common.Extensions;
+using NLog.Extensions.Logging;
+using NLog.Web;
 
 namespace MyChy.Frame.Core.Web
 {
@@ -173,6 +175,15 @@ namespace MyChy.Frame.Core.Web
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
+            loggerFactory.AddNLog();//添加NLog  
+            env.ConfigureNLog("config/nlog.config");
+
+            //读取Nlog配置文件  
+            //  NLogBuilder.ConfigureNLog("config/nlog.config").GetCurrentClassLogger();
+
+            // env;
+
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -190,6 +201,8 @@ namespace MyChy.Frame.Core.Web
             app.UseAuthentication();
 
             app.UseSession();
+
+          //  app.UseNLog();
 
             app.UseMvc(routes =>
             {
