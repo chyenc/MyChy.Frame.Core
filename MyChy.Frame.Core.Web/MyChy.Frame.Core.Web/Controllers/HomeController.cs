@@ -13,6 +13,7 @@ using MyChy.Frame.Core.EFCore;
 using System.Data.SqlClient;
 using MyChy.Frame.Core.EFCore.AutoHistorys;
 using MyChy.Frame.Core.Common.Extensions;
+using MyChy.Frame.Core.Redis;
 
 namespace MyChy.Frame.Core.Web.Controllers
 {
@@ -37,10 +38,10 @@ namespace MyChy.Frame.Core.Web.Controllers
 
         public IActionResult Index()
         {
-            var url= Request.GetAbsoluteUri();
+            //var url = Request.GetAbsoluteUri();
 
-            url = "http://material.huiyuanjuice.cn:80/Product/MobileTicket";
-            url = url.Replace(":80/", "/");
+            //url = "http://material.huiyuanjuice.cn:80/Product/MobileTicket";
+            //url = url.Replace(":80/", "/");
 
 
             return View();
@@ -50,81 +51,11 @@ namespace MyChy.Frame.Core.Web.Controllers
         {
             LogHelper.LogError("asdfasdf");
 
+            //SqlData();
 
+            // CookiesSession();
 
-
-            var predicate = PredicateBuilder.New<CompUser>();
-
-            //var x1 = baseUnitOfWork.Context.Database.ExecuteSqlCommand("update [CompUser] set [NickName]=@name where id=@id",
-            //new SqlParameter[] {
-            //      new SqlParameter("@name","1234"),
-            //      new SqlParameter("@id",1),
-            //});
-
-            var xlist = baseUnitOfWork.Context.Set<CompUser>().AsTracking().FromSql("select * from [CompUser] where id<@id", new SqlParameter[] {
-                  new SqlParameter("@id",10),
-            }).ToList();
-
-
-
-
-
-            var id = 5;
-            xlist = baseUnitOfWork.Context.Set<CompUser>().AsTracking().FromSql($"select * from [CompUser] where id<{id}").ToList();
-
-            // var city = "Redmond";
-            //  context.Customers.FromSql($"SELECT * FROM Customers WHERE City = {city}");
-
-
-            var xlist2 = baseUnitOfWork.Context.Set<CompUser>().Select(x => new CompUserOther()
-            {
-                NickName = x.NickName,
-                UserName = x.UserName,
-
-            }).FromSql("select NickName,UserName from [CompUser] where id<@id", new SqlParameter[] {
-                  new SqlParameter("@id",10),
-            }).ToList();
-
-
-            //  baseUnitOfWork.Context.Set<CompUser>
-
-            var ss = predicate.Body.ToString();
-
-            predicate.And(x => x.State == 0);
-
-            ss = predicate.Body.ToString();
-
-            var list = _competencesService.CompUserR.QueryPage(predicate, page: 1, pageSize: 10);
-
-            list = _competencesService.CompUserR.QueryPage(predicate, page: 2, pageSize: 10);
-
-            var comp = new CompUser
-            {
-                NickName = "123",
-                PassWord = "123",
-                CreatedOn = DateTime.Now,
-                UpdatedOn = DateTime.Now
-            };
-            var xx = _competencesService.CompUserR.AddAsync(comp);
-            _competencesService.CompUserR.Context.SaveChanges();
-
-
-            var sss = MyChy.Frame.Core.HttpContext.Current;
-
-            var sfa = SerializeHelper.ObjToString("234");
-
-
-            //SessionServer.Set(234, "ss", 10);
-            //var ss = SessionServer.Get<int>("ss");
-
-            HttpContext.Response.Cookies.Append("1", "1235");
-
-            HttpContext.Request.Cookies.TryGetValue("1", out string ss1);
-
-            var s = ss1;
-            var Email = CookiesServer.Get<string>("LoginName");
-            CookiesServer.Set("LoginName", "admin");
-            Email = CookiesServer.Get<string>("LoginName");
+            Redis();
 
 
 
@@ -170,7 +101,7 @@ namespace MyChy.Frame.Core.Web.Controllers
         /// Common
         /// </summary>
         public async Task<int> Common()
-        { 
+        {
             // _competencesService.CompUserR.Set.
             //  var model = _competencesService.CompUserR.q
             var model = _competencesService.CompUserR.GetById(20);
@@ -216,9 +147,9 @@ namespace MyChy.Frame.Core.Web.Controllers
                     CreatedBy = "123",
                     CreatedOn = DateTime.Now
                 };
-                
+
                 await _competencesService.CompUserR.AddAsync(model);
-                await  _competencesService.CompUserR.CommitAsync();
+                await _competencesService.CompUserR.CommitAsync();
             }
 
             return 1;
@@ -259,14 +190,14 @@ namespace MyChy.Frame.Core.Web.Controllers
                 models.UpdatedBy = "234";
                 models.UpdatedOn = DateTime.Now;
                 _competencesService.CompUserR.Update(model);
-              //  _competencesService.CompUserR.c
-               // _competencesService.CompUserR.c
+                //  _competencesService.CompUserR.c
+                // _competencesService.CompUserR.c
 
-               model.NickName = DateTime.Now.Ticks.ToString();
+                model.NickName = DateTime.Now.Ticks.ToString();
                 model.UpdatedBy = "123";
                 model.UpdatedOn = DateTime.Now;
                 _competencesService.CompUserR.Update(model);
-               var fullname=_competencesService.CompUserR.Context.GetType().FullName;
+                var fullname = _competencesService.CompUserR.Context.GetType().FullName;
 
                 _competencesService.CompUserR.Context.EnsureAutoHistory("MyChy");
 
@@ -288,6 +219,252 @@ namespace MyChy.Frame.Core.Web.Controllers
 
                 _competencesService.CompUserR.Add(model);
             }
+        }
+
+
+        public void SqlData()
+        {
+            var sql = new RawSqlString(@"update [CompUser] set IsDeleted=@is,DeletedBy=@user,DeletedOn=GETDATE()
+                                        where id = @id");
+            var parameter = new SqlParameter[] {
+                new SqlParameter("@id", 1),
+                 new SqlParameter("@user", "MyChy"),
+                  new SqlParameter("@is", 1),
+            };
+
+
+            var x1=baseUnitOfWork.Context.Database.ExecuteSqlCommand(sql,parameter);
+
+
+            //var x1 = baseUnitOfWork.Context.Database.ExecuteSqlCommand("update [CompUser] set [NickName]=@name where id=@id",
+            //new SqlParameter[] {
+            //      new SqlParameter("@name","1234"),
+            //      new SqlParameter("@id",1),
+            //});
+
+            var xlist = baseUnitOfWork.Context.Set<CompUser>().AsTracking().FromSql("select * from [CompUser] where id<@id", new SqlParameter[] {
+                  new SqlParameter("@id",10),
+            }).ToList();
+
+
+
+            var predicate = PredicateBuilder.New<CompUser>();
+
+            var id = 5;
+            xlist = baseUnitOfWork.Context.Set<CompUser>().AsTracking().FromSql($"select * from [CompUser] where id<{id}").ToList();
+
+            // var city = "Redmond";
+            //  context.Customers.FromSql($"SELECT * FROM Customers WHERE City = {city}");
+
+
+            var xlist2 = baseUnitOfWork.Context.Set<CompUser>().Select(x => new CompUserOther()
+            {
+                NickName = x.NickName,
+                UserName = x.UserName,
+
+            }).FromSql("select NickName,UserName from [CompUser] where id<@id", new SqlParameter[] {
+                  new SqlParameter("@id",10),
+            }).ToList();
+
+
+            //  baseUnitOfWork.Context.Set<CompUser>
+
+            var ss = predicate.Body.ToString();
+
+            predicate.And(x => x.State == 0);
+
+            ss = predicate.Body.ToString();
+
+            var list = _competencesService.CompUserR.QueryPage(predicate, page: 1, pageSize: 10);
+
+            list = _competencesService.CompUserR.QueryPage(predicate, page: 2, pageSize: 10);
+
+            var comp = new CompUser
+            {
+                NickName = "123",
+                PassWord = "123",
+                CreatedOn = DateTime.Now,
+                UpdatedOn = DateTime.Now
+            };
+            var xx = _competencesService.CompUserR.AddAsync(comp);
+            _competencesService.CompUserR.Context.SaveChanges();
+
+
+
+        }
+
+
+        public void Redis()
+        {
+            // CoreDbContext
+            // RedisConfig
+
+            // MyChy.Frame.Core.Redis.
+
+            var key = "RegistrationServer_ShowPresentcount_" + DateTime.Now.Date.ToString("yyyy-MM-dd");
+            var xx1 = RedisServer.StringGetCache<long>(key);
+
+            long xx = 0;
+            RedisServer.StringSetCache("11", "asdfasdf");
+            var ss = RedisServer.StringGetCache<string>("11");
+            //RedisServer.Remove("11");
+            // ss = RedisServer.StringGetCache<string>("11");
+            var time = DateTime.Now;
+
+            var s = RedisServer.ExistsKey("11");
+
+
+            RedisServer.StringDaySetCache("21", time);
+            time = RedisServer.StringGetCache<DateTime>("21");
+
+            var ts = new CompUser
+            {
+                Id = 1,
+                NickName="1231",
+            };
+            RedisServer.StringSetCache("31", ts);
+            var ts1 = RedisServer.StringGetCache<CompUser>("31");
+            ts1.Id = 2;
+            RedisServer.StringSetCache("31", ts1);
+            var ts2 = RedisServer.StringGetCache<CompUser>("31");
+
+            //long xx = 0;
+
+            // xx = RedisServer.StringIncrement("asdf1", 10);
+            xx = RedisServer.Increment("asdf11");
+            xx = RedisServer.StringGetCache<long>("asdf11");
+            xx = RedisServer.Increment("asdf11", 100);
+            xx = RedisServer.Increment("asdf11");
+            xx = RedisServer.StringGetCache<long>("asdf11");
+            xx = RedisServer.Increment("asdf11");
+
+
+            RedisSetTest();
+            RedisHashTest();
+            RedisSortedTest();
+        }
+
+
+
+        public void RedisSetTest()
+        {
+            const string key = "RedisTest_SetTest";
+            long ss = 13810565157;
+            string mobile = "13810565156";
+
+            RedisServer.SetDayAddCache(key, mobile);
+            var ss1 = RedisServer.SetDayContainsCache(key, mobile);
+            RedisServer.SetDayDelete(key, mobile);
+
+
+            ss1 = RedisServer.SetContainsCache(key, mobile);
+            RedisServer.SetAddCache(key, mobile);
+            ss1 = RedisServer.SetContainsCache(key, mobile);
+            RedisServer.SetDelete(key, mobile);
+            ss1 = RedisServer.SetContainsCache(key, mobile);
+
+            if (!ss1)
+            {
+                RedisServer.SetDayAddCache(key, mobile, true);
+                ss1 = RedisServer.SetDayContainsCache(key, mobile);
+
+            }
+
+            RedisServer.SetDayAddCache(key, mobile, true);
+
+            for (int i = 0; i < 100000; i++)
+            {
+                mobile = ss.ToString();
+                ss1 = RedisServer.SetDayContainsCache(key, mobile);
+                if (!ss1)
+                {
+                    RedisServer.SetDayAddCache(key, mobile);
+                }
+                ss = ss + 1;
+            }
+
+
+
+        }
+
+
+
+        public void RedisHashTest()
+        {
+
+            var key1 = "ProductServer_ShowProductStocksCount-";
+            RedisServer.HashDayAddCache(key1, "123", 100);
+            var ss13 = RedisServer.HashDayGetCache<long>(key1, "1231", -999);
+
+            var ss = RedisServer.HashDayGetCache<long>(key1, "123", 0);
+            ss = RedisServer.HashDecrementDayCache(key1, "123", 1);
+            ss = RedisServer.HashDecrementDayCache(key1, "123", 1);
+            ss = RedisServer.HashDecrementDayCache(key1, "123", 1);
+            ss = RedisServer.HashDecrementDayCache(key1, "123", 1);
+            ss = RedisServer.HashDecrementDayCache(key1, "123", 1);
+            RedisServer.HashDayAddCache(key1, "123", 15);
+            ss = RedisServer.HashDecrementDayCache(key1, "123", 1);
+            ss = RedisServer.HashDecrementDayCache(key1, "123", 1);
+            ss = RedisServer.HashDecrementDayCache(key1, "123", 1);
+            ss = RedisServer.HashDecrementDayCache(key1, "123", 1);
+            ss = RedisServer.HashDayGetCache<long>(key1, "123", 0);
+
+            var key = "Hash";
+            var ss1 = RedisServer.HashGetCache<long>(key, "1", -1);
+            if (ss1 == -1)
+            {
+                RedisServer.HashAddCache(key, "1", 0);
+            }
+            ss1 = RedisServer.HashGetCache<long>(key, "1", -1);
+            ss1 = RedisServer.HashIncrementCache(key, "1", 1);
+
+            ss1 = RedisServer.HashGetCache<long>(key, "1", -1);
+
+            ss1 = RedisServer.HashIncrementCache(key, "1", 1);
+
+            ss1 = RedisServer.HashGetCache<long>(key, "1", -1);
+
+
+        }
+
+
+        public void RedisSortedTest()
+        {
+            string key = "SortedTest";
+            for (var i = 0; i < 10; i++)
+            {
+                RedisServer.SortedAddCache(key, i.ToString(), i);
+            }
+            var list = RedisServer.SortedSetRangeByRankDescendingCache(key, 0, 5);
+            var ss = RedisServer.SortedSetIncrementCache(key, "1", 100);
+            ss = RedisServer.SortedSetIncrementCache(key, "2", 10);
+
+            ss = RedisServer.SortedSetIncrementCache(key, "5", 2);
+
+            list = RedisServer.SortedSetRangeByRankDescendingCache(key, 0, 5);
+        }
+
+
+        public void CookiesSession()
+        {
+
+            var sss = MyChy.Frame.Core.HttpContext.Current;
+
+            var sfa = SerializeHelper.ObjToString("234");
+
+
+            //SessionServer.Set(234, "ss", 10);
+            //var ss = SessionServer.Get<int>("ss");
+
+            HttpContext.Response.Cookies.Append("1", "1235");
+
+            HttpContext.Request.Cookies.TryGetValue("1", out string ss1);
+
+            var s = ss1;
+            var Email = CookiesServer.Get<string>("LoginName");
+            CookiesServer.Set("LoginName", "admin");
+            Email = CookiesServer.Get<string>("LoginName");
+
         }
 
 

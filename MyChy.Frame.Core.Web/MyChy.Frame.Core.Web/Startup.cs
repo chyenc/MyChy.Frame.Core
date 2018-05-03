@@ -20,6 +20,7 @@ using MyChy.Frame.Core.Common.Helper;
 using System.IO;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.DataProtection;
+using MyChy.Frame.Core.Common.Extensions;
 
 namespace MyChy.Frame.Core.Web
 {
@@ -43,10 +44,10 @@ namespace MyChy.Frame.Core.Web
             assemblyProvider = _assemblyProvider;
 
             var builder = new ConfigurationBuilder()
-    .SetBasePath(env.ContentRootPath)
-    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-    .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
-    .AddEnvironmentVariables();
+            .SetBasePath(env.ContentRootPath)
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+            .AddEnvironmentVariables();
             //var builder = startupbase.Startup(env, _serviceProvider, _assemblyProvider);
             Configuration = builder.Build();
         }
@@ -67,11 +68,12 @@ namespace MyChy.Frame.Core.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //RedisConfig
 
-            var name = "aa.jpge";
-            var ss = FileHelper.CheckFileNmae(name, out string namex, out string exname);
-            name = "aa.jpg.jpge.";
-            ss = FileHelper.CheckFileNmae(name, out namex, out exname);
+            //var name = "aa.jpge";
+            //var ss = FileHelper.CheckFileNmae(name, out string namex, out string exname);
+            //name = "aa.jpg.jpge.";
+            //ss = FileHelper.CheckFileNmae(name, out namex, out exname);
 
             DiscoverAssemblies();
 
@@ -89,13 +91,30 @@ namespace MyChy.Frame.Core.Web
 
                 //services.AddSingleton(contextOptions1).AddScoped<MySqlDbContext>();
 
+                var Version = efconfig.Version.To<int>(0);
+                if (Version > 2008)
+                {
+                    services.AddEntityFrameworkSqlServer()
+                    //################################################
+                    //它显示的使用了一种实例池的方式来注入到容器。
+                    .AddDbContextPool<CoreDbContext>((serviceProviders, options) =>
+                    //################################################
+                    //.AddDbContext<CoreDbContext>((serviceProviders, options) =>
+                    options.UseSqlServer(efconfig.Connect,
+                            b => b.MigrationsAssembly("MyChy.Web"))
+                           .UseInternalServiceProvider(serviceProviders));
+                    // .UseRowNumberForPaging() SQL2008版本需要，12等以上版本不需要
+                }
+                else
+                {
+                    services.AddEntityFrameworkSqlServer()
+                    .AddDbContextPool<CoreDbContext>((serviceProviders, options) =>
+                    options.UseSqlServer(efconfig.Connect,
+                            b => b.MigrationsAssembly("MyChy.Web").UseRowNumberForPaging())
+                           .UseInternalServiceProvider(serviceProviders));
+                    //.UseRowNumberForPaging() SQL2008版本需要，12等以上版本不需要
 
-                services.AddEntityFrameworkSqlServer()
-               .AddDbContext<CoreDbContext>((serviceProviders, options) =>
-               options.UseSqlServer(efconfig.Connect,
-                    b => b.MigrationsAssembly("MyChy.Frame.Core.Web").UseRowNumberForPaging()
-                    ).UseInternalServiceProvider(serviceProviders));
-
+                }
 
                 // .UseRowNumberForPaging() ＳＱＬ２００８　增加　１２等版本不需要
 
@@ -118,9 +137,10 @@ namespace MyChy.Frame.Core.Web
             var dataProtector = protectionProvider.CreateProtector("MyCookieAuthentication");
             var ticketFormat = new TicketDataFormat(dataProtector);
 
-            
 
-            services.AddAuthentication(o => {
+
+            services.AddAuthentication(o =>
+            {
                 o.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 o.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 o.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -131,15 +151,18 @@ namespace MyChy.Frame.Core.Web
                 options.LogoutPath = new PathString("/Account/Logout");
                 options.TicketDataFormat = ticketFormat;
             });
-
+           // appconfig = _Configuration.GetSection("AppSettings").Get<AppSettingsConfig>();
 
 
             // Add framework services.
             services.AddMvc();
 
-            //var serviceProvider = services.BuildServiceProvider();
-            //CoreEFStartupTask task = new CoreEFStartupTask(serviceProvider);
-            //task.RunS();
+            //if (appconfig.StartupTask)
+            //{
+            //    var serviceProvider = services.BuildServiceProvider();
+            //    CoreEFStartupTask task = new CoreEFStartupTask(serviceProvider);
+            //    task.RunS();
+            //}
 
 
         }

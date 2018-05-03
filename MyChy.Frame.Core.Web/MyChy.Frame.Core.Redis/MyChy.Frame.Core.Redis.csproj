@@ -1,16 +1,18 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <Version>1.1.10</Version>
-    <Description>升级DLL到Core 2.0</Description>
-    <AssemblyVersion>1.1.10.0</AssemblyVersion>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <AssemblyVersion>1.1.11.0</AssemblyVersion>
+    <FileVersion>1.1.11.0</FileVersion>
+    <Version>1.1.11</Version>
+    <Description>更新底层DLL</Description>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="StackExchange.Redis" Version="1.2.6" />
+    <PackageReference Include="StackExchange.Redis.StrongName" Version="1.2.6" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\MyChy.Frame.Core.Common\MyChy.Frame.Core.Common.csproj" />
   </ItemGroup>

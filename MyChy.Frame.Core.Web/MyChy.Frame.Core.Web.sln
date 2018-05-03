@@ -7,17 +7,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyChy.Frame.Core.Web", "MyC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyChy.Frame.Core.Common", "MyChy.Frame.Core.Common\MyChy.Frame.Core.Common.csproj", "{01A5D33A-E36B-41BD-8479-34266859F04C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyChy.Frame.Core.Redis", "MyChy.Frame.Core.Redis\MyChy.Frame.Core.Redis.csproj", "{2BCD647B-321E-400B-84D5-DB5F9890A8FB}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyChy.Frame.Core.EFCore", "MyChy.Frame.Core.EFCore\MyChy.Frame.Core.EFCore.csproj", "{57479971-B81F-4C66-ACD3-FA59E09239C3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyChy.Frame.Core.Test", "MyChy.Frame.Core.Test\MyChy.Frame.Core.Test.csproj", "{5E48723F-0304-4CD1-8A71-A2E9CF60C34A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyChy.Frame.Core", "MyChy.Frame.Core\MyChy.Frame.Core.csproj", "{E3E5F0D3-C4C2-4FF1-A189-4373DDB25B82}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyChy.Frame.Core.Web2", "MyChy.Frame.Core.Web2\MyChy.Frame.Core.Web2.csproj", "{E159FAA5-B1BC-488A-9756-27654A51BE24}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyChy.Frame.Core.Console", "MyChy.Frame.Core.Console\MyChy.Frame.Core.Console.csproj", "{CB666CD5-E05D-42AC-9135-87EA6DCE6514}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyChy.Frame.Core.Console", "MyChy.Frame.Core.Console\MyChy.Frame.Core.Console.csproj", "{CB666CD5-E05D-42AC-9135-87EA6DCE6514}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyChy.Frame.Core.Redis", "MyChy.Frame.Core.Redis\MyChy.Frame.Core.Redis.csproj", "{E636E1E0-C2EC-4FC6-945E-5DDE2017DCF6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,10 +31,6 @@ Global
 		{01A5D33A-E36B-41BD-8479-34266859F04C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01A5D33A-E36B-41BD-8479-34266859F04C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01A5D33A-E36B-41BD-8479-34266859F04C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2BCD647B-321E-400B-84D5-DB5F9890A8FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2BCD647B-321E-400B-84D5-DB5F9890A8FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2BCD647B-321E-400B-84D5-DB5F9890A8FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2BCD647B-321E-400B-84D5-DB5F9890A8FB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{57479971-B81F-4C66-ACD3-FA59E09239C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{57479971-B81F-4C66-ACD3-FA59E09239C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{57479971-B81F-4C66-ACD3-FA59E09239C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -49,14 +43,14 @@ Global
 		{E3E5F0D3-C4C2-4FF1-A189-4373DDB25B82}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E3E5F0D3-C4C2-4FF1-A189-4373DDB25B82}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E3E5F0D3-C4C2-4FF1-A189-4373DDB25B82}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E159FAA5-B1BC-488A-9756-27654A51BE24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E159FAA5-B1BC-488A-9756-27654A51BE24}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E159FAA5-B1BC-488A-9756-27654A51BE24}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E159FAA5-B1BC-488A-9756-27654A51BE24}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CB666CD5-E05D-42AC-9135-87EA6DCE6514}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CB666CD5-E05D-42AC-9135-87EA6DCE6514}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CB666CD5-E05D-42AC-9135-87EA6DCE6514}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CB666CD5-E05D-42AC-9135-87EA6DCE6514}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E636E1E0-C2EC-4FC6-945E-5DDE2017DCF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E636E1E0-C2EC-4FC6-945E-5DDE2017DCF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E636E1E0-C2EC-4FC6-945E-5DDE2017DCF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E636E1E0-C2EC-4FC6-945E-5DDE2017DCF6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
