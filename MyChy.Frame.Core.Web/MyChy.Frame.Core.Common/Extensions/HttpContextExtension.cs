@@ -35,14 +35,23 @@ namespace MyChy.Frame.Core.Common.Extensions
         /// <returns></returns>
         public static string GetAbsoluteUri(this HttpRequest request)
         {
-            return new StringBuilder()
+            var host = request.Host.ToString();
+            var prot = request.Host.Port;
+            if (prot != null && prot.Value == 80)
+            {
+                host = request.Host.Host;
+            }
+
+           // host = host.Replace(":80", "");
+                var url=new StringBuilder()
                 .Append(request.Scheme)
                 .Append("://")
-                .Append(request.Host)
+                .Append(host)
                 .Append(request.PathBase)
                 .Append(request.Path)
                 .Append(request.QueryString)
                 .ToString();
+            return url;
         }
 
 

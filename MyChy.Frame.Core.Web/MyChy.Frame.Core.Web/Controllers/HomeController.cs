@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using MyChy.Frame.Core.EFCore;
 using System.Data.SqlClient;
 using MyChy.Frame.Core.EFCore.AutoHistorys;
+using MyChy.Frame.Core.Common.Extensions;
 
 namespace MyChy.Frame.Core.Web.Controllers
 {
@@ -36,6 +37,12 @@ namespace MyChy.Frame.Core.Web.Controllers
 
         public IActionResult Index()
         {
+            var url= Request.GetAbsoluteUri();
+
+            url = "http://material.huiyuanjuice.cn:80/Product/MobileTicket";
+            url = url.Replace(":80/", "/");
+
+
             return View();
         }
 
