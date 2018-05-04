@@ -11,7 +11,7 @@ namespace MyChy.Frame.Core.EFCore.AutoHistorys.Internal
     /// <summary>
     /// Represents the entity change history.
     /// </summary>
-    internal class AutoHistory: BaseEntity
+    public class AutoHistory: BaseEntity
     {
         ///// <summary>
         ///// Gets or sets the primary key.
@@ -69,6 +69,6 @@ namespace MyChy.Frame.Core.EFCore.AutoHistorys.Internal
         /// Gets or sets the create time.
         /// </summary>
         /// <value>The create time.</value>
-        public DateTime CreateTime { get; set; } = DateTime.UtcNow;
+        public DateTime CreateTime { get; set; } = DateTime.Now;
     }
 }

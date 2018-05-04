@@ -2,10 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <Version>1.1.21</Version>
-    <AssemblyVersion>1.1.21.0</AssemblyVersion>
-    <FileVersion>1.1.21.0</FileVersion>
-    <Description>修复 HttpContextExtension GetAbsoluteUri 80端口号添加的问题</Description>
+    <Version>1.1.24</Version>
+    <AssemblyVersion>1.1.24.0</AssemblyVersion>
+    <FileVersion>1.1.24.0</FileVersion>
+    <Description>修复 LogerHelpr使用Nlog</Description>
   </PropertyGroup>
 
   <ItemGroup>

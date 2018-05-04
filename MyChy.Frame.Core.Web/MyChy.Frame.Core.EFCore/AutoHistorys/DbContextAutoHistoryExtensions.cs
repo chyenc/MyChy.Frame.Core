@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using MyChy.Frame.Core.Common.Helper;
 using MyChy.Frame.Core.EFCore.Attributes;
 using MyChy.Frame.Core.EFCore.AutoHistorys.Internal;
+using MyChy.Frame.Core.Services;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -20,7 +22,14 @@ namespace MyChy.Frame.Core.EFCore.AutoHistorys
         // Entities Include/Ignore attributes cache
         private static readonly Dictionary<Type, bool?> EntitiesIncludeIgnoreAttrCache = new Dictionary<Type, bool?>();
 
-        private static readonly bool IsAutoHistory = EntityFrameworkHelper.ReadConfiguration().AutoHistory;
+        private static readonly AutoHistoryConfig autoHistoryConfig;
+
+        // private static readonly bool IsAutoHistory = EntityFrameworkHelper.ReadConfiguration().AutoHistory;
+
+        static DbContextAutoHistoryExtensions()
+        {
+            autoHistoryConfig = ReadConfig();
+        }
 
         #endregion
         /// <summary>
@@ -29,28 +38,46 @@ namespace MyChy.Frame.Core.EFCore.AutoHistorys
         /// <param name="context">The context.</param>
         public static void EnsureAutoHistory(this DbContext context, string Operator = "SyStem", string FullName = "")
         {
+            if (!autoHistoryConfig.IsHistory) return;
+
             // TODO: only record the changed properties.
             var jsonSetting = new JsonSerializerSettings
             {
                 ContractResolver = new EntityContractResolver(context),
             };
+
             var entries = new List<EntityEntry>();
-
-             entries = context.ChangeTracker.Entries().Where(e =>
-                     (e.State == EntityState.Deleted || e.State == EntityState.Modified) && (IncludeEntity(e)||IncludeEntityName(e, FullName))).ToList();
-
-
+            if (autoHistoryConfig.IsAdded)
+            {
+                entries = context.ChangeTracker.Entries().Where(e =>
+                           (e.State == EntityState.Deleted || e.State == EntityState.Modified || e.State == EntityState.Added)
+                              && (IncludeEntity(e) || IncludeEntityName(e, FullName))).ToList();
+            }
+            else
+            {
+                entries = context.ChangeTracker.Entries().Where(e =>
+                            (e.State == EntityState.Deleted || e.State == EntityState.Modified)
+                            && (IncludeEntity(e) || IncludeEntityName(e, FullName))).ToList();
+            }
             if (entries.Count == 0)
             {
                 return;
             }
-
+            if (autoHistoryConfig.OperatorIsLogin)
+            {
+                if (Operator == "SyStem")
+                {
+                    var userinfo = ClaimsIdentityServer.AccountUserid();
+                    if (userinfo.UserId > 0) { Operator = userinfo.UserNick + "|" + userinfo.UserId; }
+                }
+            }
             foreach (var entry in entries)
             {
                 var history = new AutoHistory
                 {
-                    TypeName = entry.Entity.GetType().FullName,
+                    TypeName = entry.ShowTypeName(),
                     Operator = Operator,
+                    Kind = entry.State,
                 };
                 switch (entry.State)
                 {
@@ -159,12 +186,41 @@ namespace MyChy.Frame.Core.EFCore.AutoHistorys
                 }
                 else
                 {
-                    EntitiesIncludeIgnoreAttrCache[type] = IsAutoHistory; // No attribute
+                    EntitiesIncludeIgnoreAttrCache[type] = autoHistoryConfig.IsAutoHistory; // No attribute
                 }
             }
             return EntitiesIncludeIgnoreAttrCache[type];
         }
 
+        private static AutoHistoryConfig ReadConfig(string file = "config/AutoHistory.json")
+        {
+            var config = new ConfigHelper();
+            var entityconfig = new AutoHistoryConfig();
+            try
+            {
+                entityconfig = config.Reader<AutoHistoryConfig>(file);
+
+            }
+            catch (Exception e)
+            {
+                entityconfig = new AutoHistoryConfig()
+                {
+                    IsHistory = false,
+                };
+
+                LogHelper.LogException(e);
+            }
+            return entityconfig;
+        }
+
+        private static string ShowTypeName(this EntityEntry entry)
+        {
+            var result = entry.Entity.GetType().Name;
+            if (autoHistoryConfig.TypeName != "Name") {
+                result = entry.Entity.GetType().FullName;
+            }
+            return result;
+        }
 
     }
 }

@@ -39,18 +39,18 @@ namespace MyChy.Frame.Core.Web.Controllers
         public IActionResult Index()
         {
             _logger.LogTrace("跟踪日志-----------");
-            _logger.LogDebug("调试日志-----------");
-            _logger.LogInformation("普通信息日志-----------");
+            //_logger.LogDebug("调试日志-----------");
+            //_logger.LogInformation("普通信息日志-----------");
 
 
-            _logger.LogWarning("警告日志-----------");
-            _logger.LogError("错误日志-----------");
-            _logger.LogCritical("系统崩溃或灾难性-----------");
+            //_logger.LogWarning("警告日志-----------");
+            //_logger.LogError("错误日志-----------");
+            //_logger.LogCritical("系统崩溃或灾难性-----------");
 
      
 
-            LogHelper.LogError("跟踪日志-----------2");
-            LogHelper.LogInfo("跟踪日志-----------3");
+            //LogHelper.LogError("跟踪日志-----------2");
+            //LogHelper.LogInfo("跟踪日志-----------3");
            // LogHelper.LogError("跟踪日志-----------2");
             //var url = Request.GetAbsoluteUri();
 
@@ -65,7 +65,9 @@ namespace MyChy.Frame.Core.Web.Controllers
         {
             LogHelper.LogError("asdfasdf");
 
-            SqlData();
+           // Common();
+
+           // SqlData();
 
             // CookiesSession();
 
@@ -118,7 +120,7 @@ namespace MyChy.Frame.Core.Web.Controllers
         {
             // _competencesService.CompUserR.Set.
             //  var model = _competencesService.CompUserR.q
-            var model = _competencesService.CompUserR.GetById(20);
+            var model = _competencesService.CompUserR.GetById(3);
             if (model?.Id > 0)
             {
                 var m = _competencesService.CompUserRoleR.GetById(1);
@@ -163,7 +165,7 @@ namespace MyChy.Frame.Core.Web.Controllers
                 };
 
                 await _competencesService.CompUserR.AddAsync(model);
-                await _competencesService.CompUserR.CommitAsync();
+                await _competencesService.CompUserR.CommitAutoHistoryAsync();
             }
 
             return 1;
