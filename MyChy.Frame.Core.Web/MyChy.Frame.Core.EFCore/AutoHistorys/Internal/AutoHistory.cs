@@ -58,6 +58,15 @@ namespace MyChy.Frame.Core.EFCore.AutoHistorys.Internal
         public string AfterJson { get; set; }
 
         /// <summary>
+        /// Ip
+        /// </summary>
+        /// <value>The json after changed.</value>
+        [StringLength(50)]
+        [Description("Ip")]
+        public string Ip { get; set; }
+
+
+        /// <summary>
         /// Gets or sets the change kind.
         /// </summary>
         /// <value>The change kind.</value>

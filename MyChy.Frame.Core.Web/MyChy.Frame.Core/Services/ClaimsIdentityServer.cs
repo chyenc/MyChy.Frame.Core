@@ -3,7 +3,6 @@ using System.Security.Claims;
 using System.Linq;
 using MyChy.Frame.Core.Common.Extensions;
 using System;
-using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 

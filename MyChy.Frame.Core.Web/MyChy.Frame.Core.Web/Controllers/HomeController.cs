@@ -89,8 +89,8 @@ namespace MyChy.Frame.Core.Web.Controllers
 
         public async Task<IActionResult> Contact()
         {
-            await Common();
-
+           // await Common();
+            CookiesSession();
             //string val = "234243";
 
             //; byte[] serializedResult = Encoding.UTF8.GetBytes(val);
@@ -474,6 +474,16 @@ namespace MyChy.Frame.Core.Web.Controllers
             var sss = MyChy.Frame.Core.HttpContext.Current;
 
             var sfa = SerializeHelper.ObjToString("234");
+
+
+            var code = SessionServer.Get<long>("userid");
+
+            SessionServer.Set("userid", DateTime.Now.Ticks);
+            code = SessionServer.Get<long>("userid");
+
+            var codes = SessionServer.Get<string>("userid");
+            SessionServer.Set("userid", DateTime.Now.Ticks.ToString());
+            codes = SessionServer.Get<string>("userid");
 
 
             //SessionServer.Set(234, "ss", 10);

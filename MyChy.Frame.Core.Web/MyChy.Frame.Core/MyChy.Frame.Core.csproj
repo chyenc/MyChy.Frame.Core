@@ -2,9 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <Version>1.2.00</Version>
-    <Description>更新到.net Core 2.1</Description>
-    <AssemblyVersion>1.2.00.0</AssemblyVersion>
+    <Version>1.2.1</Version>
+    <Description>HttpContext 增加获取IP地址功能</Description>
+    <AssemblyVersion>1.2.1.0</AssemblyVersion>
     <FileVersion>1.2.11.0</FileVersion>
   </PropertyGroup>
 

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
-
+using System.Linq;
 
 namespace MyChy.Frame.Core
 {
@@ -22,6 +22,17 @@ namespace MyChy.Frame.Core
         public static T GetService<T>()
         {
             return Current.RequestServices.GetService<T>();
+        }
+
+        public static string GetIp()
+        {
+            var ip = Current.Connection.RemoteIpAddress.ToString(); 
+            if (string.IsNullOrEmpty(ip))
+            {
+                ip = Current.Request.Headers["X-Forwarded-For"].FirstOrDefault();
+            }
+
+            return ip;
         }
 
         //public static IServiceProvider ServiceProvider;

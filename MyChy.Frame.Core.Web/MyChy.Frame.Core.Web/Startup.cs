@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.DataProtection;
 using MyChy.Frame.Core.Common.Extensions;
 using NLog.Extensions.Logging;
 using NLog.Web;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MyChy.Frame.Core.Web
 {
@@ -153,11 +154,19 @@ namespace MyChy.Frame.Core.Web
                 options.LogoutPath = new PathString("/Account/Logout");
                 options.TicketDataFormat = ticketFormat;
             });
-           // appconfig = _Configuration.GetSection("AppSettings").Get<AppSettingsConfig>();
+            // appconfig = _Configuration.GetSection("AppSettings").Get<AppSettingsConfig>();
+
+            //services.Configure<CookiePolicyOptions>(options =>
+            //{
+            //    // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+            //    options.CheckConsentNeeded = context => true;
+            //    options.MinimumSameSitePolicy = SameSiteMode.None;
+            //});
+
 
 
             // Add framework services.
-            services.AddMvc();
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1); ;
 
             //if (appconfig.StartupTask)
             //{
@@ -187,7 +196,7 @@ namespace MyChy.Frame.Core.Web
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseBrowserLink();
+              //  app.UseBrowserLink();
             }
             else
             {
@@ -202,7 +211,10 @@ namespace MyChy.Frame.Core.Web
 
             app.UseSession();
 
-          //  app.UseNLog();
+
+          //  app.UseCookiePolicy();
+
+            //  app.UseNLog();
 
             app.UseMvc(routes =>
             {
