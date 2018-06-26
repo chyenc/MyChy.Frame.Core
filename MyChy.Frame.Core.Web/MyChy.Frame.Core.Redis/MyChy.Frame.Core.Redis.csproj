@@ -1,12 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <AssemblyVersion>1.1.11.0</AssemblyVersion>
+    <AssemblyVersion>1.2.00.0</AssemblyVersion>
     <FileVersion>1.1.11.0</FileVersion>
-    <Version>1.1.11</Version>
-    <Description>更新底层DLL</Description>
+    <Version>1.2.00</Version>
+    <Description>更新到.net Core 2.1</Description>
   </PropertyGroup>
 
   <ItemGroup>

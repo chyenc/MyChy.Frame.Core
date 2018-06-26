@@ -14,6 +14,8 @@ using System.Data.SqlClient;
 using MyChy.Frame.Core.EFCore.AutoHistorys;
 using MyChy.Frame.Core.Common.Extensions;
 using MyChy.Frame.Core.Redis;
+using Microsoft.Extensions.DependencyInjection;
+
 
 namespace MyChy.Frame.Core.Web.Controllers
 {
@@ -39,6 +41,11 @@ namespace MyChy.Frame.Core.Web.Controllers
         public IActionResult Index()
         {
             _logger.LogTrace("跟踪日志-----------");
+
+            var _competences = MyChy.Frame.Core.HttpContext.GetService<ICompetencesWorkArea>();
+            var model = _competences.CompUserR.GetById(3);
+
+
             //_logger.LogDebug("调试日志-----------");
             //_logger.LogInformation("普通信息日志-----------");
 
@@ -47,11 +54,11 @@ namespace MyChy.Frame.Core.Web.Controllers
             //_logger.LogError("错误日志-----------");
             //_logger.LogCritical("系统崩溃或灾难性-----------");
 
-     
+
 
             //LogHelper.LogError("跟踪日志-----------2");
             //LogHelper.LogInfo("跟踪日志-----------3");
-           // LogHelper.LogError("跟踪日志-----------2");
+            // LogHelper.LogError("跟踪日志-----------2");
             //var url = Request.GetAbsoluteUri();
 
             //url = "http://material.huiyuanjuice.cn:80/Product/MobileTicket";
@@ -103,7 +110,7 @@ namespace MyChy.Frame.Core.Web.Controllers
             ViewData["Message"] = "Your contact page.";
             var userinfo = await UserIdentity(1);
 
-            var info = ClaimsIdentityServer.AccountUserid();
+            //var info = ClaimsIdentityServer.AccountUserid();
 
             return Json(userinfo);
         }
@@ -247,8 +254,8 @@ namespace MyChy.Frame.Core.Web.Controllers
                  new SqlParameter("@user", "MyChy"),
                   new SqlParameter("@is", 1),
             };
-
-
+       
+         
             var x1 = baseUnitOfWork.Context.Database.ExecuteSqlCommand(sql, parameter);
 
 
@@ -518,8 +525,8 @@ namespace MyChy.Frame.Core.Web.Controllers
 
             }
 
-            ClaimsIdentityServer.UserLogin(UserIdentity);
-            // UserIdentity.Success = true;
+            //ClaimsIdentityServer.UserLogin(UserIdentity);
+            //// UserIdentity.Success = true;
 
             return UserIdentity;
 

@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
+
 
 namespace MyChy.Frame.Core
 {
@@ -14,6 +16,12 @@ namespace MyChy.Frame.Core
         internal static void Configure(IHttpContextAccessor accessor)
         {
             _accessor = accessor;
+        }
+
+
+        public static T GetService<T>()
+        {
+            return Current.RequestServices.GetService<T>();
         }
 
         //public static IServiceProvider ServiceProvider;

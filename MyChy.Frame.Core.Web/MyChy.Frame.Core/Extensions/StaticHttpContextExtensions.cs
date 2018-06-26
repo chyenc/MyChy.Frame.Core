@@ -9,7 +9,7 @@ namespace MyChy.Frame.Core.Extensions
 {
     public static class StaticHttpContextExtensions
     {
-        public static void AddHttpContextAccessor(this IServiceCollection services)
+        public static void AddHttpContextAccessors(this IServiceCollection services)
         {
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }

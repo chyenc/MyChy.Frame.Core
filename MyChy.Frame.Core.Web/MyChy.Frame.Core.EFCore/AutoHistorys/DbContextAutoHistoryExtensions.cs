@@ -67,8 +67,8 @@ namespace MyChy.Frame.Core.EFCore.AutoHistorys
             {
                 if (Operator == "SyStem")
                 {
-                    var userinfo = ClaimsIdentityServer.AccountUserid();
-                    if (userinfo.UserId > 0) { Operator = userinfo.UserNick + "|" + userinfo.UserId; }
+                    //var userinfo = ClaimsIdentityServer.AccountUserid();
+                    //if (userinfo.UserId > 0) { Operator = userinfo.UserNick + "|" + userinfo.UserId; }
                 }
             }
             foreach (var entry in entries)

@@ -125,7 +125,7 @@ namespace MyChy.Frame.Core.Web
             services.AddSingleton<DbContext, CoreDbContext>();
 
 
-            services.AddHttpContextAccessor();
+            services.AddHttpContextAccessors();
 
             services.AddSession();
 

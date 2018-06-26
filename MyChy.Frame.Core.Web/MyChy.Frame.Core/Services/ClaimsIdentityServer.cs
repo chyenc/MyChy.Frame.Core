@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Linq;
 using MyChy.Frame.Core.Common.Extensions;
 using System;
+using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
@@ -11,7 +12,7 @@ namespace MyChy.Frame.Core.Services
     public class ClaimsIdentityServer
     {
         private const string _Name = "AdminTicket";
-        private const int _Minutes =60;
+        private const int _Minutes = 60;
 
         /// <summary>
         /// 用户登录
@@ -32,9 +33,9 @@ namespace MyChy.Frame.Core.Services
         /// <param name="Claims"></param>
         /// <param name="Name"></param>
         /// <param name="Minutes"></param>
-        public static async void UserLogin(FrontIdentity Front, string Name = _Name, int Minutes= _Minutes)
+        public static async void UserLogin(FrontIdentity Front, string Name = _Name, int Minutes = _Minutes)
         {
-           // UserOut(_Name);
+            // UserOut(_Name);
             SessionServer.Set(Name, Front);
 
             IList<Claim> claims = new List<Claim>
@@ -51,15 +52,16 @@ namespace MyChy.Frame.Core.Services
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-        
+
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 
 
-            var Authentication = new AuthenticationProperties
+            var Authentication = new Microsoft.AspNetCore.Authentication.AuthenticationProperties
             {
                 ExpiresUtc = DateTime.UtcNow.AddMinutes(Minutes),
                 IsPersistent = false,
-                AllowRefresh = false
+                AllowRefresh = false,
+
             };
 
             await HttpContext.Current.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, Authentication);
@@ -82,7 +84,7 @@ namespace MyChy.Frame.Core.Services
         /// 返回登录用户信息
         /// </summary>
         /// <returns></returns>
-        public static FrontIdentity AccountUserid() 
+        public static FrontIdentity AccountUserid()
         {
             var userinfo = SessionServer.Get<FrontIdentity>(_Name);
             if (userinfo != null && userinfo.Success)
@@ -103,17 +105,18 @@ namespace MyChy.Frame.Core.Services
                 result.RoleId = ShowClaimValue<int>(ss, ClaimTypes.Role);
                 result.Authority = ShowClaimValue<string>(ss, ClaimTypes.Authentication);
                 result.EndTime = ShowClaimValue<DateTime>(ss, ClaimTypes.Expired);
-                result.OrganizationId= ShowClaimValue<string>(ss, ClaimTypes.PrimarySid);
+                result.OrganizationId = ShowClaimValue<string>(ss, ClaimTypes.PrimarySid);
 
                 if (!CheckEndTime(result))
                 {
                     result = new FrontIdentity();
                 }
-                else {
-                    SessionServer.Set( _Name, result);
+                else
+                {
+                    SessionServer.Set(_Name, result);
                 }
             }
-            if (result.UserId == 0) { result.UserNick = "";}
+            if (result.UserId == 0) { result.UserNick = ""; }
             return result;
         }
 
@@ -127,7 +130,7 @@ namespace MyChy.Frame.Core.Services
                     result = false;
                     UserOut(_Name);
                 }
-                else if (DateTime.Now.AddMinutes(20) > Front.EndTime )
+                else if (DateTime.Now.AddMinutes(20) > Front.EndTime)
                 {
                     Front.EndTime = DateTime.Now.AddMinutes(_Minutes);
                     UserLogin(Front);

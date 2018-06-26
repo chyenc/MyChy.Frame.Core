@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyChy.Frame.Core", "MyChy.F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyChy.Frame.Core.Console", "MyChy.Frame.Core.Console\MyChy.Frame.Core.Console.csproj", "{CB666CD5-E05D-42AC-9135-87EA6DCE6514}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyChy.Frame.Core.Redis", "MyChy.Frame.Core.Redis\MyChy.Frame.Core.Redis.csproj", "{E636E1E0-C2EC-4FC6-945E-5DDE2017DCF6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyChy.Frame.Core.Redis", "MyChy.Frame.Core.Redis\MyChy.Frame.Core.Redis.csproj", "{E636E1E0-C2EC-4FC6-945E-5DDE2017DCF6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
