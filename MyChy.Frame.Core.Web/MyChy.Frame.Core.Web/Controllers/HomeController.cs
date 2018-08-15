@@ -70,6 +70,9 @@ namespace MyChy.Frame.Core.Web.Controllers
 
         public IActionResult About()
         {
+            var ip = MyChy.Frame.Core.HttpContext.GetIp();
+
+
             LogHelper.LogError("asdfasdf");
 
            // Common();

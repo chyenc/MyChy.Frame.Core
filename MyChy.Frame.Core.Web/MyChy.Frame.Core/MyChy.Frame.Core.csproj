@@ -2,10 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <Version>1.2.1</Version>
-    <Description>HttpContext 增加获取IP地址功能</Description>
-    <AssemblyVersion>1.2.1.0</AssemblyVersion>
-    <FileVersion>1.2.11.0</FileVersion>
+    <Version>1.3.2</Version>
+    <Description>ClaimsIdentityServer 增加RoleType</Description>
+    <AssemblyVersion>1.3.2.0</AssemblyVersion>
+    <FileVersion>1.3.2.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>

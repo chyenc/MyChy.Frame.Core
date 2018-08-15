@@ -41,13 +41,15 @@ namespace MyChy.Frame.Core.Services
             {
                 new Claim(ClaimTypes.NameIdentifier, Front.UserId.To("")),
                 new Claim(ClaimTypes.Name, Front.UserIds.To("")),
-                new Claim(ClaimTypes.Gender, Front.Mobile.To("")),
+                new Claim(ClaimTypes.Gender, Front.UserNick.To("")),
                 new Claim(ClaimTypes.MobilePhone, Front.Mobile.To("")),
                 new Claim(ClaimTypes.PrimarySid, Front.OrganizationId.To("")),
                 new Claim(ClaimTypes.Actor, Front.OpenId.To("")),
                 new Claim(ClaimTypes.Role, Front.RoleId.To("")),
                 new Claim(ClaimTypes.Authentication, Front.Authority.To("")),
-                new Claim(ClaimTypes.Expired, Front.EndTime.To(""))
+                new Claim(ClaimTypes.Expired, Front.EndTime.To("")),
+                new Claim(ClaimTypes.GroupSid, Front.RoleType.To(""))
+
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -55,7 +57,7 @@ namespace MyChy.Frame.Core.Services
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 
 
-            var Authentication = new Microsoft.AspNetCore.Authentication.AuthenticationProperties
+            var Authentication = new AuthenticationProperties
             {
                 ExpiresUtc = DateTime.UtcNow.AddMinutes(Minutes),
                 IsPersistent = false,
@@ -101,7 +103,9 @@ namespace MyChy.Frame.Core.Services
                 result.UserNick = ShowClaimValue<string>(ss, ClaimTypes.Gender);
                 result.Mobile = ShowClaimValue<string>(ss, ClaimTypes.MobilePhone);
                 result.OpenId = ShowClaimValue<string>(ss, ClaimTypes.Actor);
+
                 result.RoleId = ShowClaimValue<int>(ss, ClaimTypes.Role);
+                result.RoleType= ShowClaimValue<int>(ss, ClaimTypes.GroupSid);
                 result.Authority = ShowClaimValue<string>(ss, ClaimTypes.Authentication);
                 result.EndTime = ShowClaimValue<DateTime>(ss, ClaimTypes.Expired);
                 result.OrganizationId = ShowClaimValue<string>(ss, ClaimTypes.PrimarySid);
@@ -166,6 +170,8 @@ namespace MyChy.Frame.Core.Services
         public bool Success { get; set; }
 
         public int UserId { get; set; }
+
+        public int RoleType { get; set; }
 
         public int RoleId { get; set; }
 
