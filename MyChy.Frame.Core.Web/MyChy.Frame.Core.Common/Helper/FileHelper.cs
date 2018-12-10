@@ -175,20 +175,7 @@ namespace MyChy.Frame.Core.Common.Helper
         /// <param name="file"></param>
         public static string GetFileMapPath(string file)
         {
-            //var context = HttpContext.Current;
-            //string filename;
-            //if (context != null)
-            //{
-            //    filename = context.Server.MapPath(file);
-            //    if (!IsFile(filename))
-            //    {
-            //        filename = context.Server.MapPath("/" + file);
-            //    }
-            //}
-            //else
-            //{
             var filename = Path.Combine(Directory.GetCurrentDirectory(), file);
-            //  }
             return filename;
         }
 
