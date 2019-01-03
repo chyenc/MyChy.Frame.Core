@@ -71,6 +71,22 @@ namespace MyChy.Frame.Core.Common.Helper
             return value;
         }
 
+        /// <summary>
+        /// 截取字符串
+        /// </summary>
+        /// <returns></returns>
+        public static string StringSubstring(string value, int length=10)
+        {
+            if (string.IsNullOrEmpty(value)) return "";
+
+            if (value.Length > length)
+            {
+                value=value.Substring(0, length - 1) + "..";
+            }
+            return value;
+        }
+
+
 
         #region Json反序列化
         /// <summary>
