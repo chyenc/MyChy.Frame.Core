@@ -120,6 +120,7 @@ namespace MyChy.Frame.Core.Web.Controllers
 
         public IActionResult Error()
         {
+            throw new Exception("你怎么不留下姓名啊，卖肾又不是丢人的事。");
             return View();
         }
 
@@ -254,8 +255,8 @@ namespace MyChy.Frame.Core.Web.Controllers
                                         where id = @id");
             var parameter = new SqlParameter[] {
                 new SqlParameter("@id", 1),
-                 new SqlParameter("@user", "MyChy"),
-                  new SqlParameter("@is", 1),
+                new SqlParameter("@user", "MyChy"),
+                new SqlParameter("@is", 1),
             };
        
          

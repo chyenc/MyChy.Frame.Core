@@ -13,9 +13,13 @@ namespace MyChy.Frame.Core.Services
         /// <param name="Front"></param>
         public static void Set(string Name,object Front)
         {
-            var val = SerializeHelper.ObjToString(Front);
-            byte[] serializedResult = Encoding.UTF8.GetBytes(val);
-            HttpContext.Current.Session.Set(Name, serializedResult);
+            if (HttpContext.Current!=null&& HttpContext.Current.Session != null)
+            {
+                var val = SerializeHelper.ObjToString(Front);
+                byte[] serializedResult = Encoding.UTF8.GetBytes(val);
+                HttpContext.Current.Session.Set(Name, serializedResult);
+            }
+
         }
 
         ///// <summary>
@@ -32,18 +36,24 @@ namespace MyChy.Frame.Core.Services
 
         public static T Get<T>(string Name)
         {
-            HttpContext.Current.Session.TryGetValue(Name, out byte[] serializedResult);
-            if (serializedResult != null && serializedResult.Length > 0)
+            if (HttpContext.Current != null && HttpContext.Current.Session != null)
             {
-                var str = Encoding.UTF8.GetString(serializedResult);
-                return SerializeHelper.StringToObj<T>(str);
+                HttpContext.Current.Session.TryGetValue(Name, out byte[] serializedResult);
+                if (serializedResult != null && serializedResult.Length > 0)
+                {
+                    var str = Encoding.UTF8.GetString(serializedResult);
+                    return SerializeHelper.StringToObj<T>(str);
+                }
             }
             return default(T);
         }
 
         public static void Remove(string Name)
         {
-            HttpContext.Current.Session.Remove(Name);
+            if (HttpContext.Current != null && HttpContext.Current.Session != null)
+            {
+                HttpContext.Current.Session.Remove(Name);
+            }
         }
     }
 }

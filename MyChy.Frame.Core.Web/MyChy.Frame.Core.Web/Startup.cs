@@ -193,15 +193,17 @@ namespace MyChy.Frame.Core.Web
             // env;
 
 
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-              //  app.UseBrowserLink();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-            }
+            //if (env.IsDevelopment())
+            //{
+            //    app.UseDeveloperExceptionPage();
+            //  //  app.UseBrowserLink();
+            //}
+            //else
+            //{
+            //    app.UseExceptionHandlerLogs("/Home/Error");
+            //}
+
+            app.UseExceptionHandlerLogs("/Home/Error");
 
             app.UseStaticFiles();
 

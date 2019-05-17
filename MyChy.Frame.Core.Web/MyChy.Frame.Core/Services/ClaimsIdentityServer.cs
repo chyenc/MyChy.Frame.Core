@@ -87,13 +87,21 @@ namespace MyChy.Frame.Core.Services
         /// <returns></returns>
         public static FrontIdentity AccountUserid()
         {
+
+            var result = new FrontIdentity();
+            if (HttpContext.Current == null)
+            {
+                return result;
+            }
             var userinfo = SessionServer.Get<FrontIdentity>(_Name);
             if (userinfo != null && userinfo.Success)
             {
                 return userinfo;
             }
-
-            var result = new FrontIdentity();
+            if (HttpContext.Current.User == null)
+            {
+                return result;
+            }
             if (HttpContext.Current.User.Identity.IsAuthenticated)
             {
                 result.Success = true;
