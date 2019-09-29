@@ -56,6 +56,27 @@ namespace MyChy.Frame.Core.Common.Extensions
 
 
         /// <summary>
+        ///当前 URL 的客户端请求的 URL 的信息
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public static string GetUrlReferrer(this HttpRequest request)
+        {
+            var url = string.Empty;//
+            try
+            {
+                url = request.Headers["Referer"].FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Log(ex);
+                //ip = "0.0.0.1";
+            }
+            return url;
+        }
+
+
+        /// <summary>
         /// <para>将 URL 中的参数名称/值编码为合法的格式。</para>
         /// <para>可以解决类似这样的问题：假设参数名为 tvshow, 参数值为 Tom&Jerry，如果不编码，
         /// 可能得到的网址： http://a.com/?tvshow=Tom&Jerry&year=1965 编码后则为：http://a.com/?tvshow=Tom%26Jerry&year=1965 </para>

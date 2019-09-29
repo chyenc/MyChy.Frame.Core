@@ -77,6 +77,36 @@ namespace MyChy.Frame.Core.Common.Helper
             return result;
 
         }
+
+        /// <summary>
+        /// 保持文件
+        /// </summary>
+        /// <param name="ExtensionName">扩展名</param>
+        /// <param name="ms"></param>
+        /// <returns></returns>
+        public UploadReceiveModel Save(string ExtensionName, MemoryStream ms)
+        {
+            var result = new UploadReceiveModel();
+
+            var date = DateTime.Now.Ticks.ToString();
+            var dateFormat = DateTime.Now.ToString(UploadFormat);
+            FileHelper.CreatedFolderData(Model.SavePath, dateFormat, out string filedate);
+            result.SavePath = filedate + date + "." + ExtensionName;
+
+            using (FileStream fs = System.IO.File.Create(Model.SavePath + result.SavePath))
+            {
+                ms.Position = 0;
+                var buffer = new byte[1024];
+                var bytesRead = 0;
+                while ((bytesRead = ms.Read(buffer, 0, buffer.Length)) != 0)
+                {
+                    fs.Write(buffer, 0, bytesRead);
+                }
+                fs.Flush();
+            }
+            result.Success = true;
+            return result;
+        }
     }
 
     public enum UpLoadFileType
