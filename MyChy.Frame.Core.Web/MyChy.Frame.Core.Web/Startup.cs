@@ -34,8 +34,8 @@ namespace MyChy.Frame.Core.Web
         protected IAssemblyProvider assemblyProvider;
         protected ILogger<Startup> logger;
 
-        public Startup(IHostingEnvironment env, IServiceProvider serviceProvider)
-: this(env, serviceProvider, new AssemblyProvider(serviceProvider))
+        public Startup(IHostingEnvironment env, IServiceProvider _serviceProvider)
+: this(env, _serviceProvider, new AssemblyProvider(serviceProvider))
         {
             this.logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger<Startup>();
         }

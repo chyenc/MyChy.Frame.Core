@@ -120,7 +120,7 @@ namespace MyChy.Frame.Core.EFCore.AutoHistorys
             foreach (var property in properties)
             {
                 // TODO: Supports the shadow properties
-                if (property.IsShadowProperty)
+                if (property.IsShadowProperty())
                 {
                     continue;
                 }

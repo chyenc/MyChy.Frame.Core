@@ -460,7 +460,8 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
         /// <param name="query">The Sql String</param>
         /// <param name="parameters">The Sql Parameters</param>
         /// <returns></returns>
-        public virtual IQueryable<TEntity> SqlQuery(string query, params object[] parameters) => Set.FromSql(query, parameters).AsQueryable();
+        public virtual IQueryable<TEntity> SqlQuery(string query, params object[] parameters) 
+            => Set.FromSqlRaw(query, parameters).AsQueryable();
 
         /// <summary>
         /// Gets an <see cref="T:System.Linq.IQueryable`1" />
