@@ -336,7 +336,8 @@ namespace MyChy.Frame.Core.Web3.Pages.Home
         public async Task<FrontIdentity> UserIdentity(int userid)
         {
 
-            var UserIdentity = new FrontIdentity();
+            var UserIdentity = ClaimsIdentityServer.AccountUserid();
+
             var userinfo = await _competencesService.CompUserR.QueryNoTracking().Where(x => x.Id == userid).FirstOrDefaultAsync();
             if (userinfo?.Id > 0)
             {
@@ -362,8 +363,8 @@ namespace MyChy.Frame.Core.Web3.Pages.Home
 
             }
 
-            //ClaimsIdentityServer.UserLogin(UserIdentity);
-            //// UserIdentity.Success = true;
+            ClaimsIdentityServer.UserLogin(UserIdentity);
+            UserIdentity.Success = true;
 
             return UserIdentity;
 

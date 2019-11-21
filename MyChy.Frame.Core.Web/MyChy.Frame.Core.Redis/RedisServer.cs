@@ -330,6 +330,9 @@ namespace MyChy.Frame.Core.Redis
 
         #endregion
 
+        //list集合的值不具有唯一性； 类似一个双端队列
+        //set集合的值具有唯一性；
+        //
         #region Set 无序存储数组
 
         ///// <summary>

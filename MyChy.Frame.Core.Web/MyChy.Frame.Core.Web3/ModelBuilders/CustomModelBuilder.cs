@@ -32,13 +32,15 @@ namespace MyChy.Frame.Core.Web.ModelBuilders
                 b.ToTable("CompUser");
             });
 
+ 
+            modelBuilder.Entity<CompUserRole>(b =>
+            {
+                b.ToTable("CompUserRole");
+            });
+
 
             modelBuilder.EnableAutoHistory();
 
-            //modelBuilder.Entity<CompUserRole>(b =>
-            //{
-            //    b.ToTable("CompUserRole");
-            //});
 
 
         }

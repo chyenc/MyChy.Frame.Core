@@ -151,6 +151,7 @@ namespace MyChy.Frame.Core.Common.Helper
             }
             return enText.ToString();
         }
+
         /// <summary>
         /// SHA1加密
         /// </summary>

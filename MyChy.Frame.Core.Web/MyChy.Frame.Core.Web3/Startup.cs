@@ -160,7 +160,13 @@ namespace MyChy.Frame.Core.Web3
             }
 
             app.UseHttpsRedirection();
+
             app.UseStaticFiles();
+
+            //°²×°NuGet°ü Session
+            app.UseSession();
+
+            app.UseStaticHttpContext();
 
             app.UseRouting();
 
