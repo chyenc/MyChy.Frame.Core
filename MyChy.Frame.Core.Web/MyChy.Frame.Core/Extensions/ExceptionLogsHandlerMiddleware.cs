@@ -5,7 +5,6 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Diagnostics.Internal;
 using Microsoft.Net.Http.Headers;
 using Microsoft.AspNetCore.Diagnostics;
 

@@ -1,6 +1,6 @@
 ﻿{
   "BaseType": "MsSql",
-  "Connect": "Data Source=192.168.16.24;Database=CoreDemo3;User Id=sa;Password=qwe-asd-zxc-123;Pooling=true;Max Pool Size=1000;Min Pool Size=0;",
+  "Connect": "Data Source=.;Database=CoreDemo3;User Id=sa;Password=qwe-asd-zxc-123;Pooling=true;Max Pool Size=1000;Min Pool Size=0;",
   "Overtime": "600",
   "Version": "2016",
   "IsEncryption": "false",

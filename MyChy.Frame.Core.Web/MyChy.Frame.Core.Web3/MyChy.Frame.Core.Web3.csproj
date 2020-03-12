@@ -1,23 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LINQKit.Core" Version="1.1.16" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.0.0">
+    <PackageReference Include="LINQKit.Core" Version="1.1.17" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.0.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.0.0" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.7.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.2" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MyChy.Frame.Core.Common\MyChy.Frame.Core.Common.csproj" />
-    <ProjectReference Include="..\MyChy.Frame.Core.Console\MyChy.Frame.Core.Console.csproj" />
     <ProjectReference Include="..\MyChy.Frame.Core.EFCore\MyChy.Frame.Core.EFCore.csproj" />
     <ProjectReference Include="..\MyChy.Frame.Core.Redis\MyChy.Frame.Core.Redis.csproj" />
     <ProjectReference Include="..\MyChy.Frame.Core\MyChy.Frame.Core.csproj" />
