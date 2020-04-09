@@ -2,9 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Version>3.1.0</Version>
-    <Description>升级Core3.1</Description>
-    <AssemblyVersion>3.1.0.0</AssemblyVersion>
+    <Version>3.1.1</Version>
+    <Description>修改ServiceBase 增加 private readonly IMapper mapper;</Description>
+    <AssemblyVersion>3.1.1.0</AssemblyVersion>
     <FileVersion>3.1.0.0</FileVersion>
   </PropertyGroup>
 

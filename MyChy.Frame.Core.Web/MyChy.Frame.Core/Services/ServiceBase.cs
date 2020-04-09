@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoMapper;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -9,6 +10,8 @@ namespace MyChy.Frame.Core.Services
     /// </summary>
     public abstract class ServiceBase : IServiceBase
     {
+        private readonly IMapper mapper;
+
         public virtual void Dispose()
         {
 

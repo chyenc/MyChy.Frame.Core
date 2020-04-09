@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
+using System.Xml.Serialization;
 using Newtonsoft.Json;
 
 namespace MyChy.Frame.Core.Common.Helper
@@ -111,68 +112,68 @@ namespace MyChy.Frame.Core.Common.Helper
         }
         #endregion
 
-        #region XML反序列化
+        #region XML序列化
 
-        ///// <summary>
-        ///// 反序列化
-        ///// </summary>
-        ///// <param name="xml">XML字符串</param>
-        ///// <returns></returns>
-        //public static T DeserializeXml<T>(string xml)
-        //{
-        //    try
-        //    {
-        //        var type = typeof(T);
-        //        var name = type.Name;
-        //        var sb = new StringBuilder(xml);
-        //        sb.Replace("<xml>", "<" + name + ">");
-        //        sb.Replace("</xml>", "</" + name + ">");
-        //        object obj = null;
-        //        using (var sr = new StringReader(sb.ToString()))
-        //        {
-        //            var xmldes = new XmlSerializer(type);
-        //            obj = xmldes.Deserialize(sr);
-        //        }
-        //        if (obj != null)
-        //        {
-        //            return (T)obj;
-        //        }
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        LogHelper.Log(e);
-        //    }
-        //    return default(T);
-        //}
+        /// <summary>
+        /// 反序列化
+        /// </summary>
+        /// <param name="xml">XML字符串</param>
+        /// <returns></returns>
+        public static T DeserializeXml<T>(string xml)
+        {
+            try
+            {
+                var type = typeof(T);
+                var name = type.Name;
+                var sb = new StringBuilder(xml);
+                sb.Replace("<xml>", "<" + name + ">");
+                sb.Replace("</xml>", "</" + name + ">");
+                object obj = null;
+                using (var sr = new StringReader(sb.ToString()))
+                {
+                    var xmldes = new XmlSerializer(type);
+                    obj = xmldes.Deserialize(sr);
+                }
+                if (obj != null)
+                {
+                    return (T)obj;
+                }
+            }
+            catch (Exception e)
+            {
+                LogHelper.Log(e);
+            }
+            return default;
+        }
 
-        ///// <summary>
-        ///// 序列化
-        ///// </summary>
-        ///// <param name="obj">对象</param>
-        ///// <returns></returns>
-        //public static string SerializerXml(object obj)
-        //{
-        //    var str = "";
-        //    try
-        //    {
-        //        var type = obj.GetType();
-        //        var stream = new MemoryStream();
-        //        var xml = new XmlSerializer(type);
-        //        //序列化对象
-        //        xml.Serialize(stream, obj);
-        //        stream.Position = 0;
-        //        var sr = new StreamReader(stream);
-        //        str = sr.ReadToEnd();
+        /// <summary>
+        /// 序列化
+        /// </summary>
+        /// <param name="obj">对象</param>
+        /// <returns></returns>
+        public static string SerializerXml(object obj)
+        {
+            var str = "";
+            try
+            {
+                var type = obj.GetType();
+                var stream = new MemoryStream();
+                var xml = new XmlSerializer(type);
+                //序列化对象
+                xml.Serialize(stream, obj);
+                stream.Position = 0;
+                var sr = new StreamReader(stream);
+                str = sr.ReadToEnd();
 
-        //        sr.Dispose();
-        //        stream.Dispose();
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        LogHelper.Log(e);
-        //    }
-        //    return str;
-        //}
+                sr.Dispose();
+                stream.Dispose();
+            }
+            catch (Exception e)
+            {
+                LogHelper.Log(e);
+            }
+            return str;
+        }
 
         #endregion
 
