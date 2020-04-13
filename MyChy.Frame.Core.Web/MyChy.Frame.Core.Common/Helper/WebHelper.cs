@@ -117,6 +117,56 @@ namespace MyChy.Frame.Core.Common.Helper
         }
 
         /// <summary>
+        /// 发送Web请求返回结果
+        /// </summary>
+        /// <param name="url">地址</param>
+        /// <param name="postDataStr">参数 例如:arg1=a&arg2=b</param>
+        /// <returns></returns>
+        public static string FormPostJson(string url, string postDataStr)
+        {
+            var retString = string.Empty;
+            try
+            {
+                var request = WebRequest.Create(url) as HttpWebRequest;
+                //上面的http头看情况而定，但是下面俩必须加  
+                request.ContentType = "application/json";
+                request.Method = "POST";
+                request.Timeout = 100000;
+
+                var encoding = Encoding.UTF8;//根据网站的编码自定义  
+                byte[] postData = encoding.GetBytes(postDataStr);//postDataStr即为发送的数据，格式还是和上次说的一样  
+                request.ContentLength = postData.Length;
+                var requestStream = request.GetRequestStream();
+                requestStream.Write(postData, 0, postData.Length);
+                //requestStream.Close();  
+
+                var response = (HttpWebResponse)request.GetResponse();
+
+                var responseStream = response.GetResponseStream();
+                if (responseStream != null)
+                {
+                    //如果http头中接受gzip的话，这里就要判断是否为有压缩，有的话，直接解压缩即可  
+                    if (response.Headers["Content-Encoding"] != null && response.Headers["Content-Encoding"].ToLower().Contains("gzip"))
+                    {
+                        responseStream = new GZipStream(responseStream, CompressionMode.Decompress);
+                    }
+                    var streamReader = new StreamReader(responseStream, encoding);
+                    retString = streamReader.ReadToEnd();
+
+                    streamReader.Close();
+                    responseStream.Close();
+                }
+
+            }
+            catch (Exception e)
+            {
+                LogHelper.Log(e);
+            }
+
+            return retString;
+        }
+
+        /// <summary>
         /// 使用Post方法获取字符串结果
         /// </summary>
         /// <param name="url"></param>
