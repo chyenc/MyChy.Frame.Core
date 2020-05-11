@@ -110,6 +110,7 @@ namespace MyChy.Frame.Core.Common.Helper
         {
             return JsonConvert.SerializeObject(obj);
         }
+
         #endregion
 
         #region XML序列化
@@ -175,6 +176,52 @@ namespace MyChy.Frame.Core.Common.Helper
             return str;
         }
 
+        #endregion
+
+        #region 参数序列化
+
+        /// <summary>
+        ///  参数序列化
+        /// </summary>
+        /// <param name="value">参数字符串</param>
+        /// <returns></returns>
+        public static T DeserializeParameter<T>(string value)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(value))
+                {
+                    IDictionary<string, string> dict = new Dictionary<string, string>();
+                    var list = value.Split('&');
+                    if (list != null && list.Length > 0)
+                    {
+                        foreach(var i in list)
+                        {
+                            var ls = i.Split('=');
+                            if (ls.Length >= 2)
+                            {
+                                var val = i.Substring(ls[0].Length+1);
+                                if (!dict.ContainsKey(ls[0]))
+                                {
+                                    dict.Add(ls[0], val);
+                                }
+                            }
+                        }
+                    }
+                    if (dict.Count > 0)
+                    {
+                        return ModelHelper.ModelByIDictionary<T>(dict);
+                    }
+                }
+                return default;
+            }
+            catch (Exception e)
+            {
+                LogHelper.Log(e);
+            }
+            return default;
+        }
+        
         #endregion
 
         #region XML 转 IDictionary<strng, object>
