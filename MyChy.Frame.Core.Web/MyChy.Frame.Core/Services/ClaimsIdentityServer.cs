@@ -62,7 +62,6 @@ namespace MyChy.Frame.Core.Services
                 ExpiresUtc = DateTime.UtcNow.AddMinutes(Minutes),
                 IsPersistent = false,
                 AllowRefresh = false,
-
             };
 
             await HttpContext.Current.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, Authentication);

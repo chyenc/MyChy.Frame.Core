@@ -4,6 +4,7 @@ using System.Linq;
 using StackExchange.Redis;
 using MyChy.Frame.Core.Common.Helper;
 using MyChy.Frame.Core.Common.MemoryCache;
+using System.Threading.Tasks;
 
 namespace MyChy.Frame.Core.Redis
 {
@@ -108,7 +109,7 @@ namespace MyChy.Frame.Core.Redis
         public static void RemoveDay(string key)
         {
             //Remove(key);
-            key = key + DateTime.Now.Date.ToString("yyyy-MM-dd");
+            key += DateTime.Now.Date.ToString("yyyy-MM-dd");
             Remove(key);
         }
 
@@ -133,28 +134,29 @@ namespace MyChy.Frame.Core.Redis
         /// 获取String缓存
         /// </summary>
         /// <param name="key"></param>
+        /// <returns></returns>
+        public static T StringGetCache<T>(string key)
+        {
+            return StringGetCache(key, default(T));
+        }
+
+        /// <summary>
+        /// 获取String缓存
+        /// </summary>
+        /// <param name="key"></param>
         /// <param name="defVal"></param>
         /// <returns></returns>
         public static T StringGetCache<T>(string key, T defVal)
         {
-            if (!Config.IsCache || IsCacheError) return (T)defVal;
+            if (!Config.IsCache || IsCacheError) return defVal;
             var redisdb = Redis.GetDatabase();
-            if (IsCacheError) return default(T);
+            if (IsCacheError) return defVal;
             var obj = redisdb.StringGet(Config.Name + key);
             return SerializeHelper.StringToObj<T>(obj, defVal);
         }
 
-        /// <summary>
-        /// Hash列表 Name 值
-        /// </summary>
-        /// <param name="key"></param>
-        public static T StringGetCache<T>(string key)
-        {
-            return StringGetCache<T>(key, default(T));
-        }
 
-
-        #region 同步增加 String缓存
+        #region 同步保存 String缓存
 
         /// <summary>
         /// 添加缓存 10分钟
@@ -220,10 +222,10 @@ namespace MyChy.Frame.Core.Redis
         /// </summary>
         /// <param name="key">KEY</param>
         /// <param name="objObject">数据</param>
-        public static void StringSetCacheAsync(string key, object objObject)
+        public static async Task StringSetCacheAsync(string key, object objObject)
         {
             var time = DateTime.Now.AddSeconds(Config.CacheSeconds);
-            StringSetCacheAsync(key, objObject, time);
+            await StringSetCacheAsync(key, objObject, time);
         }
 
         /// <summary>
@@ -232,10 +234,10 @@ namespace MyChy.Frame.Core.Redis
         /// <param name="key">KEY</param>
         /// <param name="objObject">数据</param>
         /// <param name="seconds">秒</param>
-        public static void StringSetCacheAsync(string key, object objObject, double seconds)
+        public static async Task StringSetCacheAsync(string key, object objObject, double seconds)
         {
             var time = DateTime.Now.AddSeconds(seconds);
-            StringSetCacheAsync(key, objObject, time);
+            await StringSetCacheAsync(key, objObject, time);
         }
 
         /// <summary>
@@ -244,14 +246,14 @@ namespace MyChy.Frame.Core.Redis
         /// <param name="key">KEY</param>
         /// <param name="objObject">数据</param>
         /// <param name="time"></param>
-        public static void StringSetCacheAsync(string key, object objObject, DateTime time)
+        public static async Task StringSetCacheAsync(string key, object objObject, DateTime time)
         {
             if (!Config.IsCache || IsCacheError) return;
             var redisdb = GetDatabase();
             var obj = SerializeHelper.ObjToString(objObject);
             var ts = DateTime.Now.Subtract(time).Duration();
             if (IsCacheError) return;
-            redisdb.StringSetAsync(Config.Name + key, obj, ts);
+            await redisdb.StringSetAsync(Config.Name + key, obj, ts);
         }
 
         /// <summary>
@@ -270,7 +272,6 @@ namespace MyChy.Frame.Core.Redis
         }
 
         #endregion
-
 
         #endregion
 
@@ -668,7 +669,7 @@ namespace MyChy.Frame.Core.Redis
         /// <param name="defVal"></param>
         public static T HashDayGetCache<T>(string key, string name, T defVal)
         {
-            key = key + DateTime.Now.Date.ToString(Dateformat);
+            key += DateTime.Now.Date.ToString(Dateformat);
             return HashGetCache<T>(key, name, defVal);
         }
 
@@ -680,7 +681,7 @@ namespace MyChy.Frame.Core.Redis
         /// <param name="name"></param>
         public static bool HashDayExistsCache(string key, string name)
         {
-            key = key + DateTime.Now.Date.ToString(Dateformat);
+            key += DateTime.Now.Date.ToString(Dateformat);
             return HashExistsCache(key, name);
         }
 
@@ -691,7 +692,7 @@ namespace MyChy.Frame.Core.Redis
         /// <param name="name"></param>
         public static bool HashDayDelete(string key, string name)
         {
-            key = key + DateTime.Now.Date.ToString(Dateformat);
+            key += DateTime.Now.Date.ToString(Dateformat);
             return HashDelete(key, name);
         }
 
@@ -707,7 +708,7 @@ namespace MyChy.Frame.Core.Redis
         {
             if (!Config.IsCache || IsCacheError) return -1;
             DayDelYesterday(key, "HashIncrement", isDelYesterday);
-            key = key + DateTime.Now.Date.ToString(Dateformat);
+            key += DateTime.Now.Date.ToString(Dateformat);
             return HashIncrementCache(key, name, cardinal);
         }
 
@@ -723,7 +724,7 @@ namespace MyChy.Frame.Core.Redis
         {
             if (!Config.IsCache || IsCacheError) return 0;
             DayDelYesterday(key, "HashIncrement", isDelYesterday);
-            key = key + DateTime.Now.Date.ToString(Dateformat);
+            key += DateTime.Now.Date.ToString(Dateformat);
             return HashDecrementCache(key, name, cardinal);
         }
 

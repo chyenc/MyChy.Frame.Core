@@ -2,10 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Version>3.1.1</Version>
-    <AssemblyVersion>3.1.1.0</AssemblyVersion>
-    <FileVersion>3.1.0.0</FileVersion>
-    <Description>增加 XML序列化</Description>
+    <Version>3.1.5</Version>
+    <AssemblyVersion>3.1.5.0</AssemblyVersion>
+    <FileVersion>3.1.5.0</FileVersion>
+    <Description>增加 字符串类型转换成List</Description>
   </PropertyGroup>
 
   <ItemGroup>

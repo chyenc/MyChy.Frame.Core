@@ -79,6 +79,35 @@ namespace MyChy.Frame.Core.Common.Helper
         }
 
         /// <summary>
+        /// 保存文件
+        /// </summary>
+        /// <param name="File"></param>
+        /// <returns></returns>
+        public UploadReceiveModel UploadImage(string Base64)
+        {
+            var result = new UploadReceiveModel();
+            var fileName = ContentDispositionHeaderValue.Parse(File.ContentDisposition).FileName.Trim('"');
+           
+            result.FileName = "";
+            result.ExtensionName = ".jpg";
+            var date = DateTime.Now.Ticks.ToString();
+            var dateFormat = DateTime.Now.ToString(UploadFormat);
+            FileHelper.CreatedFolderData(Model.SavePath, dateFormat, out string filedate);
+
+            result.SavePath = filedate + date + "." + result.ExtensionName;
+
+            using (FileStream fs = System.IO.File.Create(Model.SavePath + result.SavePath))
+            {
+                File.CopyTo(fs);
+                fs.Flush();
+            }
+
+            result.Success = true;
+            return result;
+
+        }
+
+        /// <summary>
         /// 保持文件
         /// </summary>
         /// <param name="ExtensionName">扩展名</param>
@@ -93,7 +122,7 @@ namespace MyChy.Frame.Core.Common.Helper
             FileHelper.CreatedFolderData(Model.SavePath, dateFormat, out string filedate);
             result.SavePath = filedate + date + "." + ExtensionName;
 
-            using (FileStream fs = System.IO.File.Create(Model.SavePath + result.SavePath))
+            using (FileStream fs = File.Create(Model.SavePath + result.SavePath))
             {
                 ms.Position = 0;
                 var buffer = new byte[1024];

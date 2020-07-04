@@ -50,6 +50,31 @@ namespace MyChy.Frame.Core.Common.Extensions
 
         #endregion
 
+        /// <summary>
+        /// 字符串类型转换成List
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="val"></param>
+        /// <param name="Delimiter"></param>
+        /// <returns></returns>
+        public static IList<T> ToList<T>(this string val, string Delimiter = ",")
+        {
+            var result = new List<T>();
+            if (!string.IsNullOrEmpty(val))
+            {
+                var ss = val.Split(Delimiter);
+                foreach (var i in ss)
+                {
+                    var xx = i.To<T>();
+                    if (!result.Contains(xx))
+                    {
+                        result.Add(xx);
+                    }
+                }
+            }
+            return result;
+        }
+
 
 
 
