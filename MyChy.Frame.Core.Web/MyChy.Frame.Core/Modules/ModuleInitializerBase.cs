@@ -13,7 +13,7 @@ namespace MyChy.Frame.Core.Modules
 {
     public abstract class ModuleInitializerBase : IModuleInitializer
     {
-        protected IHostingEnvironment hostingEnvironment;
+        protected IWebHostEnvironment  webHostEnvironment;
         protected IServiceProvider serviceProvider;
         protected IConfigurationRoot configurationRoot;
         protected ILogger<ModuleInitializerBase> logger;
@@ -37,7 +37,7 @@ namespace MyChy.Frame.Core.Modules
         public virtual void SetServiceProvider(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
-            this.hostingEnvironment = serviceProvider.GetService<IHostingEnvironment>();
+            this.webHostEnvironment = serviceProvider.GetService<IWebHostEnvironment>();
             this.logger = this.serviceProvider.GetService<ILoggerFactory>().CreateLogger<ModuleInitializerBase>();
         }
 

@@ -26,7 +26,7 @@ namespace MyChy.Frame.Core.Web3.Pages
             var res = StringHelper.DeserializeParameter<ReceiptEncryptModel>(url);
 
 
-            string vv = "";
+            string vv = res.Encrypt;
         }
     }
 }

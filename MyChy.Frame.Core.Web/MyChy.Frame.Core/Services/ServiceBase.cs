@@ -10,7 +10,7 @@ namespace MyChy.Frame.Core.Services
     /// </summary>
     public abstract class ServiceBase : IServiceBase
     {
-        private readonly IMapper mapper;
+        //private readonly IMapper mapper;
 
         public virtual void Dispose()
         {

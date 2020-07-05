@@ -13,7 +13,7 @@ namespace MyChy.Frame.Core.Test3
         [Test]
         public void CreatLogin()
         {
-            var ss1 = "{\"result\":[{\"originTo\":\"+8613810565156\",\"createTime\":\"2019-03-11T07:37:41Z\",\"from\":\"csms12345678\",\"smsMsgId\":\"98864723-9047-4790-a384-f602f310eeb5_145580135\",\"status\":\"E200033\"}],\"code\":\"E200037\",\"description\":\"The SMS fails to be sent. For details, see status.\"}";
+            //var ss1 = "{\"result\":[{\"originTo\":\"+8613810565156\",\"createTime\":\"2019-03-11T07:37:41Z\",\"from\":\"csms12345678\",\"smsMsgId\":\"98864723-9047-4790-a384-f602f310eeb5_145580135\",\"status\":\"E200033\"}],\"code\":\"E200037\",\"description\":\"The SMS fails to be sent. For details, see status.\"}";
 
             //var model = new BatchSendSmsReq
             //{

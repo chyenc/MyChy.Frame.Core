@@ -120,7 +120,7 @@ namespace MyChy.Frame.Core.Web.Controllers
         public IActionResult Error()
         {
             throw new Exception("你怎么不留下姓名啊，卖肾又不是丢人的事。");
-            return View();
+            
         }
 
         /// <summary>
