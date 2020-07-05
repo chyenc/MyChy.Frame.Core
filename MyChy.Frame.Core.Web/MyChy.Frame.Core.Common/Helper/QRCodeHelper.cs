@@ -3,6 +3,9 @@
 //using System.Drawing.Imaging;
 //using System.IO;
 
+
+
+
 //namespace MyChy.Frame.Core.Common.Helper
 //{
 //    public class QRCodeHelper
