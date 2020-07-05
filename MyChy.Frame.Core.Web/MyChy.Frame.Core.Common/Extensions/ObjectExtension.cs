@@ -18,6 +18,7 @@ namespace MyChy.Frame.Core.Common.Extensions
         public static T To<T>(this object val)
         {
             return val != null ? val.To<T>(default(T)) : default(T);
+
         }
 
         /// <summary>

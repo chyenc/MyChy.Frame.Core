@@ -8,7 +8,8 @@ namespace  MyChy.Frame.Core.Redis
 {
     internal class RedisConfig
     {
-        public bool IsCache { get; set; }
+
+        public bool IsCache { get; set;  }
 
         public string Name { get; set; }
 

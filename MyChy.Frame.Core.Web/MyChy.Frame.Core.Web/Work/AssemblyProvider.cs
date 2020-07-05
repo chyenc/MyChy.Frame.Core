@@ -27,6 +27,7 @@ namespace MyChy.Frame.Core.Web.Work
         public AssemblyProvider(IServiceProvider serviceProvider)
         {
             this._serviceProvider = serviceProvider;
+
             this._logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger<AssemblyProvider>();
             this.IsCandidateAssembly = assembly =>
              /* !assembly.FullName.StartsWith("Microsoft.") && !assembly.FullName.Contains("SF.WebHost") &&*/ assembly.FullName.StartsWith(DLLDateDomains);
