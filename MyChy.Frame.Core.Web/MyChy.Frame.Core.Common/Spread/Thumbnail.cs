@@ -11,10 +11,19 @@ namespace MyChy.Frame.Core.Common.Spread
 {
     public sealed class Thumbnail
     {
- 
+        /// <summary>
+        /// 历史图片地址
+        /// </summary>
+        private string ImagesPath { get; set; }
+
+        /// <summary>
+        /// 压缩图片地址
+        /// </summary>
+        private string ThumbnailPath { get; set; } 
+
         public Thumbnail(string file)
         {
-            FilePath = file;
+            ImagesPath = file;
         }
 
         #region 属性
@@ -22,7 +31,7 @@ namespace MyChy.Frame.Core.Common.Spread
         /// <summary>
         /// 是否使用缩微图文件夹
         /// </summary>
-        public bool IsthumbnailImage { get; set; } = false;
+        public bool IsthumbnailImage { get; set; } = true;
 
 
         /// <summary>
@@ -36,6 +45,8 @@ namespace MyChy.Frame.Core.Common.Spread
         public int Height { get; set; } = 100;
 
 
+
+
         /// <summary>
         /// 图片文件地址
         /// </summary>
@@ -44,7 +55,7 @@ namespace MyChy.Frame.Core.Common.Spread
         /// <summary>
         /// 缩微图文件夹
         /// </summary>
-        public string ThumbnailImage { get; set; } = "ThumbnailImages";
+        public string ThumbnailImage { get; set; } = "Thumbnail";
 
         public Thumbnail()
         {
@@ -86,21 +97,25 @@ namespace MyChy.Frame.Core.Common.Spread
 
             if (IsthumbnailImage)
             {
-                FilePath = Path.Combine(Path.GetDirectoryName(newfile), ThumbnailImage);
+
+                ThumbnailPath = Path.Combine(FilePath, ThumbnailImage)+ newfile;
             }
             else
             {
-                FilePath = newfile;
+                ThumbnailPath = FilePath+newfile;
             }
+            if (string.IsNullOrEmpty(ThumbnailPath)) return;
 
-            FileHelper.CreatedFolder(FilePath);
+            var ss=Path.GetDirectoryName(ThumbnailPath);
 
-            if (string.IsNullOrEmpty(FilePath)) return;
+            FileHelper.CreatedFolder(ss);
 
-            var trd = new Thread(new ThreadStart(TimedProgress));
-            trd.Start();
+          
 
-            //TimedProgress();
+           // var trd = new Thread(new ThreadStart(TimedProgress));
+            //trd.Start();
+
+            TimedProgress();
         }
 
         //根据原图片,缩微图大小等比例缩放 文件
@@ -108,12 +123,12 @@ namespace MyChy.Frame.Core.Common.Spread
         {
             var icf = ImageHelper.GetImageCodecInfo(ImageFormat.Jpeg);
 
-            if (!SafeCheckHelper.IsJpgStr(FilePath)) return;
+            //if (!SafeCheckHelper.IsJpgStr(FilePath)) return;
             //var extension = IoFiles.GetExtension(File);
             try
             {
                 Image image;
-                using (image = Image.FromFile(FilePath))
+                using (image = Image.FromFile(ImagesPath))
                 {
                     var imageSize = GetImageSize(image);
 
@@ -122,7 +137,7 @@ namespace MyChy.Frame.Core.Common.Spread
                     {
                         //var thumbnailImageFilename = IsthumbnailImage ? FilePath : Newfile;
 
-                        ImageHelper.SaveImage(thumbnailImage, FilePath, icf);
+                        ImageHelper.SaveImage(thumbnailImage, ThumbnailPath, icf);
                     }
                 }
             }

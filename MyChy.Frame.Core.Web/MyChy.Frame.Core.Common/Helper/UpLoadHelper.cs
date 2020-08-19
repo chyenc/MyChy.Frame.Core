@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using MyChy.Frame.Core.Common.Model;
+using MyChy.Frame.Core.Common.Spread;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
 
@@ -65,47 +67,26 @@ namespace MyChy.Frame.Core.Common.Helper
             var date = DateTime.Now.Ticks.ToString();
             var dateFormat = DateTime.Now.ToString(UploadFormat);
             FileHelper.CreatedFolderData(Model.SavePath, dateFormat, out string filedate);
-            result.SavePath = filedate + date + "." + exname;
-
-            using (FileStream fs = System.IO.File.Create(Model.SavePath + result.SavePath))
+            if (Model.IsThumbnail)
+            {
+                result.SavePath = filedate + date + "{0}." + exname;
+            }
+            else
+            {
+                result.SavePath = filedate + date + "." + exname;
+            }
+            var savepath = string.Format(result.SavePath, "");
+            var imagespath = Model.SavePath + savepath;
+            using (FileStream fs = System.IO.File.Create(imagespath))
             {
                 File.CopyTo(fs);
                 fs.Flush();
             }
-
+            Thumbnail(imagespath, result.SavePath);
             result.Success = true;
             return result;
 
         }
-
-        ///// <summary>
-        ///// 保存文件
-        ///// </summary>
-        ///// <param name="File"></param>
-        ///// <returns></returns>
-        //public UploadReceiveModel UploadImage(string Base64)
-        //{
-        //    var result = new UploadReceiveModel();
-        //    var fileName = ContentDispositionHeaderValue.Parse(File.ContentDisposition).FileName.Trim('"');
-           
-        //    result.FileName = "";
-        //    result.ExtensionName = ".jpg";
-        //    var date = DateTime.Now.Ticks.ToString();
-        //    var dateFormat = DateTime.Now.ToString(UploadFormat);
-        //    FileHelper.CreatedFolderData(Model.SavePath, dateFormat, out string filedate);
-
-        //    result.SavePath = filedate + date + "." + result.ExtensionName;
-
-        //    using (FileStream fs = System.IO.File.Create(Model.SavePath + result.SavePath))
-        //    {
-        //        File.CopyTo(fs);
-        //        fs.Flush();
-        //    }
-
-        //    result.Success = true;
-        //    return result;
-
-        //}
 
         /// <summary>
         /// 保持文件
@@ -120,9 +101,17 @@ namespace MyChy.Frame.Core.Common.Helper
             var date = DateTime.Now.Ticks.ToString();
             var dateFormat = DateTime.Now.ToString(UploadFormat);
             FileHelper.CreatedFolderData(Model.SavePath, dateFormat, out string filedate);
-            result.SavePath = filedate + date + "." + ExtensionName;
-
-            using (FileStream fs = File.Create(Model.SavePath + result.SavePath))
+            if (Model.IsThumbnail)
+            {
+                result.SavePath = filedate + date + "{0}." + ExtensionName;
+            }
+            else
+            {
+                result.SavePath = filedate + date + "." + ExtensionName;
+            }
+            var savepath= string.Format(result.SavePath, "");
+            var imagespath = Model.SavePath + savepath;
+            using (FileStream fs = File.Create(imagespath))
             {
                 ms.Position = 0;
                 var buffer = new byte[1024];
@@ -133,8 +122,36 @@ namespace MyChy.Frame.Core.Common.Helper
                 }
                 fs.Flush();
             }
+            Thumbnail(imagespath, result.SavePath);
+
             result.Success = true;
             return result;
+        }
+
+        /// <summary>
+        /// 生成缩微图
+        /// </summary>
+        /// <param name="imagespath"></param>
+        /// <param name="SavePath"></param>
+        private void Thumbnail(string imagespath, string SavePath)
+        {
+            if (Model.FileType == UpLoadFileType.Image && Model.IsThumbnail)
+            {
+                if (Model.ThumbnailHigth.Count > 0 && Model.ThumbnailHigth.Count == Model.ThumbnailWith.Count)
+                {
+                    Thumbnail thumbnail = new Thumbnail(imagespath)
+                    {
+                        FilePath = Model.SavePath
+                    };
+                    for (int i = 0, count = Model.ThumbnailWith.Count; i < count; i++)
+                    {
+                        thumbnail.Height = Model.ThumbnailHigth[i];
+                        thumbnail.Width = Model.ThumbnailWith[i];
+                        var newfile = string.Format(SavePath, $"_{thumbnail.Width}_{thumbnail.Height}");
+                        thumbnail.ThumbnailFile(newfile);
+                    }
+                }
+            }
         }
     }
 
@@ -174,7 +191,17 @@ namespace MyChy.Frame.Core.Common.Helper
         /// <summary>
         /// 是否生成缩微图
         /// </summary>
-        public bool IsThumbnail { get; set; } = false;
+        public bool IsThumbnail { get; set; } = true;
+
+        /// <summary>
+        /// 缩微图 宽
+        /// </summary>
+        public IList<int> ThumbnailWith { get; set; } = new List<int>();
+
+        /// <summary>
+        /// 缩微图 高
+        /// </summary>
+        public IList<int> ThumbnailHigth { get; set; } = new List<int>();
 
         /// <summary>
         /// 保存地址

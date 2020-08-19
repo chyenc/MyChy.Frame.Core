@@ -24,6 +24,7 @@ using MyChy.Frame.Core.EFCore.Config;
 using MyChy.Frame.Core.Extensions;
 using MyChy.Frame.Core.Modules;
 using MyChy.Frame.Core.Web.Work;
+using NLog.Extensions.Logging;
 
 namespace MyChy.Frame.Core.Web3
 {
@@ -141,6 +142,14 @@ namespace MyChy.Frame.Core.Web3
 
 
             services.AddRazorPages();
+
+           // if (appconfig.IsNlog)
+           // {
+                services.AddLogging(loggingBuilder =>
+                {
+                    loggingBuilder.AddNLog("config/nlog.config");
+                });
+           // }
 
             serviceProvider = services.BuildServiceProvider();
         }

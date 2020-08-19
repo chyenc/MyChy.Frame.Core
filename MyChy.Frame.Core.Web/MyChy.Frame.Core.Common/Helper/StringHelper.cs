@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using MyChy.Frame.Core.Common.Extensions;
 using Newtonsoft.Json;
 
 namespace MyChy.Frame.Core.Common.Helper
@@ -300,6 +301,36 @@ namespace MyChy.Frame.Core.Common.Helper
         //}
 
         #endregion
+
+
+        /// <summary>
+        /// 分割字符串,返回指定List
+        /// </summary>
+        /// <returns></returns>
+        public static IList<T> StringSplit<T>(string value, char separator=',')
+        {
+            var result = new List<T>();
+            if (!string.IsNullOrEmpty(value))
+            {
+                var list = value.Split(separator);
+                if (list != null && list.Length > 0)
+                {
+                    foreach (var i in list)
+                    {
+                        if (!string.IsNullOrEmpty(i))
+                        {
+                            var val = i.To<T>();
+                            if (!result.Contains(val))
+                            {
+                                result.Add(val);
+                            }
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
 
     }
 }

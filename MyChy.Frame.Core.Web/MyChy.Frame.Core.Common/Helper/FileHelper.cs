@@ -101,6 +101,11 @@ namespace MyChy.Frame.Core.Common.Helper
             if (IsFolder(files)) return;
             try
             {
+                //var xx = files.IndexOf('.');
+                //if (xx > 0)
+                //{
+                //    files = Path.GetDirectoryName(files);
+                //}
                 //建立文件夹
                 Directory.CreateDirectory(files);
             }

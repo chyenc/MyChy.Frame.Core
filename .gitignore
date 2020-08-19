@@ -259,3 +259,5 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/MyChy.Frame.Core.Web/MyChy.Frame.Core.Web3/wwwroot/Files/Picture
+/MyChy.Frame.Core.Web/MyChy.Frame.Core.Web3/config/nlog2.config

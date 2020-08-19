@@ -26,12 +26,11 @@ namespace MyChy.Frame.Core
 
         public static string GetIp()
         {
-            var ip = Current.Connection.RemoteIpAddress.ToString(); 
-            if (string.IsNullOrEmpty(ip))
+            var ip = Current.Request.Headers["X-Forwarded-For"].FirstOrDefault();
+            if (string.IsNullOrEmpty(ip)|| ip.Length<7)
             {
-                ip = Current.Request.Headers["X-Forwarded-For"].FirstOrDefault();
+                ip = Current.Connection.RemoteIpAddress.ToString();
             }
-
             return ip;
         }
 

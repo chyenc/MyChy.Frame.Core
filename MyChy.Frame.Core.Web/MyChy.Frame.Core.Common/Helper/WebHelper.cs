@@ -122,7 +122,7 @@ namespace MyChy.Frame.Core.Common.Helper
         /// <param name="url">地址</param>
         /// <param name="postDataStr">参数 例如:arg1=a&arg2=b</param>
         /// <returns></returns>
-        public static string FormPostJson(string url, string postDataStr)
+        public static string HttpPostJson(string url, string postDataStr)
         {
             var retString = string.Empty;
             try
