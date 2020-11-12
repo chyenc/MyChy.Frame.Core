@@ -57,20 +57,36 @@ namespace MyChy.Frame.Core.Common.Extensions
         /// <param name="val"></param>
         /// <param name="Delimiter"></param>
         /// <returns></returns>
-        public static IList<T> ToList<T>(this string val, string Delimiter = ",")
+        public static IList<T> ToList<T>(this string value, string separator = ",")
         {
             var result = new List<T>();
-            if (!string.IsNullOrEmpty(val))
+            if (!string.IsNullOrEmpty(value))
             {
-                var ss = val.Split(Delimiter);
-                foreach (var i in ss)
+                var list = value.Split(separator);
+                if (list != null && list.Length > 0)
                 {
-                    var xx = i.To<T>();
-                    if (!result.Contains(xx))
+                    foreach (var i in list)
                     {
-                        result.Add(xx);
+                        if (!string.IsNullOrEmpty(i))
+                        {
+                            var val = i.To<T>();
+                            if (!result.Contains(val))
+                            {
+                                result.Add(val);
+                            }
+                        }
                     }
                 }
+
+                //var ss = val.Split(Delimiter);
+                //foreach (var i in ss)
+                //{
+                //    var xx = i.To<T>();
+                //    if (!result.Contains(xx))
+                //    {
+                //        result.Add(xx);
+                //    }
+                //}
             }
             return result;
         }

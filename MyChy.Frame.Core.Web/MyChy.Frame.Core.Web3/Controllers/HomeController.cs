@@ -361,6 +361,7 @@ namespace MyChy.Frame.Core.Web.Controllers
 
             // xx = RedisServer.StringIncrement("asdf1", 10);
             xx = RedisServer.Increment("asdf11");
+
             xx = RedisServer.StringGetCache<long>("asdf11");
             xx = RedisServer.Increment("asdf11", 100);
             xx = RedisServer.Increment("asdf11");
@@ -471,13 +472,14 @@ namespace MyChy.Frame.Core.Web.Controllers
             ss = RedisServer.SortedSetIncrementCache(key, "5", 2);
 
             list = RedisServer.SortedSetRangeByRankDescendingCache(key, 0, 5);
+
         }
 
 
         public void CookiesSession()
         {
 
-            var sss = MyChy.Frame.Core.HttpContext.Current;
+            var sss = Core.HttpContext.Current;
 
             var sfa = SerializeHelper.ObjToString("234");
 
@@ -503,6 +505,8 @@ namespace MyChy.Frame.Core.Web.Controllers
             var Email = CookiesServer.Get<string>("LoginName");
             CookiesServer.Set("LoginName", "admin");
             Email = CookiesServer.Get<string>("LoginName");
+
+
 
         }
 

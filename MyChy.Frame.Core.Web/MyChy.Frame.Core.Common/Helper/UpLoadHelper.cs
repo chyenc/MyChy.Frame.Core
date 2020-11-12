@@ -33,6 +33,7 @@ namespace MyChy.Frame.Core.Common.Helper
         /// <returns></returns>
         public UploadReceiveModel Upload(IFormFile File)
         {
+            Model.IsThumbnail = false;
             var result = new UploadReceiveModel();
             var fileName = ContentDispositionHeaderValue.Parse(File.ContentDisposition).FileName.Trim('"');
             var checkfile = FileHelper.CheckFileNmae(fileName, out string name, out string exname);
@@ -46,6 +47,19 @@ namespace MyChy.Frame.Core.Common.Helper
             {
                 case UpLoadFileType.Image:
                     checkex = ImageList.Contains(exname);
+                    if (Model.ThumbnailHigth.Count > 0 && Model.ThumbnailHigth.Count == Model.ThumbnailWith.Count)
+                    {
+                        if (Model.ThumbnailWith.Count == 1 && 
+                            (Model.ThumbnailWith.Contains(0)|| Model.ThumbnailHigth.Contains(0)))
+                        {
+
+                        }
+                        else
+                        {
+                            Model.IsThumbnail = true;
+                        }
+                    }
+                    //IsThumbnail = true;
                     break;
                 case UpLoadFileType.File:
                     checkex = FileList.Contains(exname);
@@ -67,6 +81,8 @@ namespace MyChy.Frame.Core.Common.Helper
             var date = DateTime.Now.Ticks.ToString();
             var dateFormat = DateTime.Now.ToString(UploadFormat);
             FileHelper.CreatedFolderData(Model.SavePath, dateFormat, out string filedate);
+        
+
             if (Model.IsThumbnail)
             {
                 result.SavePath = filedate + date + "{0}." + exname;
@@ -191,7 +207,7 @@ namespace MyChy.Frame.Core.Common.Helper
         /// <summary>
         /// 是否生成缩微图
         /// </summary>
-        public bool IsThumbnail { get; set; } = true;
+        public bool IsThumbnail { get; set; } = false;
 
         /// <summary>
         /// 缩微图 宽
