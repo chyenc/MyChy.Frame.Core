@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LinqKit" Version="1.1.20" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="1.6.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MyChy.Frame.Core.Common\MyChy.Frame.Core.Common.csproj" />
+    <ProjectReference Include="..\MyChy.Frame.Core.EFCore\MyChy.Frame.Core.EFCore.csproj" />
+    <ProjectReference Include="..\MyChy.Frame.Core.Redis\MyChy.Frame.Core.Redis.csproj" />
+    <ProjectReference Include="..\MyChy.Frame.Core\MyChy.Frame.Core.csproj" />
+  </ItemGroup>
+
+</Project>

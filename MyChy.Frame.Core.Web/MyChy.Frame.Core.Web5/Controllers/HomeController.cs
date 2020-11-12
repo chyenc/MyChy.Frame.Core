@@ -1,56 +1,69 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Data.SqlClient;
-using System.Linq;
-using System.Threading.Tasks;
-using LinqKit;
+﻿using LinqKit;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using MyChy.Frame.Core.Common.Helper;
 using MyChy.Frame.Core.EFCore;
-using MyChy.Frame.Core.Web.Domains;
-using MyChy.Frame.Core.Web.Work;
 using MyChy.Frame.Core.Redis;
 using MyChy.Frame.Core.Services;
-using MyChy.Frame.Core.Common.Helper;
+using MyChy.Frame.Core.Web5.Domains;
+using MyChy.Frame.Core.Web5.Models;
+using MyChy.Frame.Core.Web5.Work;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace MyChy.Frame.Core.Web3.Pages.Home
+namespace MyChy.Frame.Core.Web5.Controllers
 {
-    public class IndexModel : PageModel
+    public class HomeController : Controller
     {
+
         private readonly ICompetencesWorkArea _competencesService;
         private readonly IBaseUnitOfWork baseUnitOfWork;
         private readonly ILogger _logger;
 
-        public IndexModel(
+        public HomeController(
             ICompetencesWorkArea competencesService,
             ILoggerFactory loggerFactory,
             IBaseUnitOfWork _baseUnitOfWork)
         {
             _competencesService = competencesService;
-            _logger = loggerFactory.CreateLogger<IndexModel>();
+            _logger = loggerFactory.CreateLogger<HomeController>();
             baseUnitOfWork = _baseUnitOfWork;
 
         }
 
+        //private readonly ILogger<HomeController> _logger;
 
-        public void OnGet()
+        //public HomeController(ILogger<HomeController> logger)
+        //{
+        //    _logger = logger;
+        //}
+
+        public async Task<IActionResult> Index()
         {
+          
             _logger.LogTrace("跟踪日志-----------");
+
+            _logger.LogError("跟踪日志-----------");
 
             //var _competences = Core.HttpContext.GetService<ICompetencesWorkArea>();
             var model = _competencesService.CompUserR.GetById(3);
 
-           // SqlData();
+            // SqlData();
 
             Redis();
 
             CookiesSession();
 
-            var userinfo = UserIdentity(1).Result;
+            var userinfo = await AdminIdentity(1);
 
-            userinfo = UserIdentity(1).Result;
+            //userinfo = AdminIdentity(1).Result;
+
+            return View();
         }
 
         public void SqlData()
@@ -123,7 +136,7 @@ namespace MyChy.Frame.Core.Web3.Pages.Home
 
             ss = predicate.Body.ToString();
 
-    
+
 
             var list = _competencesService.CompUserR.QueryPage(predicate, page: 1, pageSize: 10);
 
@@ -333,44 +346,57 @@ namespace MyChy.Frame.Core.Web3.Pages.Home
         /// </summary>
         /// <param name="userid"></param>
         /// <returns></returns>
-        public async Task<FrontIdentity> UserIdentity(int userid)
+        public async Task<AdminIdentity> AdminIdentity(int userid)
         {
 
-            var UserIdentity = ClaimsIdentityServer.AccountUserid();
+            var UserIdentity = AdminIdentityServer.AccountUserid();
 
             var userinfo = await _competencesService.CompUserR.QueryNoTracking().
                 Where(x => x.Id == userid).FirstOrDefaultAsync();
 
             if (userinfo?.Id > 0)
             {
-                UserIdentity = new FrontIdentity()
+                UserIdentity = new AdminIdentity()
                 {
                     Success = true,
-                    Mobile = "13810565156",
+                    //Mobile = "13810565156",
                     EndTime = DateTime.Now.AddHours(2),
                     UserId = userinfo.Id,
-                    UserIds = userinfo.UserName,
+                    //UserIds = userinfo.UserName,
                     UserNick = userinfo.NickName,
+
                 };
-                var list = await _competencesService.CompUserRoleR.QueryNoTracking().Where(x => x.UserId == userid).FirstOrDefaultAsync();
-                if (list != null && list.Id > 0)
+                var list = await _competencesService.CompUserRoleR.QueryNoTracking().Where(x => x.UserId == userid).ToListAsync();
+                foreach(var i in list)
                 {
-                    UserIdentity.RoleId = list.RoleId;
+                    UserIdentity.RoleList.Add(i.RoleId);
                 }
+                UserIdentity.AuthorityList = new List<string>() { "1","2","3","4" };
 
-                UserIdentity.Authority = "";
 
-
-                UserIdentity.OrganizationId = "1,2,3,4";
+                UserIdentity.OrganizationList = new List<int>() { 1, 2, 3, 4 };
 
             }
 
-            ClaimsIdentityServer.UserLogin(UserIdentity);
+            AdminIdentityServer.UserLogin(UserIdentity);
+
             UserIdentity.Success = true;
 
             return UserIdentity;
 
 
+        }
+
+
+        public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

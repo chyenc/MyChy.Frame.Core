@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -23,10 +17,16 @@ using MyChy.Frame.Core.EFCore;
 using MyChy.Frame.Core.EFCore.Config;
 using MyChy.Frame.Core.Extensions;
 using MyChy.Frame.Core.Modules;
-using MyChy.Frame.Core.Web.Work;
+using MyChy.Frame.Core.Web5.Work;
 using NLog.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 
-namespace MyChy.Frame.Core.Web3
+namespace MyChy.Frame.Core.Web5
 {
     public class Startup
     {
@@ -37,8 +37,6 @@ namespace MyChy.Frame.Core.Web3
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-
-
         }
 
         public IConfiguration Configuration { get; }
@@ -46,6 +44,8 @@ namespace MyChy.Frame.Core.Web3
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+         
+
             serviceProvider = services.BuildServiceProvider();
             assemblyProvider = new AssemblyProvider(serviceProvider);
             logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger<Startup>();
@@ -82,11 +82,11 @@ namespace MyChy.Frame.Core.Web3
                 }
                 else
                 {
-                    services.AddEntityFrameworkSqlServer()
-                    .AddDbContextPool<CoreDbContext>((serviceProviders, options) =>
-                    options.UseSqlServer(efconfig.Connect,
-                            b => b.MigrationsAssembly("MyChy.Web").UseRowNumberForPaging())
-                           .UseInternalServiceProvider(serviceProviders));
+                    //services.AddEntityFrameworkSqlServer()
+                    //.AddDbContextPool<CoreDbContext>((serviceProviders, options) =>
+                    //options.UseSqlServer(efconfig.Connect,
+                    //        b => b.MigrationsAssembly("MyChy.Web").UseRowNumberForPaging())
+                    //       .UseInternalServiceProvider(serviceProviders));
                     //.UseRowNumberForPaging() SQL2008版本需要，12等以上版本不需要
 
                 }
@@ -105,6 +105,8 @@ namespace MyChy.Frame.Core.Web3
             services.AddTransient<ICompetencesWorkArea, CompetencesWorkArea>();
 
             services.AddTransient<IBaseUnitOfWork, BaseUnitOfWork>();
+
+            services.AddControllersWithViews();
 
 
             var machinekeyPath = FileHelper.GetFileMapPath("config");
@@ -143,15 +145,16 @@ namespace MyChy.Frame.Core.Web3
 
             services.AddRazorPages();
 
-           // if (appconfig.IsNlog)
-           // {
-                services.AddLogging(loggingBuilder =>
-                {
-                    loggingBuilder.AddNLog("config/nlog.config");
-                });
-           // }
+            // if (appconfig.IsNlog)
+            // {
+            services.AddLogging(loggingBuilder =>
+            {
+                loggingBuilder.AddNLog("config/nlog.config");
+            });
+            // }
 
             serviceProvider = services.BuildServiceProvider();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -163,20 +166,20 @@ namespace MyChy.Frame.Core.Web3
             }
             else
             {
-                app.UseExceptionHandler("/Error");
+                app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             app.UseStaticHttpContext();
 
             app.UseHttpsRedirection();
 
-            app.UseStaticFiles();
 
             //安装NuGet包 Session
             app.UseSession();
 
- 
+            app.UseStaticFiles();
 
             app.UseRouting();
 
@@ -184,9 +187,12 @@ namespace MyChy.Frame.Core.Web3
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRazorPages();
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
+
 
         /// <summary>
         /// 加载安装的模块信息
@@ -194,15 +200,18 @@ namespace MyChy.Frame.Core.Web3
         private void DiscoverAssemblies()
         {
             string extensionsPath = this.Configuration["Modules:Path"];
+            var RootPath = this.serviceProvider.GetService<IWebHostEnvironment>().ContentRootPath;
+
             IEnumerable<Assembly> assemblies = this.assemblyProvider.GetAssemblies(
               string.IsNullOrEmpty(extensionsPath) ?
-                null : this.serviceProvider.GetService<IWebHostEnvironment>().ContentRootPath
+               RootPath :
+               RootPath + extensionsPath
             );
             ExtensionManager.SetAssemblies(assemblies.ToList());
 
             IEnumerable<ModuleInfo> modules = this.assemblyProvider.GetModules(
               string.IsNullOrEmpty(extensionsPath) ?
-                null : this.serviceProvider.GetService<IWebHostEnvironment>().ContentRootPath + extensionsPath);
+                null : RootPath + extensionsPath);
 
             //ExtensionManager.SetModules(modules.ToList());
 
