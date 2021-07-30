@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -125,36 +126,36 @@ namespace MyChy.Frame.Core.Common.Helper
         //    return result;
         //}
 
-        ///// <summary>
-        ///// 类 自动转换成 table
-        ///// </summary>
-        ///// <typeparam name="T"></typeparam>
-        ///// <param name="list"></param>
-        ///// <returns></returns>
-        //public static DataTable GetTableByListModel<T>(IList<T> list)
-        //{
-        //    var result = new DataTable();
-        //    if (list == null)
-        //    {
-        //        return result;
-        //    }
-        //    var t = typeof(T);
-        //    var pi = t.GetProperties();
-        //    foreach (var item in pi)
-        //    {
-        //        result.Columns.Add(new DataColumn(item.Name, item.PropertyType));
-        //    }
-        //    foreach (var i in list)
-        //    {
-        //        var newRow = result.NewRow();
-        //        for (var j = 0; j < result.Columns.Count; j++)
-        //        {
-        //            newRow[j] = t.InvokeMember(result.Columns[j].ColumnName, BindingFlags.GetProperty,
-        //                null, i, new object[] { });
-        //        }
-        //        result.Rows.Add(newRow);
-        //    }
-        //    return result;
-        //}
+        /// <summary>
+        /// 类 自动转换成 table
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public static DataTable GetTableByListModel<T>(IList<T> list)
+        {
+            var result = new DataTable();
+            if (list == null)
+            {
+                return result;
+            }
+            var t = typeof(T);
+            var pi = t.GetProperties();
+            foreach (var item in pi)
+            {
+                result.Columns.Add(new DataColumn(item.Name, item.PropertyType));
+            }
+            foreach (var i in list)
+            {
+                var newRow = result.NewRow();
+                for (var j = 0; j < result.Columns.Count; j++)
+                {
+                    newRow[j] = t.InvokeMember(result.Columns[j].ColumnName, BindingFlags.GetProperty,
+                        null, i, new object[] { });
+                }
+                result.Rows.Add(newRow);
+            }
+            return result;
+        }
     }
 }

@@ -85,6 +85,10 @@ namespace MyChy.Frame.Core.Services
         {
 
             var result = new AdminIdentity();
+            //if (HttpContext == null)
+            //{
+            //    return result;
+            //}
             if (HttpContext.Current == null)
             {
                 return result;

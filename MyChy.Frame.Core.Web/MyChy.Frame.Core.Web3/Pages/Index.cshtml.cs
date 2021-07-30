@@ -4,13 +4,19 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography.Xml;
 using System.Threading.Tasks;
+using LinqKit;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MyChy.Frame.Core.Common.Helper;
 using MyChy.Frame.Core.Common.Model;
+using MyChy.Frame.Core.EFCore;
 using MyChy.Frame.Core.Redis;
+using MyChy.Frame.Core.Web.Domains;
+using MyChy.Frame.Core.Web.Work;
 
 namespace MyChy.Frame.Core.Web3.Pages
 {
@@ -18,13 +24,19 @@ namespace MyChy.Frame.Core.Web3.Pages
     {
         private readonly ILogger _logger;
         private readonly IWebHostEnvironment hostingEnvironment;
+        private readonly IBaseUnitOfWork baseUnitOfWork;
+        private readonly ICompetencesWorkArea _competencesService;
         //private readonly UploadConfig uploadConfig;
 
         public IndexModel(ILoggerFactory loggerFactory
             , IWebHostEnvironment _hostingEnvironment
+            , IBaseUnitOfWork _baseUnitOfWork
+            , ICompetencesWorkArea competencesService
             )
         {
             hostingEnvironment = _hostingEnvironment;
+            _competencesService = competencesService;
+            baseUnitOfWork = _baseUnitOfWork;
             _logger = loggerFactory.CreateLogger<IndexModel>();
         }
 
@@ -32,18 +44,142 @@ namespace MyChy.Frame.Core.Web3.Pages
         {
 
             _logger.LogError("IndexModel_OnGet");
+
+
             //var url = "Encrypt=eyJLZXkiOiJBQ0VBOTMzREZCM0IzRDg1IiwiVGlja3MiOjYzNzI0NzkxODU1MDU2NDg3OX0=&Sign=f2fa563206856e18b4606ca7154dfce6e2e1b9eb";
             //var res = StringHelper.DeserializeParameter<ReceiptEncryptModel>(url);
 
-            //var key = "RegistrationServer_ShowPresentcount_" + DateTime.Now.Date.ToString("yyyy-MM-dd");
-            //var xx1 = RedisServer.StringGetCache<long>(key);
+            var key = "RegistrationServer_ShowPresentcount_" + DateTime.Now.Date.ToString("yyyy-MM-dd");
+            var xx1 = RedisServer.StringGetCache<long>(key);
 
-            //long xx = 0;
-            //RedisServer.StringSetCache("11", "asdfasdf");
-            //var ss = RedisServer.StringGetCache<string>("11");
-            SaveImage();
+            long xx = 0;
+            RedisServer.StringSetCache("11", "asdfasdf");
+            var ss = RedisServer.StringGetCache<string>("11");
+            RedisServer.StringSetCache("22", "asdfasdf");
+            RedisServer.StringSetCache("33", "asdfasdf");
+
+            RedisServer.HashAddCache("H11", "1", 1);
+            RedisServer.HashAddCache("H11", "2", 1);
+            RedisServer.HashAddCache("H11", "3", 1);
+
+
+            RedisServer.HashAddCache("H13", "3", 1);
+            RedisServer.HashAddCache("H14", "3", 1);
+
+
+            RedisServer.HashDayAddCache("H14", "3", 1);
+            RedisServer.HashDayAddCache("H14", "5", 1);
+
+
+            RedisServer.RemoveAll();
+
+            //SaveImage();
+
+            SqlData();
 
             //string vv = res.Encrypt;
+        }
+
+        public void SqlData()
+        {
+            _logger.LogTrace("引用从 System.Data.SqlClient 修改成 Microsoft.Data.SqlClient");
+
+
+            var comp = new CompUser
+            {
+                NickName = "123",
+                PassWord = "123",
+                CreatedOn = DateTime.Now,
+                UpdatedOn = DateTime.Now
+            };
+            var xx = _competencesService.CompUserR.AddAsync(comp);
+            _competencesService.CompUserR.Context.SaveChanges();
+
+
+            var sql = new string(@"update [CompUser] set IsDeleted=@is,DeletedBy=@user,DeletedOn=GETDATE()
+                                        where id = @id");
+            var parameter = new SqlParameter[] {
+                new SqlParameter("@id", 1),
+                new SqlParameter("@user", "MyChy"),
+                new SqlParameter("@is", 1),
+            };
+
+            //var sql = new string(@"update [CompUser] set IsDeleted=@is,DeletedOn=GETDATE()
+            //                            where id = @id");
+            //var parameter = new SqlParameter[] {
+            //    new SqlParameter("@id", 1),
+            //    new SqlParameter("@user", "MyChy"),
+            //    new SqlParameter("@is", 1),
+            //};
+
+            //var user = new SqlParameter("user", "johndoe");
+
+            //The SqlParameterCollection only accepts non-null SqlParameter type objects, not SqlParameter objects.”
+            var x1 = baseUnitOfWork.Context.Database.ExecuteSqlRaw(sql, parameter);
+
+
+            //var x1 = baseUnitOfWork.Context.Database.ExecuteSqlCommand("update [CompUser] set [NickName]=@name where id=@id",
+            //new SqlParameter[] {
+            //      new SqlParameter("@name","1234"),
+            //      new SqlParameter("@id",1),
+            //});
+
+            var xlist = baseUnitOfWork.Context.Set<CompUser>().
+                FromSqlRaw("select * from [CompUser] where id<@id", new SqlParameter[] {
+                  new SqlParameter("@id",10),
+            }).ToList();
+
+
+
+            var predicate = PredicateBuilder.New<CompUser>();
+
+            var id = 5;
+            xlist = baseUnitOfWork.Context.Set<CompUser>().FromSqlRaw($"select * from [CompUser] where id<{id}").ToList();
+
+            // var city = "Redmond";
+            //  context.Customers.FromSql($"SELECT * FROM Customers WHERE City = {city}");
+
+
+            var xlist2 = baseUnitOfWork.Context.Set<CompUser>()
+                .FromSqlRaw("select NickName,UserName from [CompUser] where id<@id",
+                new SqlParameter[] {
+                  new SqlParameter("@id",10),
+            })
+                .Select(x => new CompUserOther()
+                {
+                    NickName = x.NickName,
+                    UserName = x.UserName,
+
+                })
+            .ToList();
+
+
+            //  baseUnitOfWork.Context.Set<CompUser>
+
+            var ss = predicate.Body.ToString();
+
+            predicate.And(x => x.State == true);
+
+            ss = predicate.Body.ToString();
+
+
+
+            var list = _competencesService.CompUserR.QueryPage(predicate, page: 1, pageSize: 10);
+
+            list = _competencesService.CompUserR.QueryPage(predicate, page: 2, pageSize: 10);
+
+            var comp1 = new CompUser
+            {
+                NickName = "123",
+                PassWord = "123",
+                CreatedOn = DateTime.Now,
+                UpdatedOn = DateTime.Now
+            };
+            var xx1 = _competencesService.CompUserR.AddAsync(comp1);
+            _competencesService.CompUserR.Context.SaveChanges();
+
+
+
         }
 
         private void SaveImage()

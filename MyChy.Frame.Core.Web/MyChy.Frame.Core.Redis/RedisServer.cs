@@ -25,7 +25,7 @@ namespace MyChy.Frame.Core.Redis
         {
             var config = new ConfigHelper();
             Config = config.Reader<RedisConfig>("config/Redis.json");
-           // MemoryCache = new MemoryCacheService(null);
+            // MemoryCache = new MemoryCacheService(null);
             if (string.IsNullOrEmpty(Config?.Connect))
             {
                 Config = new RedisConfig { IsCache = false };
@@ -93,15 +93,16 @@ namespace MyChy.Frame.Core.Redis
         {
             if (!Config.IsCache || IsCacheError) return;
             var redisdb = GetDatabase();
-            if (IsCacheError) return;
+            //if (IsCacheError) return;
             redisdb.KeyDelete(Config.Name + key);
         }
+
 
         public static void RemoveAsync(string key)
         {
             if (!Config.IsCache || IsCacheError) return;
             var redisdb = GetDatabase();
-            if (IsCacheError) return;
+            //if (IsCacheError) return;
             redisdb.KeyDeleteAsync(Config.Name + key);
 
         }
@@ -114,6 +115,38 @@ namespace MyChy.Frame.Core.Redis
         }
 
         /// <summary>
+        /// 移除所有缓存
+        /// </summary>
+        public static void RemoveAll()
+        {
+            if (!Config.IsRemoveAll || IsCacheError) return;
+            var redisdb = Redis.GetDatabase();
+            var key = Config.Name + "RemoveAll";
+            var list = redisdb.SetMembers(key);
+            if (list != null && list.Length > 0)
+            {
+                foreach (var i in list)
+                {
+                    redisdb.KeyDelete(i.ToString());
+                }
+                redisdb.KeyDelete(key);
+            }
+        }
+
+        private static void RemoveAllAdd(string name)
+        {
+            if (!Config.IsRemoveAll || IsCacheError) return;
+            var redisdb = Redis.GetDatabase();
+            var key = Config.Name + "RemoveAll";
+
+            if (!redisdb.SetContains(key, name))
+            {
+                redisdb.SetAdd(key, name);
+            }
+
+        }
+
+        /// <summary>
         /// key是否存在
         /// </summary>
         /// <param name="key"></param>
@@ -122,7 +155,7 @@ namespace MyChy.Frame.Core.Redis
         {
             if (!Config.IsCache || IsCacheError) return false;
             var redisdb = Redis.GetDatabase();
-            if (IsCacheError) return false;
+            //if (IsCacheError) return false;
             return redisdb.KeyExists(Config.Name + key);
         }
 
@@ -152,6 +185,7 @@ namespace MyChy.Frame.Core.Redis
             var redisdb = Redis.GetDatabase();
             if (IsCacheError) return defVal;
             var obj = redisdb.StringGet(Config.Name + key);
+           
             return SerializeHelper.StringToObj<T>(obj, defVal);
         }
 
@@ -193,8 +227,9 @@ namespace MyChy.Frame.Core.Redis
             var redisdb = GetDatabase();
             var obj = SerializeHelper.ObjToString(objObject);
             var ts = DateTime.Now.Subtract(time).Duration();
-            if (IsCacheError) return;
+            //if (IsCacheError) return;
             redisdb.StringSet(Config.Name + key, obj, ts);
+            RemoveAllAdd(Config.Name + key);
         }
 
         /// <summary>
@@ -208,8 +243,9 @@ namespace MyChy.Frame.Core.Redis
             var redisdb = GetDatabase();
             var obj = SerializeHelper.ObjToString(objObject);
             var ts = DateTime.Now.Subtract(DateTime.Now.AddDays(1).Date).Duration();
-            if (IsCacheError) return;
+           // if (IsCacheError) return;
             redisdb.StringSet(Config.Name + key, obj, ts);
+            RemoveAllAdd(Config.Name + key);
         }
 
         #endregion
@@ -252,8 +288,10 @@ namespace MyChy.Frame.Core.Redis
             var redisdb = GetDatabase();
             var obj = SerializeHelper.ObjToString(objObject);
             var ts = DateTime.Now.Subtract(time).Duration();
-            if (IsCacheError) return;
+            //if (IsCacheError) return;
+            RemoveAllAdd(Config.Name + key);
             await redisdb.StringSetAsync(Config.Name + key, obj, ts);
+
         }
 
         /// <summary>
@@ -267,8 +305,9 @@ namespace MyChy.Frame.Core.Redis
             var redisdb = GetDatabase();
             var obj = SerializeHelper.ObjToString(objObject);
             var ts = DateTime.Now.Subtract(DateTime.Now.AddDays(1).Date).Duration();
-            if (IsCacheError) return;
+            //if (IsCacheError) return;
             redisdb.StringSetAsync(Config.Name + key, obj, ts);
+            RemoveAllAdd(Config.Name + key);
         }
 
         #endregion
@@ -334,6 +373,7 @@ namespace MyChy.Frame.Core.Redis
         //list集合的值不具有唯一性； 类似一个双端队列
         //set集合的值具有唯一性；
         //
+
         #region Set 无序存储数组
 
         ///// <summary>
@@ -362,6 +402,7 @@ namespace MyChy.Frame.Core.Redis
             var obj = SerializeHelper.ObjToString(objObject);
             if (IsCacheError) return;
             redisdb.SetAdd(Config.Name + key, obj);
+            RemoveAllAdd(Config.Name + key);
         }
 
         /// <summary>
@@ -369,13 +410,14 @@ namespace MyChy.Frame.Core.Redis
         /// </summary>
         /// <param name="key"></param>
         /// <param name="objObject">数据</param>
-        public static void SetAddCacheAsync(string key, string objObject)
+        public static async Task SetAddCacheAsync(string key, string objObject)
         {
             if (!Config.IsCache || IsCacheError) return;
             var redisdb = GetDatabase();
             var obj = SerializeHelper.ObjToString(objObject);
-            if (IsCacheError) return;
-            redisdb.SetAddAsync(Config.Name + key, obj);
+           // if (IsCacheError) return;
+            await redisdb.SetAddAsync(Config.Name + key, obj);
+            RemoveAllAdd(Config.Name + key);
         }
 
         /// <summary>
@@ -388,8 +430,11 @@ namespace MyChy.Frame.Core.Redis
         {
             if (!Config.IsCache || IsCacheError) return false;
             var redisdb = GetDatabase();
-            if (IsCacheError) return false;
+            //if (IsCacheError) return false;
+
+
             return redisdb.SetContains(Config.Name + key, objObject);
+
         }
 
         /// <summary>
@@ -403,7 +448,7 @@ namespace MyChy.Frame.Core.Redis
             bool isDelYesterday = true)
         {
             if (!Config.IsCache || IsCacheError) return;
-            var redisdb = GetDatabase();
+            // var redisdb = GetDatabase();
             if (IsCacheError) return;
             DayDelYesterday(key, "Set", isDelYesterday);
             key = key + DateTime.Now.Date.ToString(Dateformat);
@@ -417,16 +462,16 @@ namespace MyChy.Frame.Core.Redis
         /// <param name="objObject"></param>
         /// <param name="isDelYesterday">是否删除昨天列表</param>
         /// <param name="Dateformat">时间格式yyyy-MM-dd</param>
-        public static void SetDayAddCacheAsync(string key, string objObject,
+        public static  async Task SetDayAddCacheAsync(string key, string objObject,
             bool isDelYesterday = true)
         {
             if (!Config.IsCache || IsCacheError) return;
-            var redisdb = GetDatabase();
+            //var redisdb = GetDatabase();
             if (IsCacheError) return;
             DayDelYesterday(key, "Set", isDelYesterday);
             key = key + DateTime.Now.Date.ToString(Dateformat);
-            SetAddCacheAsync(key, objObject);
-  
+            await SetAddCacheAsync(key, objObject);
+
         }
 
 
@@ -441,8 +486,9 @@ namespace MyChy.Frame.Core.Redis
         {
             if (!Config.IsCache || IsCacheError) return false;
             var redisdb = GetDatabase();
-            if (IsCacheError) return false;
+            //if (IsCacheError) return false;
             key = key + DateTime.Now.Date.ToString(Dateformat);
+
             return redisdb.SetContains(Config.Name + key, objObject);
         }
 
@@ -455,7 +501,7 @@ namespace MyChy.Frame.Core.Redis
         {
             if (!Config.IsCache || IsCacheError) return false;
             var redisdb = GetDatabase();
-            if (IsCacheError) return false;
+            //if (IsCacheError) return false;
             return redisdb.SetRemove(Config.Name + key, name);
         }
 
@@ -465,12 +511,11 @@ namespace MyChy.Frame.Core.Redis
         /// <param name="key"></param>
         /// <param name="name"></param>
         /// <param name="Dateformat">时间格式yyyy-MM-dd</param>
-        public static bool SetDayDelete(string key, string name
-            )
+        public static bool SetDayDelete(string key, string name)
         {
             if (!Config.IsCache || IsCacheError) return false;
             var redisdb = GetDatabase();
-            if (IsCacheError) return false;
+            //if (IsCacheError) return false;
             key = key + DateTime.Now.Date.ToString(Dateformat);
             return redisdb.SetRemove(Config.Name + key, name);
         }
@@ -511,6 +556,7 @@ namespace MyChy.Frame.Core.Redis
             if (IsCacheError) return;
             var hashlist = new HashEntry[] { new HashEntry(name, obj) };
             redisdb.HashSet(Config.Name + key, hashlist);
+            RemoveAllAdd(Config.Name + key);
         }
 
 
@@ -547,15 +593,15 @@ namespace MyChy.Frame.Core.Redis
         /// <param name="key"></param>
         /// <param name="name"></param>
         /// <param name="objObject">数据</param>
-        public static void HashAddCacheAsync(string key, string name, object objObject)
+        public static async Task HashAddCacheAsync(string key, string name, object objObject)
         {
             if (!Config.IsCache || IsCacheError) return;
             var redisdb = GetDatabase();
             var obj = SerializeHelper.ObjToString(objObject);
             if (IsCacheError) return;
             var hashlist = new HashEntry[] { new HashEntry(name, obj) };
-            redisdb.HashSetAsync(Config.Name + key, hashlist);
-
+            await redisdb.HashSetAsync(Config.Name + key, hashlist);
+            RemoveAllAdd(Config.Name + key);
 
         }
 
@@ -629,7 +675,7 @@ namespace MyChy.Frame.Core.Redis
         {
             if (!Config.IsCache || IsCacheError) return false;
             var redisdb = GetDatabase();
-            if (IsCacheError) return false;
+            //if (IsCacheError) return false;
             return redisdb.HashExists(Config.Name + key, name);
         }
 
@@ -642,7 +688,7 @@ namespace MyChy.Frame.Core.Redis
         {
             if (!Config.IsCache || IsCacheError) return false;
             var redisdb = GetDatabase();
-            if (IsCacheError) return false;
+            //if (IsCacheError) return false;
             return redisdb.HashDelete(Config.Name + key, name);
         }
 
@@ -751,11 +797,11 @@ namespace MyChy.Frame.Core.Redis
         /// <param name="name"></param>
         /// <param name="objObject"></param>
         /// <param name="isDelYesterday">是否删除昨天列表</param>
-        public static void HashDayAddCacheAsync(string key, string name, object objObject
+        public static async Task HashDayAddCacheAsync(string key, string name, object objObject
             , bool isDelYesterday = true)
         {
             if (!Config.IsCache || IsCacheError) return;
-            HashAddCacheAsync(key + DateTime.Now.Date.ToString(Dateformat), name, objObject);
+            await HashAddCacheAsync(key + DateTime.Now.Date.ToString(Dateformat), name, objObject);
             DayDelYesterday(key, "Hash", isDelYesterday);
         }
 
@@ -802,6 +848,7 @@ namespace MyChy.Frame.Core.Redis
             var obj = SerializeHelper.ObjToString(objObject);
             if (IsCacheError) return;
             redisdb.SortedSetAdd(Config.Name + key, obj, score);
+            RemoveAllAdd(Config.Name + key);
         }
 
         /// <summary>

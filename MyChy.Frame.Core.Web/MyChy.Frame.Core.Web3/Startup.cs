@@ -23,6 +23,7 @@ using MyChy.Frame.Core.EFCore;
 using MyChy.Frame.Core.EFCore.Config;
 using MyChy.Frame.Core.Extensions;
 using MyChy.Frame.Core.Modules;
+using MyChy.Frame.Core.StartupTask;
 using MyChy.Frame.Core.Web.Work;
 using NLog.Extensions.Logging;
 
@@ -91,7 +92,16 @@ namespace MyChy.Frame.Core.Web3
 
                 }
 
-                // .UseRowNumberForPaging() ＳＱＬ２００８　增加　１２等版本不需要
+                //.UseRowNumberForPaging() ＳＱＬ２００８　增加　１２等版本不需要
+
+            }
+            else if (efconfig.SqlType == EntityFrameworkType.MySql)
+            {
+                services.AddEntityFrameworkMySql()
+                .AddDbContextPool<CoreDbContext>((serviceProviders, options) =>
+                options.UseMySql(efconfig.Connect,
+                   b => b.MigrationsAssembly("MyChy.Frame.Core.Web3"))
+                  .UseInternalServiceProvider(serviceProviders));
 
             }
             // services.AddSingleton<CoreDbContext>();
@@ -143,15 +153,34 @@ namespace MyChy.Frame.Core.Web3
 
             services.AddRazorPages();
 
-           // if (appconfig.IsNlog)
-           // {
-                services.AddLogging(loggingBuilder =>
-                {
-                    loggingBuilder.AddNLog("config/nlog.config");
-                });
+            // if (appconfig.IsNlog)
+            // {
+            services.AddLogging(loggingBuilder =>
+            {
+                loggingBuilder.AddNLog("config/nlog.config");
+            });
+            // }
+
+            //if (appconfig.StartupTask)
+            //{
+                 serviceProvider = services.BuildServiceProvider();
+                CoreEFStartupTask task = new CoreEFStartupTask(serviceProvider);
+                task.RunS();
            // }
 
-            serviceProvider = services.BuildServiceProvider();
+            //  services.AddSingleton<ISFStarter, StartupTaskStarter>();
+
+            //     // ConfigureServicesTask(services);
+
+            //      /serviceProvider = services.BuildServiceProvider();
+
+            //      var sfStarter = serviceProvider.GetService<ISFStarter>();
+
+            //      sfStarter.Run();
+
+            ////  }
+
+            //serviceProvider = services.BuildServiceProvider();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

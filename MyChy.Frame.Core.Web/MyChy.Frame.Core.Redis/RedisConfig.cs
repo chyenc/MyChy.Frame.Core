@@ -13,5 +13,9 @@
         public int DefaultDatabase { get; set; }
 
         public bool IsWebCache { get; set; }
+
+        public bool IsRemoveAll { get; set; }
+
+
     }
 }

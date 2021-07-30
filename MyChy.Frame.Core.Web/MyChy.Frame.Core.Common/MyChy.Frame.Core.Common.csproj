@@ -2,24 +2,24 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Version>3.1.7.2</Version>
-    <AssemblyVersion>3.1.7.1</AssemblyVersion>
-    <FileVersion>3.1.7.1</FileVersion>
-    <Description>修复 缩微图功能 长宽为0的情况</Description>
+    <Version>3.1.8</Version>
+    <AssemblyVersion>3.1.8</AssemblyVersion>
+    <FileVersion>3.1.8</FileVersion>
+    <Description>升级3.1.16</Description>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.1.2" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.2" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.2" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.2" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="3.1.2" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.1.2" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.2" />
-    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="3.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.1.16" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.16" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.16" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.16" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="3.1.16" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.1.16" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.16" />
+    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="3.1.6" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.2" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="NLog.Web.AspNetCore" Version="4.9.0" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="4.12.0" />
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
     <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="4.7.0" />
