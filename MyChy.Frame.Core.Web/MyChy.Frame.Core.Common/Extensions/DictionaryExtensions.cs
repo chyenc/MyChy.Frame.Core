@@ -66,7 +66,9 @@ namespace MyChy.Frame.Core.Common.Extensions
         public static string ToOrderString(this IDictionary<string, string> dictionary)
         {
             var sb = new StringBuilder();
-            var dictionarys = dictionary.OrderBy(x => x.Key).ToDictionary(key => key.Key, Studentobj => Studentobj.Value);
+            var dictionarys = dictionary.OrderBy(x => x.Key)
+                .ToDictionary(key => key.Key, Studentobj => Studentobj.Value);
+
             return ToQueryString(dictionarys);
             //foreach (var key in dictionarys.Where(key => key.Key != null))
             //{

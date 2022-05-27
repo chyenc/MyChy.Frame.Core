@@ -138,5 +138,18 @@ namespace MyChy.Frame.Core.Common.Helper
             return ts;
 
         }
+
+        /// <summary>
+        /// 将时间转换为Unix时间戳
+        /// </summary>
+        /// <param name="time"></param>
+        /// <returns></returns>
+        public static long GetUnix(DateTime time)
+        {
+            DateTime startDt = TimeZoneInfo.ConvertTime
+                (new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), TimeZoneInfo.Local);
+
+            return (long)(time - startDt).TotalMilliseconds;
+        }
     }
 }

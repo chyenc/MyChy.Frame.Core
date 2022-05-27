@@ -3,10 +3,10 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <AssemblyVersion>3.1.2.0</AssemblyVersion>
-    <FileVersion>3.1.2.0</FileVersion>
-    <Version>3.1.2</Version>
-    <Description>增加释放当前项目所有缓存功能</Description>
+    <AssemblyVersion>3.1.6.0</AssemblyVersion>
+    <FileVersion>3.1.6.0</FileVersion>
+    <Version>3.1.6</Version>
+    <Description>修改List BUG增加读取删除功能</Description>
   </PropertyGroup>
 
   <ItemGroup>

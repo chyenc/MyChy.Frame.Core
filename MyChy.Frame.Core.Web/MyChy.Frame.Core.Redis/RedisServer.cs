@@ -146,6 +146,19 @@ namespace MyChy.Frame.Core.Redis
 
         }
 
+        private async static Task RemoveAllAddAsync(string name)
+        {
+            if (!Config.IsRemoveAll || IsCacheError) return;
+            var redisdb = Redis.GetDatabase();
+            var key = Config.Name + "RemoveAll";
+
+            if (!redisdb.SetContains(key, name))
+            {
+                await redisdb.SetAddAsync(key, name);
+            }
+
+        }
+
         /// <summary>
         /// key是否存在
         /// </summary>
@@ -185,7 +198,7 @@ namespace MyChy.Frame.Core.Redis
             var redisdb = Redis.GetDatabase();
             if (IsCacheError) return defVal;
             var obj = redisdb.StringGet(Config.Name + key);
-           
+
             return SerializeHelper.StringToObj<T>(obj, defVal);
         }
 
@@ -243,7 +256,7 @@ namespace MyChy.Frame.Core.Redis
             var redisdb = GetDatabase();
             var obj = SerializeHelper.ObjToString(objObject);
             var ts = DateTime.Now.Subtract(DateTime.Now.AddDays(1).Date).Duration();
-           // if (IsCacheError) return;
+            // if (IsCacheError) return;
             redisdb.StringSet(Config.Name + key, obj, ts);
             RemoveAllAdd(Config.Name + key);
         }
@@ -415,7 +428,7 @@ namespace MyChy.Frame.Core.Redis
             if (!Config.IsCache || IsCacheError) return;
             var redisdb = GetDatabase();
             var obj = SerializeHelper.ObjToString(objObject);
-           // if (IsCacheError) return;
+            // if (IsCacheError) return;
             await redisdb.SetAddAsync(Config.Name + key, obj);
             RemoveAllAdd(Config.Name + key);
         }
@@ -462,7 +475,7 @@ namespace MyChy.Frame.Core.Redis
         /// <param name="objObject"></param>
         /// <param name="isDelYesterday">是否删除昨天列表</param>
         /// <param name="Dateformat">时间格式yyyy-MM-dd</param>
-        public static  async Task SetDayAddCacheAsync(string key, string objObject,
+        public static async Task SetDayAddCacheAsync(string key, string objObject,
             bool isDelYesterday = true)
         {
             if (!Config.IsCache || IsCacheError) return;
@@ -524,18 +537,125 @@ namespace MyChy.Frame.Core.Redis
 
         #region List 有序存储数据
 
-        ///// <summary>
-        ///// Set列表增加数据
-        ///// </summary>
-        ///// <param name="key"></param>
-        ///// <param name="objObject">数据</param>
-        //public static void ListAddCache(string key, string objObject)
-        //{
-        //    if (!Config.IsCache || IsCacheError) return;
-        //    var redisdb = GetDatabase();
-        //    var obj = SerializeHelper.ObjToString(objObject);
-        //    if (IsCacheError) return;
-        //    redisdb.ListInsertAfter(Config.Name + key, obj);
+        /// <summary>
+        /// ListA列表增加数据
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="objObject">数据</param>
+        public static void ListAddRightCache(string key, object objObject)
+        {
+            if (!Config.IsCache || IsCacheError) return;
+            var redisdb = GetDatabase();
+            if (IsCacheError) return;
+            var obj = SerializeHelper.ObjToString(objObject);
+            redisdb.ListRightPush(Config.Name + key, obj);
+            RemoveAllAdd(Config.Name + key);
+        }
+
+        /// <summary>
+        /// ListA列表增加数据
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="objObject">数据</param>
+        public async static Task ListAddRightCacheAsync(string key, object objObject)
+        {
+            if (!Config.IsCache || IsCacheError) return;
+            var redisdb = GetDatabase();
+            if (IsCacheError) return;
+            var obj = SerializeHelper.ObjToString(objObject);
+            await redisdb.ListRightPushAsync(Config.Name + key, obj);
+            await RemoveAllAddAsync(Config.Name + key);
+        }
+
+        /// <summary>
+        /// ListA列表增加数据
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="objObject">数据</param>
+        public static void ListAddLeftCache(string key, object objObject)
+        {
+            if (!Config.IsCache || IsCacheError) return;
+            var redisdb = GetDatabase();
+            if (IsCacheError) return;
+            var obj = SerializeHelper.ObjToString(objObject);
+            redisdb.ListLeftPush(Config.Name + key, obj);
+            RemoveAllAdd(Config.Name + key);
+        }
+
+        /// <summary>
+        /// ListA列表增加数据
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="objObject">数据</param>
+        public async static Task ListAddLeftCacheAsync(string key, object objObject)
+        {
+            if (!Config.IsCache || IsCacheError) return;
+            var redisdb = GetDatabase();
+            if (IsCacheError) return;
+            var obj = SerializeHelper.ObjToString(objObject);
+            await redisdb.ListLeftPushAsync(Config.Name + key, obj);
+            await RemoveAllAddAsync(Config.Name + key);
+        }
+
+      /// <summary>
+      /// 读取List列表数据
+      /// </summary>
+      /// <typeparam name="T"></typeparam>
+      /// <param name="key"></param>
+      /// <param name="IsDelel">是否删除列表内容</param>
+      /// <returns></returns>
+        public static IList<T> ListGetCache<T>(string key,bool IsDelel=false)
+        {
+            var rseult = new List<T>();
+            if (!Config.IsCache || IsCacheError) return rseult;
+            var redisdb = GetDatabase();
+            if (IsCacheError) return rseult;
+          
+            var list = redisdb.ListRange(Config.Name + key);
+            foreach (var i in list)
+            { 
+                var modle = SerializeHelper.StringToObj<T>(i);
+                if (modle != null)
+                {
+                    rseult.Add(modle);
+                }
+            }
+            if (IsDelel)
+            {
+                redisdb.KeyDelete(Config.Name + key);
+            }
+            return rseult;
+        }
+
+
+        /// <summary>
+        /// 读取List列表数据
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
+        /// <param name="IsDelel">是否删除列表内容</param>
+        public async static Task<IList<T>> ListGetCacheAsync<T>(string key, bool IsDelel = false)
+        {
+            var rseult = new List<T>();
+            if (!Config.IsCache || IsCacheError) return rseult;
+            var redisdb = GetDatabase();
+            if (IsCacheError) return rseult;
+
+            var list = await redisdb.ListRangeAsync(Config.Name + key);
+            foreach (var i in list)
+            {
+                var modle = SerializeHelper.StringToObj<T>(i);
+                if (modle != null)
+                {
+                    rseult.Add(modle);
+                }
+            }
+            if (IsDelel)
+            {
+               await  redisdb.KeyDeleteAsync(Config.Name + key);
+            }
+            return rseult;
+        }
 
 
         #endregion
@@ -552,8 +672,8 @@ namespace MyChy.Frame.Core.Redis
         {
             if (!Config.IsCache || IsCacheError) return;
             var redisdb = GetDatabase();
-            var obj = SerializeHelper.ObjToString(objObject);
             if (IsCacheError) return;
+            var obj = SerializeHelper.ObjToString(objObject);
             var hashlist = new HashEntry[] { new HashEntry(name, obj) };
             redisdb.HashSet(Config.Name + key, hashlist);
             RemoveAllAdd(Config.Name + key);
@@ -597,8 +717,8 @@ namespace MyChy.Frame.Core.Redis
         {
             if (!Config.IsCache || IsCacheError) return;
             var redisdb = GetDatabase();
-            var obj = SerializeHelper.ObjToString(objObject);
             if (IsCacheError) return;
+            var obj = SerializeHelper.ObjToString(objObject);
             var hashlist = new HashEntry[] { new HashEntry(name, obj) };
             await redisdb.HashSetAsync(Config.Name + key, hashlist);
             RemoveAllAdd(Config.Name + key);

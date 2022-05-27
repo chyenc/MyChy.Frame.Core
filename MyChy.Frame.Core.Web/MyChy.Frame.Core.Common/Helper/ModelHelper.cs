@@ -43,7 +43,115 @@ namespace MyChy.Frame.Core.Common.Helper
             return (T)model;
         }
 
+        /// <summary>
+        /// Model 根据Keys转换成Dictionary
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name=""></param>
+        /// <param name="keyValues"></param>
+        /// <returns></returns>
+        public static Dictionary<string, Dictionary<string, string>> DictionaryByModel<T>
+            (T Model, IList<string> keys,string mainkey)
+        {
+            var result = new Dictionary<string, Dictionary<string, string>>();
+            var t = typeof(T);
+            // var m = Activator.CreateInstance(t);
+            if (keys == null || keys.Count == 0)
+            {
+                var m = Activator.CreateInstance(t);
+                var col = TypeDescriptor.GetProperties(m);
+                foreach (PropertyDescriptor item in col)
+                {
+                    if (!keys.Contains(item.Name))
+                    {
+                        keys.Add(item.Name);
+                    }
+                }
+            }
+            var model=new Dictionary<string, string>();
+            var keyvalues = string.Empty;
+            foreach (var i in keys)
+            {
+                keyvalues = string.Empty;
+                try
+                {
+                    var obj = t.InvokeMember(i, BindingFlags.GetProperty,
+                         null, Model, new object[] { });
+                    if (obj != null)
+                    {
+                        model.Add(i, obj.ToString());
+                        if (mainkey==i) keyvalues= obj.ToString();
+                        //worksheet.Cells[Cells].Value = obj;
+                    }
+                }
+                catch (Exception e)
+                {
+                    //_logger.LogError(e.Message);
+                }
+            }
+            if (string.IsNullOrEmpty(keyvalues))
+            {
+                result.Add(keyvalues, model);
+            }
 
+            return result;
+        }
+
+
+        /// <summary>
+        /// Model List 根据Keys转换成Dictionary
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name=""></param>
+        /// <param name="keyValues"></param>
+        /// <returns></returns>
+        public static Dictionary<string,Dictionary<string, string>> DictionaryListByModel<T>
+            (IList<T> Models, IList<string> keys, string mainkey)
+        {
+            var result = new Dictionary<string, Dictionary<string, string>>();
+            var t = typeof(T);
+            // var m = Activator.CreateInstance(t);
+
+            if (keys == null || keys.Count == 0)
+            {
+                var m = Activator.CreateInstance(t);
+                var col = TypeDescriptor.GetProperties(m);
+                foreach (PropertyDescriptor item in col)
+                {
+                    if (!keys.Contains(item.Name))
+                    {
+                        keys.Add(item.Name);
+                    }
+                }
+            }
+            var keyvalues = string.Empty;
+            foreach (var m in Models)
+            {
+                keyvalues = string.Empty;
+                var model = new Dictionary<string, string>();
+                foreach (var i in keys)
+                {
+                    try
+                    {
+                        var obj = t.InvokeMember(i, BindingFlags.GetProperty,
+                             null, m, new object[] { });
+                        if (obj != null)
+                        {
+                            model.Add(i, obj.ToString());
+                            if (mainkey == i) keyvalues = obj.ToString();
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        //_logger.LogError(e.Message);
+                    }
+                }
+                result.Add(keyvalues,model);
+
+            }
+
+            return result;
+        }
 
         ///// <summary>
         ///// table 自动转换成类

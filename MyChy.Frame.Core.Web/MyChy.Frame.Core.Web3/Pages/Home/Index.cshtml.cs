@@ -57,6 +57,31 @@ namespace MyChy.Frame.Core.Web3.Pages.Home
         {
             _logger.LogTrace("引用从 System.Data.SqlClient 修改成 Microsoft.Data.SqlClient");
 
+
+            var parameters = new object[] { 1, "MyChy" };
+            var sqltxt = @"update [CompUser] set IsDeleted={0},DeletedBy={1},DeletedOn=GETDATE()";
+
+            var Idres = baseUnitOfWork.Context.Database.ExecuteSqlRaw(sqltxt, parameters);
+
+            //执行存储过程 带返回值
+            sqltxt = @"DECLARE	@return_value int
+                        EXEC	@return_value = [dbo].[OrderDetails_TB]
+                        SELECT	'Id' = @return_value";
+
+
+            baseUnitOfWork.Context.Database.SetCommandTimeout(10 * 60 * 1000);
+
+            var list1 = baseUnitOfWork.Context.Set<CompUser>().FromSqlRaw
+                (sqltxt).
+                Select(x => new CompUser()
+                {
+                    Id = x.Id,
+                }).ToList();
+
+
+            baseUnitOfWork.Context.Database.SetCommandTimeout(60 * 1000);
+
+
             var sql = new string(@"update [CompUser] set IsDeleted=@is,DeletedBy=@user,DeletedOn=GETDATE()
                                         where id = @id");
             var parameter = new SqlParameter[] {
@@ -96,6 +121,8 @@ namespace MyChy.Frame.Core.Web3.Pages.Home
 
             var id = 5;
             xlist = baseUnitOfWork.Context.Set<CompUser>().FromSqlRaw($"select * from [CompUser] where id<{id}").ToList();
+
+
 
             // var city = "Redmond";
             //  context.Customers.FromSql($"SELECT * FROM Customers WHERE City = {city}");

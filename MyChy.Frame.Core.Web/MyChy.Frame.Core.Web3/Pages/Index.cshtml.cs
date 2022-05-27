@@ -51,31 +51,47 @@ namespace MyChy.Frame.Core.Web3.Pages
 
             var key = "RegistrationServer_ShowPresentcount_" + DateTime.Now.Date.ToString("yyyy-MM-dd");
             var xx1 = RedisServer.StringGetCache<long>(key);
+            key = "ListAddLeftCacheAsync";
+            for (var i = 0; i < 10; i++)
+            {
+                var comp = new CompUser
+                {
+                    NickName = i.ToString(),
+                    PassWord = "123",
+                    CreatedOn = DateTime.Now,
+                    UpdatedOn = DateTime.Now
+                };
+                RedisServer.ListAddRightCache(key, comp);
+            }
+            var list = RedisServer.ListGetCache<CompUser>(key);
 
-            long xx = 0;
-            RedisServer.StringSetCache("11", "asdfasdf");
-            var ss = RedisServer.StringGetCache<string>("11");
-            RedisServer.StringSetCache("22", "asdfasdf");
-            RedisServer.StringSetCache("33", "asdfasdf");
+            var list2 = RedisServer.ListGetCache<CompUser>(key, true);
 
-            RedisServer.HashAddCache("H11", "1", 1);
-            RedisServer.HashAddCache("H11", "2", 1);
-            RedisServer.HashAddCache("H11", "3", 1);
+            var list3 = RedisServer.ListGetCache<CompUser>(key);
+            //long xx = 0;
+            //RedisServer.StringSetCache("11", "asdfasdf");
+            //var ss = RedisServer.StringGetCache<string>("11");
+            //RedisServer.StringSetCache("22", "asdfasdf");
+            //RedisServer.StringSetCache("33", "asdfasdf");
 
-
-            RedisServer.HashAddCache("H13", "3", 1);
-            RedisServer.HashAddCache("H14", "3", 1);
-
-
-            RedisServer.HashDayAddCache("H14", "3", 1);
-            RedisServer.HashDayAddCache("H14", "5", 1);
+            //RedisServer.HashAddCache("H11", "1", 1);
+            //RedisServer.HashAddCache("H11", "2", 1);
+            //RedisServer.HashAddCache("H11", "3", 1);
 
 
-            RedisServer.RemoveAll();
+            //RedisServer.HashAddCache("H13", "3", 1);
+            //RedisServer.HashAddCache("H14", "3", 1);
+
+
+            //RedisServer.HashDayAddCache("H14", "3", 1);
+            //RedisServer.HashDayAddCache("H14", "5", 1);
+
+
+            //RedisServer.RemoveAll();
 
             //SaveImage();
 
-            SqlData();
+            //SqlData();
 
             //string vv = res.Encrypt;
         }
@@ -92,6 +108,7 @@ namespace MyChy.Frame.Core.Web3.Pages
                 CreatedOn = DateTime.Now,
                 UpdatedOn = DateTime.Now
             };
+
             var xx = _competencesService.CompUserR.AddAsync(comp);
             _competencesService.CompUserR.Context.SaveChanges();
 
@@ -195,7 +212,7 @@ namespace MyChy.Frame.Core.Web3.Pages
                     var result = new ResultBaseModel();
                     string strbase64 = Content.Substring(leg);
                     strbase64 = strbase64.Trim('\0');
-                    var WebRootPath= hostingEnvironment.WebRootPath;
+                    var WebRootPath = hostingEnvironment.WebRootPath;
                     var PicturePath = "/Files/Picture";
 
                     byte[] arr = Convert.FromBase64String(strbase64);
@@ -207,10 +224,10 @@ namespace MyChy.Frame.Core.Web3.Pages
                             FileType = UpLoadFileType.Image,
                         };
                         postmodel.IsThumbnail = true;
-                        postmodel.ThumbnailHigth = new List<int> {100,200,300 };
+                        postmodel.ThumbnailHigth = new List<int> { 100, 200, 300 };
                         postmodel.ThumbnailWith = new List<int> { 100, 200, 300 };
                         var uploadhelp = new UpLoadHelper(postmodel);
-                        
+
                         var uplaods = uploadhelp.Save("jpg", ms);
                         result.Msg = uplaods.Msg;
                         result.Success = uplaods.Success;

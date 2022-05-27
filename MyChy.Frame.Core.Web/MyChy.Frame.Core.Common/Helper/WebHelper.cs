@@ -166,6 +166,9 @@ namespace MyChy.Frame.Core.Common.Helper
             return retString;
         }
 
+
+
+
         /// <summary>
         /// 使用Post方法获取字符串结果
         /// </summary>
