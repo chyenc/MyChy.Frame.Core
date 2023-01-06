@@ -40,6 +40,7 @@ namespace MyChy.Frame.Core.Common.Extensions
                 {
                     return (T)Enum.Parse(type, val.ToString(), true);
                 }
+
                 return (T)Convert.ChangeType(val, type);
             }
             catch

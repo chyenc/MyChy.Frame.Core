@@ -542,6 +542,124 @@ namespace MyChy.Frame.Core.Common.Helper
             stream.Seek(0, SeekOrigin.Begin);//设置指针读取位置
         }
 
+
+        public static string HttpPostFile(
+    string url, CookieContainer cookieContainer = null,
+    Dictionary<string, string> formData = null, Encoding encoding = null, int timeOut = 10000
+    )
+        {
+            MemoryStream memoryStream = new MemoryStream();
+            formData.FillFormDataStream(memoryStream);
+            return HttpPostFile(url, cookieContainer, memoryStream, null, null, encoding, timeOut);
+        }
+
+        //
+        // 摘要:
+        //     使用Post方法获取字符串结果
+        //
+        // 参数:
+        //   url:
+        //
+        //   cookieContainer:
+        //
+        //   postStream:
+        //
+        //   fileDictionary:
+        //     需要上传的文件，Key：对应要上传的Name，Value：本地文件名
+        //
+        //   timeOut:
+        public static string HttpPostFile
+            (string url, CookieContainer cookieContainer = null,
+            Stream postStream = null, Dictionary<string, string> fileDictionary = null,
+            string refererUrl = null, Encoding encoding = null, int timeOut = 10000)
+
+        {
+            HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+            httpWebRequest.Method = "POST";
+            httpWebRequest.Timeout = timeOut;
+            if (fileDictionary != null && fileDictionary.Count > 0)
+            {
+                postStream = postStream ?? new MemoryStream();
+                string text = "----" + DateTime.Now.Ticks.ToString("x");
+                string format = "\r\n--" + text + "\r\nContent-Disposition: form-data; name=\"{0}\"; filename=\"{1}\"\r\nContent-Type: application/octet-stream\r\n\r\n";
+                string format2 = "\r\n--" + text + "\r\nContent-Disposition: form-data; name=\"{0}\"\r\n\r\n{1}";
+                foreach (KeyValuePair<string, string> item in fileDictionary)
+                {
+                    try
+                    {
+                        string value = item.Value;
+                        using FileStream fileStream = FileHelper.GetFileStream(value);
+                        string text2 = null;
+                        text2 = ((fileStream == null) ? string.Format(format2, item.Key, item.Value) : string.Format(format, item.Key, value));
+                        byte[] bytes = Encoding.ASCII.GetBytes((postStream.Length == 0) ? text2.Substring(2, text2.Length - 2) : text2);
+                        postStream.Write(bytes, 0, bytes.Length);
+                        if (fileStream != null)
+                        {
+                            byte[] array = new byte[1024];
+                            int num = 0;
+                            while ((num = fileStream.Read(array, 0, array.Length)) != 0)
+                            {
+                                postStream.Write(array, 0, num);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
+                }
+
+                byte[] bytes2 = Encoding.ASCII.GetBytes("\r\n--" + text + "--\r\n");
+                postStream.Write(bytes2, 0, bytes2.Length);
+                httpWebRequest.ContentType = $"multipart/form-data; boundary={text}";
+            }
+            else
+            {
+                httpWebRequest.ContentType = "application/x-www-form-urlencoded";
+            }
+
+            httpWebRequest.ContentLength = postStream?.Length ?? 0;
+            httpWebRequest.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8";
+            httpWebRequest.KeepAlive = true;
+            if (!string.IsNullOrEmpty(refererUrl))
+            {
+                httpWebRequest.Referer = refererUrl;
+            }
+
+            httpWebRequest.UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.57 Safari/537.36";
+            if (cookieContainer != null)
+            {
+                httpWebRequest.CookieContainer = cookieContainer;
+            }
+
+            if (postStream != null)
+            {
+                postStream.Position = 0L;
+                Stream requestStream = httpWebRequest.GetRequestStream();
+                byte[] array = new byte[1024];
+                int num = 0;
+                while ((num = postStream.Read(array, 0, array.Length)) != 0)
+                {
+                    requestStream.Write(array, 0, num);
+                }
+
+                postStream.Seek(0L, SeekOrigin.Begin);
+                StreamReader streamReader = new StreamReader(postStream);
+                string text3 = streamReader.ReadToEnd();
+                postStream.Close();
+            }
+
+            HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+            if (cookieContainer != null)
+            {
+                httpWebResponse.Cookies = cookieContainer.GetCookies(httpWebResponse.ResponseUri);
+            }
+
+            using Stream stream = httpWebResponse.GetResponseStream();
+            using StreamReader streamReader2 = new StreamReader(stream, encoding ?? Encoding.GetEncoding("utf-8"));
+            return streamReader2.ReadToEnd();
+        }
+
         #endregion
 
 

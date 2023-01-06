@@ -3,8 +3,8 @@ using System.Security.Claims;
 using System.Linq;
 using MyChy.Frame.Core.Common.Extensions;
 using System;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 
 namespace MyChy.Frame.Core.Services
 {
@@ -62,9 +62,12 @@ namespace MyChy.Frame.Core.Services
                 ExpiresUtc = DateTime.UtcNow.AddMinutes(Minutes),
                 IsPersistent = false,
                 AllowRefresh = false,
+                 
             };
 
-            await HttpContext.Current.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, Authentication);
+            await HttpContext.Current.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
+
+            //  await HttpContext.Current.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, Authentication);
         }
 
 

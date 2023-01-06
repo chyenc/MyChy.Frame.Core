@@ -43,6 +43,7 @@ namespace MyChy.Frame.Core.Services
             {
                 new Claim(ClaimTypes.NameIdentifier, Front.UserId.To("")),
                 new Claim(ClaimTypes.Gender, Front.UserNick.To("")),
+                new Claim(ClaimTypes.Actor, Front.UserName.To("")),
                 new Claim(ClaimTypes.PrimarySid,  string.Join(",", Front.OrganizationList)),
                 new Claim(ClaimTypes.Role, string.Join(",", Front.RoleList)),
                 new Claim(ClaimTypes.Authentication,  string.Join(",",Front.AuthorityList)),
@@ -107,6 +108,7 @@ namespace MyChy.Frame.Core.Services
                 result.Success = true;
                 var ss = HttpContext.Current.User.Claims;
                 result.UserId = ShowClaimValue<int>(ss, ClaimTypes.NameIdentifier);
+                result.UserNick = ShowClaimValue<string>(ss, ClaimTypes.Actor);
                 result.UserNick = ShowClaimValue<string>(ss, ClaimTypes.Gender);
                 result.RoleList = ShowClaimValue<string>(ss, ClaimTypes.Role).ToList<int>();
                 result.OrganizationList = ShowClaimValue<string>(ss, ClaimTypes.PrimarySid).ToList<int>();
@@ -173,6 +175,8 @@ namespace MyChy.Frame.Core.Services
         public bool Success { get; set; }
 
         public int UserId { get; set; }
+
+        public string UserName { get; set; }
 
         public string UserNick { get; set; }
 

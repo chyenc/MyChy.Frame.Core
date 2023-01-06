@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -51,7 +52,7 @@ namespace MyChy.Frame.Core.Common.Helper
         /// <param name="keyValues"></param>
         /// <returns></returns>
         public static Dictionary<string, Dictionary<string, string>> DictionaryByModel<T>
-            (T Model, IList<string> keys,string mainkey)
+            (T Model, IList<string> keys, string mainkey)
         {
             var result = new Dictionary<string, Dictionary<string, string>>();
             var t = typeof(T);
@@ -68,7 +69,7 @@ namespace MyChy.Frame.Core.Common.Helper
                     }
                 }
             }
-            var model=new Dictionary<string, string>();
+            var model = new Dictionary<string, string>();
             var keyvalues = string.Empty;
             foreach (var i in keys)
             {
@@ -80,7 +81,7 @@ namespace MyChy.Frame.Core.Common.Helper
                     if (obj != null)
                     {
                         model.Add(i, obj.ToString());
-                        if (mainkey==i) keyvalues= obj.ToString();
+                        if (mainkey == i) keyvalues = obj.ToString();
                         //worksheet.Cells[Cells].Value = obj;
                     }
                 }
@@ -105,7 +106,7 @@ namespace MyChy.Frame.Core.Common.Helper
         /// <param name=""></param>
         /// <param name="keyValues"></param>
         /// <returns></returns>
-        public static Dictionary<string,Dictionary<string, string>> DictionaryListByModel<T>
+        public static Dictionary<string, Dictionary<string, string>> DictionaryListByModel<T>
             (IList<T> Models, IList<string> keys, string mainkey)
         {
             var result = new Dictionary<string, Dictionary<string, string>>();
@@ -146,7 +147,7 @@ namespace MyChy.Frame.Core.Common.Helper
                         //_logger.LogError(e.Message);
                     }
                 }
-                result.Add(keyvalues,model);
+                result.Add(keyvalues, model);
 
             }
 
@@ -260,6 +261,76 @@ namespace MyChy.Frame.Core.Common.Helper
                 {
                     newRow[j] = t.InvokeMember(result.Columns[j].ColumnName, BindingFlags.GetProperty,
                         null, i, new object[] { });
+                }
+                result.Rows.Add(newRow);
+            }
+            return result;
+        }
+
+
+
+        /// <summary>
+        /// 类 自动转换成 table
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="OutName"></param>
+        /// <param name="IsAddNull">是否添加可以空的类</param>
+        /// <returns></returns>
+        public static DataTable GetTableByListModel<T>(IEnumerable<T> list, IList<string> OutName, bool IsAddNull = false)
+        {
+            var result = new DataTable();
+            if (list == null)
+            {
+                return result;
+            }
+            var t = typeof(T);
+            var pi = t.GetProperties();
+            var DateTimeOffsetList = new List<string>();
+            foreach (var item in pi)
+            {
+                if (!OutName.Contains(item.Name))
+                {
+                    if (item.PropertyType.Name == "Nullable`1")
+                    {
+                        if (IsAddNull)
+                        {
+                            result.Columns.Add(new DataColumn(item.Name));
+                        }
+                    }
+                    else
+                    {
+                        //if (item.PropertyType.Name == "DateTimeOffset")
+                        //{
+                        //    result.Columns.Add(new DataColumn(item.Name, typeof(DateTime)));
+                        //    DateTimeOffsetList.Add(item.Name);
+                        //}
+                        //else
+                        //{
+                            result.Columns.Add(new DataColumn(item.Name, item.PropertyType));
+                      //  }
+
+
+                    }
+
+                }
+            }
+            foreach (var i in list)
+            {
+                var newRow = result.NewRow();
+
+                foreach (DataColumn col in result.Columns)
+                {
+                    //foreach (var prop in pi)
+                    //{
+                    var obj = t.InvokeMember(col.ColumnName, BindingFlags.GetProperty, null, i, new object[] { });
+                    //if (DateTimeOffsetList.Contains(col.ColumnName))
+                    //{
+                    //    obj = ((DateTimeOffset)obj).DateTime;
+                    //}
+                    newRow[col.ColumnName] = obj;
+
+                    //}
                 }
                 result.Rows.Add(newRow);
             }

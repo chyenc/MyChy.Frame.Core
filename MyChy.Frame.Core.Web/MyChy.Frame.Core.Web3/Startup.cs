@@ -77,7 +77,7 @@ namespace MyChy.Frame.Core.Web3
                     //################################################
                     //.AddDbContext<CoreDbContext>((serviceProviders, options) =>
                     options.UseSqlServer(efconfig.Connect,
-                            b => b.MigrationsAssembly("MyChy.Web"))
+                            b => b.MigrationsAssembly("MyChy.Frame.Core.Web3"))
                            .UseInternalServiceProvider(serviceProviders));
                     // .UseRowNumberForPaging() SQL2008版本需要，12等以上版本不需要
                 }
@@ -86,7 +86,7 @@ namespace MyChy.Frame.Core.Web3
                     services.AddEntityFrameworkSqlServer()
                     .AddDbContextPool<CoreDbContext>((serviceProviders, options) =>
                     options.UseSqlServer(efconfig.Connect,
-                            b => b.MigrationsAssembly("MyChy.Web").UseRowNumberForPaging())
+                            b => b.MigrationsAssembly("MyChy.Frame.Core.Web3").UseRowNumberForPaging())
                            .UseInternalServiceProvider(serviceProviders));
                     //.UseRowNumberForPaging() SQL2008版本需要，12等以上版本不需要
 
@@ -116,26 +116,31 @@ namespace MyChy.Frame.Core.Web3
 
             services.AddTransient<IBaseUnitOfWork, BaseUnitOfWork>();
 
-
-            var machinekeyPath = FileHelper.GetFileMapPath("config");
-            var protectionProvider = DataProtectionProvider.Create(new DirectoryInfo(machinekeyPath));
-            var dataProtector = protectionProvider.CreateProtector("MyCookieAuthentication");
-            var ticketFormat = new TicketDataFormat(dataProtector);
-
-
-
-            services.AddAuthentication(o =>
-            {
-                o.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                o.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                o.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            })
-            .AddCookie(options =>
+            services.AddAuthentication()
+                    .AddCookie(options =>
             {
                 options.LoginPath = new PathString("/Account/Login");
                 options.LogoutPath = new PathString("/Account/Logout");
-                options.TicketDataFormat = ticketFormat;
-            });
+               // options.TicketDataFormat = ticketFormat;
+            }); ;
+
+            //var machinekeyPath = FileHelper.GetFileMapPath("config");
+            //var protectionProvider = DataProtectionProvider.Create(new DirectoryInfo(machinekeyPath));
+            //var dataProtector = protectionProvider.CreateProtector("MyCookieAuthentication");
+            //var ticketFormat = new TicketDataFormat(dataProtector);
+
+            //services.AddAuthentication(o =>
+            //{
+            //    o.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //    o.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //    o.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //})
+            //.AddCookie(options =>
+            //{
+            //    options.LoginPath = new PathString("/Account/Login");
+            //    options.LogoutPath = new PathString("/Account/Logout");
+            //    options.TicketDataFormat = ticketFormat;
+            //});
             // appconfig = _Configuration.GetSection("AppSettings").Get<AppSettingsConfig>();
 
             //services.Configure<CookiePolicyOptions>(options =>
@@ -196,6 +201,8 @@ namespace MyChy.Frame.Core.Web3
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = SameSiteMode.Lax });
 
             app.UseHttpsRedirection();
 

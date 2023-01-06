@@ -46,6 +46,15 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
         /// <returns>The range of entities added</returns>
         IEnumerable<TEntity> Add(params TEntity[] entities);
 
+        /// <summary>
+        /// 硬拷贝数据
+        /// </summary>
+        /// <param name="entities"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        bool BulkCopy(IEnumerable<TEntity> entities);
+
+
         #endregion
 
         #region Update

@@ -1,6 +1,8 @@
 ﻿{
-  "BaseType": "MySql",
-  "Connect": "Server=192.168.16.24;port=3306;Database=basecore;uid=base;pwd=qwe-asd-zxc-123;Character Set=utf8;",
+  //"BaseType": "MySql",
+  "BaseType": "MsSql",
+  //"Connect": "Server=192.168.16.24;port=3306;Database=basecore;uid=base;pwd=qwe-asd-zxc-123;Character Set=utf8;",
+  "Connect": "Data Source=10.100.110.125;Database=CoreBaseDemo3;User Id=sa;Password=W6a5z95z-47Ba-436w-B1D7-s1eE5wiF7Ez;Pooling=true;Max Pool Size=1000;Min Pool Size=0;",
 
   // "BaseType": "MsSql",
   // "Connect": "Data Source=.;Database=CoreDemo3;User Id=sa;Password=qwe-asd-zxc-123;Pooling=true;Max Pool Size=1000;Min Pool Size=0;",

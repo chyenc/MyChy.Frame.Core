@@ -15,6 +15,8 @@ using MyChy.Frame.Core.Common.Extensions;
 using MyChy.Frame.Core.Redis;
 using Microsoft.Extensions.DependencyInjection;
 using LinqKit;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace MyChy.Frame.Core.Web.Controllers
 {
@@ -37,13 +39,14 @@ namespace MyChy.Frame.Core.Web.Controllers
 
 
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             _logger.LogTrace("跟踪日志-----------");
 
             var _competences = MyChy.Frame.Core.HttpContext.GetService<ICompetencesWorkArea>();
             var model = _competences.CompUserR.GetById(3);
 
+            await UserIdentity(1);
 
             //_logger.LogDebug("调试日志-----------");
             //_logger.LogInformation("普通信息日志-----------");
@@ -76,7 +79,7 @@ namespace MyChy.Frame.Core.Web.Controllers
 
            // Common();
 
-           // SqlData();
+            // SqlData();
 
             // CookiesSession();
 
@@ -91,7 +94,7 @@ namespace MyChy.Frame.Core.Web.Controllers
 
         public async Task<IActionResult> Contact()
         {
-           // await Common();
+            // await Common();
             CookiesSession();
             //string val = "234243";
 
@@ -120,7 +123,7 @@ namespace MyChy.Frame.Core.Web.Controllers
         public IActionResult Error()
         {
             throw new Exception("你怎么不留下姓名啊，卖肾又不是丢人的事。");
-            
+
         }
 
         /// <summary>
@@ -165,6 +168,7 @@ namespace MyChy.Frame.Core.Web.Controllers
             }
             else
             {
+
                 model = new CompUser
                 {
                     NickName = DateTime.Now.Ticks.ToString(),
@@ -177,6 +181,8 @@ namespace MyChy.Frame.Core.Web.Controllers
                 await _competencesService.CompUserR.AddAsync(model);
                 await _competencesService.CompUserR.CommitAutoHistoryAsync();
             }
+
+
 
             return 1;
         }
@@ -288,11 +294,11 @@ namespace MyChy.Frame.Core.Web.Controllers
                   new SqlParameter("@id",10),
             })
                 .Select(x => new CompUserOther()
-            {
-                NickName = x.NickName,
-                UserName = x.UserName,
+                {
+                    NickName = x.NickName,
+                    UserName = x.UserName,
 
-            })
+                })
             .ToList();
 
 
@@ -543,9 +549,11 @@ namespace MyChy.Frame.Core.Web.Controllers
 
                 UserIdentity.OrganizationId = "1,2,3,4";
 
+                ClaimsIdentityServer.UserLogin(UserIdentity);
+
             }
 
-            //ClaimsIdentityServer.UserLogin(UserIdentity);
+            //
             //// UserIdentity.Success = true;
 
             return UserIdentity;

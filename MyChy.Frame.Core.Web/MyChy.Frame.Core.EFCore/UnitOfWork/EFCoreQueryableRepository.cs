@@ -1,11 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using MyChy.Frame.Core.Common.Helper;
 using MyChy.Frame.Core.Common.Model;
 using MyChy.Frame.Core.EFCore.AutoHistorys;
+using MyChy.Frame.Core.EFCore.Config;
 using MyChy.Frame.Core.EFCore.Entitys.Pages;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,6 +27,7 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
             EFCoreQueryableRepository<TEntity>, IEFCoreQueryableRepository<TEntity, TKey>
         where TEntity : class
     {
+
         /// <summary>
         /// Creates a new instance
         /// </summary>
@@ -76,7 +82,7 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
         /// <returns>The entity or null if not found</returns>
         public TEntity GetById(TKey id, bool IsNoTracking = false)
         {
-            if (IsNoTracking) return  QueryByIdNoTracking(id).SingleOrDefault();
+            if (IsNoTracking) return QueryByIdNoTracking(id).SingleOrDefault();
             return QueryById(id).SingleOrDefault();
         }
 
@@ -140,6 +146,8 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
     public abstract class EFCoreQueryableRepository<TEntity> : IEFCoreQueryableRepository<TEntity>
         where TEntity : class
     {
+        private EntityFrameworkConfig efconfig = null;
+
         /// <summary>
         /// Creates a new instance
         /// </summary>
@@ -218,6 +226,89 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
             if (entities == null) throw new ArgumentNullException(nameof(entities));
             return await Task.FromResult(Add(entities));
         }
+
+        /// <summary>
+        /// 硬拷贝数据
+        /// </summary>
+        /// <param name="entities"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public async Task<bool> BulkCopyAsync(IEnumerable<TEntity> entities)
+        {
+
+            if (entities == null) throw new ArgumentNullException(nameof(entities));
+            if (entities.Count() <= 0) return true;
+            var result = false;
+            if (efconfig == null)
+            {
+                efconfig = EntityFrameworkHelper.ReadConfiguration("config/EntityFramework.json");
+            }
+            if (efconfig.SqlType == EntityFrameworkType.MsSql)
+            {
+                Type type = typeof(TEntity);
+                var tableName = type.Name;
+                DataTable dt = ModelHelper.GetTableByListModel<TEntity>(entities, new List<string> { "Id" }, true);
+
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    using (var tran = Context.Database.BeginTransaction())
+                    {
+                        try
+                        {
+                            result = await BulkCopyAsync(dt, tableName, efconfig.Connect);
+                        }
+                        catch (Exception e)
+                        {
+                            tran.Rollback();
+                        }
+                        tran.Commit();
+                    }
+
+                }
+            }
+            else
+            {
+                var res = Add(entities as TEntity[] ?? entities.ToArray());
+                result = true;
+            }
+            return result;
+
+        }
+        private async Task<bool> BulkCopyAsync(DataTable dt, string name, string Connect)
+        {
+            //string constr = System.Configuration.ConfigurationManager.ConnectionStrings["BingStampAzureContext"].ToString();
+            //string constr = Context.Database.GetDbConnection().ConnectionString;
+            SqlBulkCopy sqlBulkCopy = null;
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(Connect))
+                {
+                    sqlBulkCopy = new SqlBulkCopy(Connect)
+                    {
+                        BulkCopyTimeout = 600000,
+                        DestinationTableName = string.Format("dbo.{0}", name),
+                        BatchSize = dt.Rows.Count
+                    };
+                    foreach (var col in dt.Columns)
+                    {
+                        sqlBulkCopy.ColumnMappings.Add(col.ToString(), col.ToString());
+                    }
+                    await sqlBulkCopy.WriteToServerAsync(dt);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+            finally
+            {
+                if (sqlBulkCopy != null) sqlBulkCopy.Close();
+            }
+
+        }
+
 
         /// <summary>Updates the entity in the repository asynchronously</summary>
         /// <param name="entity">The entity to update</param>
@@ -369,6 +460,90 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
             return Add(entities as TEntity[] ?? entities.ToArray());
         }
 
+
+        /// <summary>
+        /// 硬拷贝数据
+        /// </summary>
+        /// <param name="entities"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public bool BulkCopy(IEnumerable<TEntity> entities)
+        {
+
+            if (entities == null) throw new ArgumentNullException(nameof(entities));
+            if (entities.Count() <= 0) return true;
+            var result = false;
+            if (efconfig == null)
+            {
+                efconfig = EntityFrameworkHelper.ReadConfiguration("config/EntityFramework.json");
+            }
+            if (efconfig.SqlType == EntityFrameworkType.MsSql)
+            {
+                Type type = typeof(TEntity);
+                var tableName = type.Name;
+                DataTable dt = ModelHelper.GetTableByListModel<TEntity>(entities, new List<string> { "Id" },true);
+
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    using (var tran = Context.Database.BeginTransaction())
+                    {
+                        try
+                        {
+                            result = BulkCopy(dt, tableName, efconfig.Connect);
+                        }
+                        catch (Exception e)
+                        {
+                            tran.Rollback();
+
+                        }
+                        tran.Commit();
+                    }
+
+                }
+            }
+            else
+            {
+                var res = Add(entities as TEntity[] ?? entities.ToArray());
+                result = true;
+            }
+            return result;
+
+        }
+        private bool BulkCopy(DataTable dt, string name,string Connect)
+        {
+            //string constr = System.Configuration.ConfigurationManager.ConnectionStrings["BingStampAzureContext"].ToString();
+            //string constr = Context.Database.GetDbConnection().ConnectionString;
+            SqlBulkCopy sqlBulkCopy = null;
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(Connect))
+                {
+                    sqlBulkCopy = new SqlBulkCopy(Connect)
+                    {
+                        BulkCopyTimeout = 600000,
+                        DestinationTableName = string.Format("dbo.{0}", name),
+                        BatchSize = dt.Rows.Count
+                    };
+                    foreach (var col in dt.Columns)
+                    {
+                        sqlBulkCopy.ColumnMappings.Add(col.ToString(), col.ToString());
+                    }
+                    sqlBulkCopy.WriteToServer(dt);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+            finally
+            {
+                if (sqlBulkCopy != null) sqlBulkCopy.Close();
+            }
+
+        }
+
         /// <summary>Adds a range of entities to the repository</summary>
         /// <param name="entities">The entities to add</param>
         /// <returns>The range of entities added</returns>
@@ -460,7 +635,7 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
         /// <param name="query">The Sql String</param>
         /// <param name="parameters">The Sql Parameters</param>
         /// <returns></returns>
-        public virtual IQueryable<TEntity> SqlQuery(string query, params object[] parameters) 
+        public virtual IQueryable<TEntity> SqlQuery(string query, params object[] parameters)
             => Set.FromSqlRaw(query, parameters).AsQueryable();
 
         /// <summary>
@@ -542,7 +717,7 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
             var count = 0;
             if (page <= 0) page = 1;
             if (pageSize <= 0) pageSize = 1;
-            var query = QueryFilter(out count,predicate, orderBy, includes, page, pageSize, IsNoTracking);
+            var query = QueryFilter(out count, predicate, orderBy, includes, page, pageSize, IsNoTracking);
             var list = await query.ToListAsync();
 
             return new PagedList<TEntity>(list, page, pageSize, count);

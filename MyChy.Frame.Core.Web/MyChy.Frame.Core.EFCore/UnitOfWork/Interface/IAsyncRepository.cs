@@ -67,7 +67,16 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
         /// <returns>A <see cref="Task{TResult}"/> containing the entities</returns>
         Task<IEnumerable<TEntity>> AddAsync(CancellationToken ct, params TEntity[] entities);
 
+        /// <summary>
+        /// 硬拷贝数据
+        /// </summary>
+        /// <param name="entities"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        Task<bool> BulkCopyAsync(IEnumerable<TEntity> entities);
+
         #endregion
+
 
         #region Update
 
