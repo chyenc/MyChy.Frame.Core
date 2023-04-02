@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Version>3.1.5</Version>
-    <Description>增加 BulkCopy 功能 现只支持MsSql</Description>
+    <Version>3.1.6</Version>
+    <Description>优化 BulkCopy 功能 增加异步 现只支持MsSql</Description>
     <AssemblyVersion>3.1.3.0</AssemblyVersion>
     <FileVersion>3.1.3.0</FileVersion>
   </PropertyGroup>

@@ -268,8 +268,10 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
             }
             else
             {
-                var res = Add(entities as TEntity[] ?? entities.ToArray());
+                await AddAsync(entities as TEntity[] ?? entities.ToArray());
+                await CommitAsync();
                 result = true;
+
             }
             return result;
 
@@ -281,25 +283,23 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
             SqlBulkCopy sqlBulkCopy = null;
             try
             {
-                using (SqlConnection conn = new SqlConnection(Connect))
+                sqlBulkCopy = new SqlBulkCopy(Connect)
                 {
-                    sqlBulkCopy = new SqlBulkCopy(Connect)
-                    {
-                        BulkCopyTimeout = 600000,
-                        DestinationTableName = string.Format("dbo.{0}", name),
-                        BatchSize = dt.Rows.Count
-                    };
-                    foreach (var col in dt.Columns)
-                    {
-                        sqlBulkCopy.ColumnMappings.Add(col.ToString(), col.ToString());
-                    }
-                    await sqlBulkCopy.WriteToServerAsync(dt);
+                    BulkCopyTimeout = 600000,
+                    DestinationTableName = string.Format("dbo.{0}", name),
+                    BatchSize = dt.Rows.Count
+                };
+                foreach (var col in dt.Columns)
+                {
+                    sqlBulkCopy.ColumnMappings.Add(col.ToString(), col.ToString());
                 }
+                await sqlBulkCopy.WriteToServerAsync(dt);
 
                 return true;
             }
             catch (Exception ex)
             {
+                LogHelper.LogError($"BulkCopyAsync:{ex.Message} Time:{DateTime.Now}");
                 return false;
             }
             finally
@@ -481,7 +481,7 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
             {
                 Type type = typeof(TEntity);
                 var tableName = type.Name;
-                DataTable dt = ModelHelper.GetTableByListModel<TEntity>(entities, new List<string> { "Id" },true);
+                DataTable dt = ModelHelper.GetTableByListModel<TEntity>(entities, new List<string> { "Id" }, true);
 
                 if (dt != null && dt.Rows.Count > 0)
                 {
@@ -503,38 +503,37 @@ namespace MyChy.Frame.Core.EFCore.UnitOfWork
             }
             else
             {
-                var res = Add(entities as TEntity[] ?? entities.ToArray());
+                Add(entities as TEntity[] ?? entities.ToArray());
+                Commit();
                 result = true;
             }
             return result;
 
         }
-        private bool BulkCopy(DataTable dt, string name,string Connect)
+        private bool BulkCopy(DataTable dt, string name, string Connect)
         {
             //string constr = System.Configuration.ConfigurationManager.ConnectionStrings["BingStampAzureContext"].ToString();
             //string constr = Context.Database.GetDbConnection().ConnectionString;
             SqlBulkCopy sqlBulkCopy = null;
             try
             {
-                using (SqlConnection conn = new SqlConnection(Connect))
+                sqlBulkCopy = new SqlBulkCopy(Connect)
                 {
-                    sqlBulkCopy = new SqlBulkCopy(Connect)
-                    {
-                        BulkCopyTimeout = 600000,
-                        DestinationTableName = string.Format("dbo.{0}", name),
-                        BatchSize = dt.Rows.Count
-                    };
-                    foreach (var col in dt.Columns)
-                    {
-                        sqlBulkCopy.ColumnMappings.Add(col.ToString(), col.ToString());
-                    }
-                    sqlBulkCopy.WriteToServer(dt);
+                    BulkCopyTimeout = 600000,
+                    DestinationTableName = string.Format("dbo.{0}", name),
+                    BatchSize = dt.Rows.Count
+                };
+                foreach (var col in dt.Columns)
+                {
+                    sqlBulkCopy.ColumnMappings.Add(col.ToString(), col.ToString());
                 }
+                sqlBulkCopy.WriteToServer(dt);
 
                 return true;
             }
             catch (Exception ex)
             {
+                LogHelper.LogError($"BulkCopy:{ex.Message} Time:{DateTime.Now}");
                 return false;
             }
             finally
