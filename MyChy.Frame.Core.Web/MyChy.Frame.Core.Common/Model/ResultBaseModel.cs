@@ -26,4 +26,5 @@ namespace MyChy.Frame.Core.Common.Model
         /// </summary>
         public int Id { get; set; }
     }
+
 }

@@ -340,6 +340,18 @@ namespace MyChy.Frame.Core.Web3.Pages
                 var xx = _competencesService.CompUserR.AddAsync(comp);
                 _competencesService.CompUserR.Context.SaveChanges();
 
+
+                comp = new CompUser
+                {
+                    NickName = "123",
+                    PassWord = "123",
+                    CreatedOn = DateTime.Now,
+                    UpdatedOn = DateTime.Now
+                };
+
+                xx = _competencesService.CompUserR.AddAsync(comp);
+                _competencesService.CompUserR.Context.SaveChanges();
+
             }
 
             //

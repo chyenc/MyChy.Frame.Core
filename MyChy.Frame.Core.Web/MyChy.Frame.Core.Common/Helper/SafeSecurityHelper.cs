@@ -161,5 +161,29 @@ namespace MyChy.Frame.Core.Common.Helper
         {
             return Sha512(strText, Encoding.UTF8);
         }
+
+        /// <summary>
+        /// Base64加密
+        /// </summary>
+        /// <param name="strText"></param>
+        /// <returns></returns>
+        public static string ToBase64(string strText)
+        {
+            var bytes = Encoding.UTF8.GetBytes(strText);
+            return Convert.ToBase64String(bytes);
+
+        }
+
+        /// <summary>
+        /// Base64解密
+        /// </summary>
+        /// <param name="strText"></param>
+        /// <returns></returns>
+        public static string FromBase64(string strText)
+        {
+            var outputb = Convert.FromBase64String(strText);
+            return Encoding.UTF8.GetString(outputb);
+
+        }
     }
 }
