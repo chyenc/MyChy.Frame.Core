@@ -83,11 +83,11 @@ namespace MyChy.Frame.Core.Web3
                 }
                 else
                 {
-                    services.AddEntityFrameworkSqlServer()
-                    .AddDbContextPool<CoreDbContext>((serviceProviders, options) =>
-                    options.UseSqlServer(efconfig.Connect,
-                            b => b.MigrationsAssembly("MyChy.Frame.Core.Web3").UseRowNumberForPaging())
-                           .UseInternalServiceProvider(serviceProviders));
+                    //services.AddEntityFrameworkSqlServer()
+                    //.AddDbContextPool<CoreDbContext>((serviceProviders, options) =>
+                    //options.UseSqlServer(efconfig.Connect,
+                    //        b => b.MigrationsAssembly("MyChy.Frame.Core.Web3").UseRowNumberForPaging())
+                    //       .UseInternalServiceProvider(serviceProviders));
                     //.UseRowNumberForPaging() SQL2008版本需要，12等以上版本不需要
 
                 }
@@ -97,11 +97,11 @@ namespace MyChy.Frame.Core.Web3
             }
             else if (efconfig.SqlType == EntityFrameworkType.MySql)
             {
-                services.AddEntityFrameworkMySql()
-                .AddDbContextPool<CoreDbContext>((serviceProviders, options) =>
-                options.UseMySql(efconfig.Connect,
-                   b => b.MigrationsAssembly("MyChy.Frame.Core.Web3"))
-                  .UseInternalServiceProvider(serviceProviders));
+                //services.AddEntityFrameworkMySql()
+                //.AddDbContextPool<CoreDbContext>((serviceProviders, options) =>
+                //options.UseMySql(efconfig.Connect,
+                //   b => b.MigrationsAssembly("MyChy.Frame.Core.Web3"))
+                //  .UseInternalServiceProvider(serviceProviders));
 
             }
             // services.AddSingleton<CoreDbContext>();

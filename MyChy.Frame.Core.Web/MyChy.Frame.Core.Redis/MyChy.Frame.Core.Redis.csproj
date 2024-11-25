@@ -1,20 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <AssemblyVersion>3.1.6.0</AssemblyVersion>
     <FileVersion>3.1.6.0</FileVersion>
-    <Version>3.1.6</Version>
-    <Description>修改List BUG增加读取删除功能</Description>
+    <Version>3.8.11</Version>
+    <Description>升级8</Description>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="StackExchange.Redis.StrongName" Version="1.2.6" />
+    <PackageReference Include="StackExchange.Redis" Version="2.8.16" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="System.Net.Security" Version="4.3.2" />
+    <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\MyChy.Frame.Core.Common\MyChy.Frame.Core.Common.csproj" />
   </ItemGroup>
-
 </Project>

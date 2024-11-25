@@ -38,71 +38,80 @@ namespace MyChy.Frame.Core.EFCore.AutoHistorys
         /// <param name="context">The context.</param>
         public static void EnsureAutoHistory(this DbContext context, string Operator = "SyStem", string FullName = "")
         {
-            if (!autoHistoryConfig.IsHistory) return;
+            try
+            {
+                if (!autoHistoryConfig.IsHistory) return;
 
-            // TODO: only record the changed properties.
-            var jsonSetting = new JsonSerializerSettings
-            {
-                ContractResolver = new EntityContractResolver(context),
-            };
-
-            var entries = new List<EntityEntry>();
-            if (autoHistoryConfig.IsAdded)
-            {
-                entries = context.ChangeTracker.Entries().Where(e =>
-                           (e.State == EntityState.Deleted || e.State == EntityState.Modified || e.State == EntityState.Added)
-                              && (IncludeEntity(e) || IncludeEntityName(e, FullName))).ToList();
-            }
-            else
-            {
-                entries = context.ChangeTracker.Entries().Where(e =>
-                            (e.State == EntityState.Deleted || e.State == EntityState.Modified)
-                            && (IncludeEntity(e) || IncludeEntityName(e, FullName))).ToList();
-            }
-            if (entries.Count == 0)
-            {
-                return;
-            }
-            if (autoHistoryConfig.OperatorIsLogin)
-            {
-                if (Operator == "SyStem")
+                // TODO: only record the changed properties.
+                var jsonSetting = new JsonSerializerSettings
                 {
-                    var userinfo = ClaimsIdentityServer.AccountUserid();
-                    if (userinfo.UserId > 0) { Operator = userinfo.UserNick + "|" + userinfo.UserId; }
-                }
-            }
-            foreach (var entry in entries)
-            {
-                var history = new AutoHistory
-                {
-                    TypeName = entry.ShowTypeName(),
-                    Operator = Operator,
-                    Kind = entry.State,
+                    ContractResolver = new EntityContractResolver(context),
                 };
-                history.Ip = HttpContext.GetIp();
-                switch (entry.State)
+
+                var entries = new List<EntityEntry>();
+                if (autoHistoryConfig.IsAdded)
                 {
-                    case EntityState.Added:
-                        // REVIEW: what's the best way to do this?
-                        history.SourceId = "0";
-                        history.Kind = EntityState.Added;
-                        history.AfterJson = JsonConvert.SerializeObject(entry.Entity, Formatting.Indented, jsonSetting);
-                        break;
-                    case EntityState.Deleted:
-                        history.SourceId = entry.PrimaryKey();
-                        history.Kind = EntityState.Deleted;
-                        history.BeforeJson = JsonConvert.SerializeObject(entry.Entity, Formatting.Indented, jsonSetting);
-                        break;
-                    case EntityState.Modified:
-                        history.SourceId = entry.PrimaryKey();
-                        history.Kind = EntityState.Modified;
-                        history.BeforeJson = JsonConvert.SerializeObject(entry.Original(), Formatting.Indented, jsonSetting);
-                        history.AfterJson = JsonConvert.SerializeObject(entry.Entity, Formatting.Indented, jsonSetting);
-                        break;
-                    default:
-                        continue;
+                    entries = context.ChangeTracker.Entries().Where(e =>
+                               (e.State == EntityState.Deleted || e.State == EntityState.Modified || e.State == EntityState.Added)
+                                  && (IncludeEntity(e) || IncludeEntityName(e, FullName))).ToList();
                 }
-                context.AddAsync(history);
+                else
+                {
+                    entries = context.ChangeTracker.Entries().Where(e =>
+                                (e.State == EntityState.Deleted || e.State == EntityState.Modified)
+                                && (IncludeEntity(e) || IncludeEntityName(e, FullName))).ToList();
+                }
+                if (entries.Count == 0)
+                {
+                    return;
+                }
+                if (autoHistoryConfig.OperatorIsLogin)
+                {
+                    if (Operator == "SyStem")
+                    {
+                        var userinfo = ClaimsIdentityServer.AccountUserid();
+                        if (userinfo.UserId > 0) { Operator = userinfo.UserNick + "|" + userinfo.UserId; }
+                    }
+                }
+                foreach (var entry in entries)
+                {
+                    var history = new AutoHistory
+                    {
+                        TypeName = entry.ShowTypeName(),
+                        Operator = Operator,
+                        Kind = entry.State,
+                    };
+                    history.Ip = HttpContext.GetIp();
+                    switch (entry.State)
+                    {
+                        case EntityState.Added:
+                            // REVIEW: what's the best way to do this?
+                            history.SourceId = "0";
+                            history.Kind = EntityState.Added;
+                            history.AfterJson = JsonConvert.SerializeObject(entry.Entity, Formatting.Indented, jsonSetting);
+                            break;
+                        case EntityState.Deleted:
+                            history.SourceId = entry.PrimaryKey();
+                            history.Kind = EntityState.Deleted;
+                            history.BeforeJson = JsonConvert.SerializeObject(entry.Entity, Formatting.Indented, jsonSetting);
+                            break;
+                        case EntityState.Modified:
+                            history.SourceId = entry.PrimaryKey();
+                            history.Kind = EntityState.Modified;
+                            history.BeforeJson = JsonConvert.SerializeObject(entry.Original(), Formatting.Indented, jsonSetting);
+                            history.AfterJson = JsonConvert.SerializeObject(entry.Entity, Formatting.Indented, jsonSetting);
+                            break;
+                        default:
+                            continue;
+                    }
+                    context.AddAsync(history);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                LogHelper.LogError($"EnsureAutoHistory:Message:{ex.Message} InnerException:{ex.InnerException?.Message}");
+
             }
         }
 
@@ -217,7 +226,8 @@ namespace MyChy.Frame.Core.EFCore.AutoHistorys
         private static string ShowTypeName(this EntityEntry entry)
         {
             var result = entry.Entity.GetType().Name;
-            if (autoHistoryConfig.TypeName != "Name") {
+            if (autoHistoryConfig.TypeName != "Name")
+            {
                 result = entry.Entity.GetType().FullName;
             }
             return result;
