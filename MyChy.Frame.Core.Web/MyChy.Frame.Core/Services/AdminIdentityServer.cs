@@ -48,6 +48,7 @@ namespace MyChy.Frame.Core.Services
                 new Claim(ClaimTypes.Role, string.Join(",", Front.RoleList)),
                 new Claim(ClaimTypes.Authentication,  string.Join(",",Front.AuthorityList)),
                 new Claim(ClaimTypes.Expired, Front.EndTime.To("")),
+                new Claim(ClaimTypes.System, Front.Token.To("")),
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -115,7 +116,7 @@ namespace MyChy.Frame.Core.Services
                 //result.RoleType = ShowClaimValue<int>(ss, ClaimTypes.GroupSid);
                 result.AuthorityList = ShowClaimValue<string>(ss, ClaimTypes.Authentication).ToList<string>();
                 result.EndTime = ShowClaimValue<DateTime>(ss, ClaimTypes.Expired);
-
+                result.Token = ShowClaimValue<string>(ss, ClaimTypes.System);
 
                 if (!CheckEndTime(result))
                 {
@@ -187,6 +188,8 @@ namespace MyChy.Frame.Core.Services
         public IList<string> AuthorityList { get; set; } = new List<string>();
 
         public DateTime EndTime { get; set; }
+
+        public string Token { get; set; } = string.Empty;
 
     }
 }

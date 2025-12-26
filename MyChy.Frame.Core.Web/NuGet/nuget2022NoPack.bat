@@ -1,0 +1,1 @@
+dotnet nuget push nupkgs\*.nupkg --source https://nuget.chyenc.com --api-key 8bfc20c1-83a6-4d0f-a48e-209a8dda7ad2
