@@ -78,7 +78,11 @@ namespace MyChy.Frame.Core.Common.Helper
             }
             result.FileName = name;
             result.ExtensionName = exname;
-            var date = DateTime.Now.Ticks.ToString();
+
+            var date = CreatFileName(6);
+
+            //var date = DateTime.Now.Ticks.ToString();
+
             var dateFormat = DateTime.Now.ToString(UploadFormat);
             FileHelper.CreatedFolderData(Model.SavePath, dateFormat, out string filedate);
         
@@ -114,7 +118,9 @@ namespace MyChy.Frame.Core.Common.Helper
         {
             var result = new UploadReceiveModel();
 
-            var date = DateTime.Now.Ticks.ToString();
+            //var date = DateTime.Now.Ticks.ToString();
+            var date = CreatFileName(6);
+
             var dateFormat = DateTime.Now.ToString(UploadFormat);
             FileHelper.CreatedFolderData(Model.SavePath, dateFormat, out string filedate);
             if (Model.IsThumbnail)
@@ -168,6 +174,19 @@ namespace MyChy.Frame.Core.Common.Helper
                     }
                 }
             }
+        }
+
+        private string CreatFileName(int SaveNameRandomNumber = 5)
+        {
+            var date = $"{DateTime.Now.Ticks.ToString()}-{StringHelper.GenerateRandomNumber(SaveNameRandomNumber)}";
+
+            if (SaveNameRandomNumber >= 6)
+            {
+                date = $"{DateTime.Now.Ticks.ToString()}-{StringHelper.GenerateRandomCode(SaveNameRandomNumber)}";
+            }
+
+            return date;
+
         }
     }
 
